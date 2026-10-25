@@ -1587,12 +1587,13 @@ function renderOrbs(){const n=focusIdx(S.c.rz);
 
 /* ---------- loop ---------- */
 let last=performance.now(),t0=last,lastFocus=-1,mergeT0=0;S.merge=0;
+function coverOn(){return !!document.querySelector('#screen .page.show');}
 function loop(now){const dt=Math.min(.033,(now-last)/1000);last=now;
  if(!S.home&&!holding&&!opened&&!S.launched&&!reduce){const w=(now-t0)/1000;S.t.ry=Math.sin(w*.6)*5;S.t.rx=POSES[pose]+Math.sin(w*.45)*3;S.t.rz+=dt*4;}
  for(const key of ['rx','ry','rz','open']){const k=key==='open'?220:150,d=key==='open'?22:17;const acc=k*(S.t[key]-S.c[key])-d*S.v[key];S.v[key]+=acc*dt;S.c[key]+=S.v[key]*dt;}
  if(mergeT0)S.merge=Math.min(1,Math.max(0,(now-mergeT0)/1500));
  pop.forEach(p=>{const acc=200*(p.t-p.c)-17*p.v;p.v+=acc*dt;p.c+=p.v*dt;});
- renderHelm();renderOrbs();
+ if(!coverOn()){renderHelm();renderOrbs();}
  const f=focusIdx(S.c.rz);if(opened&&f!==lastFocus){lastFocus=f;buzz(6);focusPill();}
  requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
@@ -1823,7 +1824,7 @@ function neck(f){const a=document.getElementById('neckA'),b=document.getElementB
  for(const [el,y,h] of [[a,SH.yb-40,40+ext],[b,SH.ct-ext,40+ext]]){el.setAttribute('x',x.toFixed(2));el.setAttribute('y',y.toFixed(2));el.setAttribute('width',w.toFixed(2));el.setAttribute('height',h.toFixed(2));el.setAttribute('rx',(w/2).toFixed(2));}}
 const mobMQ=matchMedia('(max-width: 600px), (pointer: coarse) and (max-width: 1024px) and (orientation: portrait)');
 function fit(){const mob=mobMQ.matches;document.body.classList.toggle('mob',mob);const ph=$('#phone'),scr=$('#screen');let Wv=412,Vh=891,s;
- if(mob){const pb=$('#probe'),r=pb.getBoundingClientRect(),st=r.top,sb=Math.max(0,innerHeight-r.bottom),W=innerWidth;s=W/412;const T=st-38*s;Vh=(innerHeight-T-sb*.5)/s;Wv=412;ph.style.top=T+'px';}
+ if(mob){const pb=$('#probe'),r=pb.getBoundingClientRect(),st=r.top,sb=Math.max(0,innerHeight-r.bottom),W=innerWidth;s=W/412;let T=st-38*s;Vh=(innerHeight-T-sb*.5)/s;Wv=412;if(Vh<891){s=(innerHeight-st-sb*.5)/(891-38);T=st-38*s;Vh=891;Wv=W/s;}ph.style.top=T+'px';}
  else{ph.style.top='';const W=444,H=918.5;const narrow=innerWidth<760;const availW=narrow?innerWidth-32:innerWidth-380;const availH=narrow?innerHeight*.92:innerHeight-48;s=Math.max(.4,Math.min(1,availW/W,availH/H));$('#scaler').style.width=W*s+'px';$('#scaler').style.height=H*s+'px';}
  DX=(Wv-412)/2;DYB=Vh-891;DYM=DYB/2;scr.style.width=Wv+'px';scr.style.height=Vh+'px';
  scr.style.setProperty('--dx',DX+'px');scr.style.setProperty('--dyM',DYM+'px');scr.style.setProperty('--dyB',DYB+'px');sheet(Wv,DYB);
@@ -1849,7 +1850,7 @@ function homeCommit(){if(HM.committing||!S.home)return;HM.committing=true;HM.ste
 function homeLoop(t){try{
  if(HM.committing&&performance.now()-HM.commitT>1700)hcStep3();
  if(S.home&&!HM.committing&&home.classList.contains('exit'))homeEnter(false);
- if(S.home||HM.committing){const s=t/1000;const p=homePos();let tx,ty,tk;
+ if((S.home||HM.committing)&&!coverOn()){const s=t/1000;const p=homePos();let tx,ty,tk;
   if(HM.committing){tx=0;ty=0;tk=1;}
   else if(HM.drag){tx=HM.drag.x;ty=HM.drag.y;tk=1.06;}
   else{tx=p.x+Math.sin(s*1.1)*10;ty=p.y+Math.sin(s*.8+1)*4;tk=1;}
@@ -1858,7 +1859,7 @@ function homeLoop(t){try{
   if(!HM.committing||Math.hypot(HM.x,HM.y)>.5)$('#helm').style.transform=`translate(${HM.x.toFixed(2)}px,${HM.y.toFixed(2)}px) scale(${HM.k.toFixed(3)})`;
   grab.style.transform=`translate(${(206+DX+HM.x).toFixed(1)}px,${(447+DYM+HM.y).toFixed(1)}px)`;
   const d=Math.hypot(HM.x,HM.y),d0=Math.hypot(p.x,p.y);const hp=HM.committing?1:Math.max(0,Math.min(1,1-d/d0));
-  if(!HM.committing){home.style.setProperty('--hp',hp.toFixed(3));if(!commOn())$('#ftab').style.opacity=(1-hp*.85).toFixed(3);}
+  if(!HM.committing){const hs=hp.toFixed(2);if(hs!==HM._hs){HM._hs=hs;home.style.setProperty('--hp',hs);if(!commOn())$('#ftab').style.opacity=(1-hp*.85).toFixed(2);}}
   }
  }catch(err){console.error('homeLoop',err);}
  requestAnimationFrame(homeLoop);}
@@ -2308,6 +2309,11 @@ onShow($('#gdetail'),on=>{if(on)gFilter('all');});
  const end=()=>{if(!d)return;d=null;fcard.classList.remove('drag');requestAnimationFrame(()=>{fcard.style.transform='';});};
  st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);st.addEventListener('pointerleave',end);})();
 
+/* result: long missions shrink to 2 lines, chips always sit below the title */
+(function(){const _rc=revealChips;revealChips=function(){const m=$('#mission');let fs=28;m.style.fontSize='';m.style.lineHeight='';
+ const lines=()=>Math.round(m.offsetHeight/parseFloat(getComputedStyle(m).lineHeight));
+ while(lines()>2&&fs>21){fs-=1;m.style.fontSize=fs+'px';m.style.lineHeight=(fs*1.35)+'px';}
+ $('#chips').style.top=Math.max(250,m.offsetTop+m.offsetHeight+14)+'px';return _rc.apply(this,arguments);};})();
 /* home guard: whenever the home tab is active and nothing is stacked on it, home must be fully shown */
 setInterval(()=>{try{if(TB.idx!==0||HM.committing||!S.home)return;
  const stacked=document.querySelector('.page.show');if(stacked)return;
@@ -2324,7 +2330,8 @@ $('#tIcons').innerHTML=ICON_ON.map((d,i)=>`<g id="ti${i}" fill="none"><g class="
 function tabTo(i,instant){TB.idx=i;TB.target=TB.act[i];if(instant){TB.cx=TB.tail=TB.target;TB.v=TB.tv=0;}}
 const mixC=(a,b,t)=>'#'+[0,1,2].map(k=>Math.round(a[k]+(b[k]-a[k])*t).toString(16).padStart(2,'0')).join('');
 let tLast=performance.now();
-function tabFrame(now){const dt=Math.min(.033,(now-tLast)/1000);tLast=now;
+let tbIdle=0;function tabFrame(now){const dt=Math.min(.033,(now-tLast)/1000);tLast=now;
+ if(Math.abs(TB.v)<.02&&Math.abs(TB.tv)<.02&&Math.abs(TB.target-TB.cx)<.05&&Math.abs(TB.tail-TB.cx)<.05){if(++tbIdle>3){requestAnimationFrame(tabFrame);return;}}else tbIdle=0;
  const a=78*(TB.target-TB.cx)-15.5*TB.v;TB.v+=a*dt;TB.cx+=TB.v*dt;           /* soft spring ≈ .8s, gentle overshoot */
  const a2=34*(TB.cx-TB.tail)-10*TB.tv;TB.tv+=a2*dt;TB.tail+=TB.tv*dt;       /* liquid tail lags behind */
  const cx=TB.cx,sp=Math.min(1,Math.abs(TB.v)/520);
@@ -2389,6 +2396,12 @@ body:not(.mob) .screen{border-radius:36px}
  /* keep the screen awake */
  let lock=null;async function wake(){try{if('wakeLock' in navigator&&document.visibilityState==='visible')lock=await navigator.wakeLock.request('screen');}catch(e){}}
  wake();document.addEventListener('visibilitychange',wake);addEventListener('pointerdown',()=>{if(!lock)wake();},{once:true});
+ /* status bar colour follows whatever the app shows at the very top (iOS/Android standalone) */
+ const meta=document.querySelector('meta[name="theme-color"]');let lastC='';
+ function topColor(){const els=document.elementsFromPoint(innerWidth/2,1);for(const e of els){const cs=getComputedStyle(e);
+   const m=(cs.backgroundImage||'').match(/rgba?\([^)]*\)|#[0-9a-f]{3,8}/i);if(cs.backgroundImage&&cs.backgroundImage!=='none'&&m)return m[0];
+   const b=cs.backgroundColor;if(b&&!/rgba\(\s*0,\s*0,\s*0,\s*0\s*\)|transparent/.test(b))return b;}return '#F9F7FA';}
+ setInterval(()=>{if(!document.body.classList.contains('mob'))return;const c=topColor();if(c!==lastC){lastC=c;meta.setAttribute('content',c);document.documentElement.style.background=c;}},300);
  if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script></body></html>
