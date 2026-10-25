@@ -1823,8 +1823,8 @@ function neck(f){const a=document.getElementById('neckA'),b=document.getElementB
  for(const [el,y,h] of [[a,SH.yb-40,40+ext],[b,SH.ct-ext,40+ext]]){el.setAttribute('x',x.toFixed(2));el.setAttribute('y',y.toFixed(2));el.setAttribute('width',w.toFixed(2));el.setAttribute('height',h.toFixed(2));el.setAttribute('rx',(w/2).toFixed(2));}}
 const mobMQ=matchMedia('(max-width: 600px), (pointer: coarse) and (max-width: 1024px) and (orientation: portrait)');
 function fit(){const mob=mobMQ.matches;document.body.classList.toggle('mob',mob);const ph=$('#phone'),scr=$('#screen');let Wv=412,Vh=891,s;
- if(mob){const pb=$('#probe'),W=pb.clientWidth,H=pb.clientHeight;s=Math.min(W/412,H/851);Wv=W/s;Vh=H/s;}
- else{const W=444,H=918.5;const narrow=innerWidth<760;const availW=narrow?innerWidth-32:innerWidth-380;const availH=narrow?innerHeight*.92:innerHeight-48;s=Math.max(.4,Math.min(1,availW/W,availH/H));$('#scaler').style.width=W*s+'px';$('#scaler').style.height=H*s+'px';}
+ if(mob){const pb=$('#probe'),r=pb.getBoundingClientRect(),st=r.top,sb=Math.max(0,innerHeight-r.bottom),W=innerWidth;s=W/412;const T=st-38*s;Vh=(innerHeight-T-sb*.5)/s;Wv=412;ph.style.top=T+'px';}
+ else{ph.style.top='';const W=444,H=918.5;const narrow=innerWidth<760;const availW=narrow?innerWidth-32:innerWidth-380;const availH=narrow?innerHeight*.92:innerHeight-48;s=Math.max(.4,Math.min(1,availW/W,availH/H));$('#scaler').style.width=W*s+'px';$('#scaler').style.height=H*s+'px';}
  DX=(Wv-412)/2;DYB=Vh-891;DYM=DYB/2;scr.style.width=Wv+'px';scr.style.height=Vh+'px';
  scr.style.setProperty('--dx',DX+'px');scr.style.setProperty('--dyM',DYM+'px');scr.style.setProperty('--dyB',DYB+'px');sheet(Wv,DYB);
  ph.style.transform=`scale(${s})`;ph.dataset.s=s;}
@@ -2369,7 +2369,7 @@ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webki
 input,textarea{-webkit-user-select:text;user-select:text}
 img{-webkit-user-drag:none}
 /* laptops: just the app screen, no simulator chrome */
-body:not(.mob) .panel,body:not(.mob) .frame,body:not(.mob) .cam{display:none!important}
+html:has(body.mob),body.mob{background:#F9F7FA!important}\nbody:not(.mob) .panel,body:not(.mob) .frame,body:not(.mob) .cam{display:none!important}
 body:not(.mob),body:not(.mob) .wrap,body:not(.mob) .stage,body:not(.mob) .scaler{background:#ECEAEE!important}\nbody:not(.mob) .phone{background:transparent!important}
 body:not(.mob) .phone{filter:drop-shadow(0 24px 40px rgba(10,30,40,.18))}
 body:not(.mob) .screen{border-radius:36px}
