@@ -1098,6 +1098,59 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #cMission .ring{position:absolute;left:306px;top:82px;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;border:2px solid rgba(255,255,255,.9);opacity:0;pointer-events:none}
 #cMission .ring.go{animation:mring .9s cubic-bezier(.2,.7,.2,1)}
 @keyframes mring{0%{opacity:.9;transform:scale(.85)}100%{opacity:0;transform:scale(2.1)}}
+
+/* result v3: centered header, mission block above the orb, start + retry at the bottom */
+#logo{left:124px;top:56px}
+#rtitle{left:160px;top:63px;width:128px;height:19px}
+#rdate{left:20px;top:132px;width:372px;text-align:center}
+#mission{left:24px;width:364px;top:158px;text-align:center}
+#chips{left:0;width:412px;top:250px;justify-content:center;transform:none}
+#lens{left:18px;top:332px}
+
+/* ===== today's voyage sheet v2 ===== */
+#hsheet .hs-panel{padding:10px 16px calc(28px + var(--sb,0px));background:#F4F4F5}
+#hsheet .hs-top{align-items:center;gap:10px;padding:8px 4px 0}
+#hsheet .hs-top h3{font-size:22px;line-height:30px;letter-spacing:-.02em}
+#hsheet .hs-top .cnt{display:flex;align-items:baseline;gap:4px;font-size:22px;font-weight:700;color:#0A0A0A;letter-spacing:-.02em}
+#hsheet .hs-top .cnt small{font-size:13px;font-weight:500;color:rgba(10,10,10,.45);letter-spacing:0}
+#hsheet .hs-redo{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 12px 0 9px;border-radius:999px;border:0;background:#fff;color:#0A0A0A;font:500 13px/1 var(--f-ui);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+#hsheet .hs-redo svg{width:14px;height:14px}
+#hsheet .hs-redo:active{transform:scale(.96)}
+#hsheet .hs-mis{margin:8px 4px 14px;font-size:14px;line-height:20px;color:rgba(10,10,10,.55)}
+#hsheet .hs-seg{margin:0 4px 16px;height:6px}
+#hsheet .hs-seg i{background:rgba(10,10,10,.08)}
+#hsheet .hs-seg i.on{background:#0A0A0A}
+/* item cards: the notched challenge-card shape, one per checkpoint */
+#hsheet .hs-it{position:relative;background:none;border-radius:0;padding:0;margin-bottom:10px;min-height:120px}
+#hsheet .hs-it .shape{position:absolute;inset:0;fill:#fff}
+#hsheet .hs-it .shape path{fill:#fff}
+#hsheet .hs-it.done .shape path{fill:#0A0A0A}
+#hsheet .hs-it .in{position:relative;padding:18px 20px 18px 20px}
+#hsheet .hs-it .cap{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#hsheet .hs-it .orb{position:relative;width:36px;height:36px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,var(--a),var(--b));box-shadow:inset 0 0 0 .5px rgba(0,0,0,.05),0 6px 12px -6px var(--b);display:flex;align-items:center;justify-content:center;font:700 12px/1 var(--f-ui);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+#hsheet .hs-it.done .orb{background:#C2FF0A;box-shadow:none}
+#hsheet .hs-it.done .orb svg{width:18px;height:18px}
+#hsheet .hs-it .cap .k{font-size:12px;font-weight:500;color:rgba(10,10,10,.5);letter-spacing:.01em}
+#hsheet .hs-it .ttl{font-size:17px;font-weight:700;line-height:24px;letter-spacing:-.02em;color:#0A0A0A;margin:0 56px 10px 0}
+#hsheet .hs-it.done .ttl{color:#fff}
+#hsheet .hs-it .ttl b{font-weight:700}
+#hsheet .hs-it .tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+#hsheet .hs-it .tags span{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:#F4F4F5;font:500 11px/1 var(--f-ui);color:#0A0A0A}
+#hsheet .hs-it .tags span.k{background:#87E6FF}
+#hsheet .hs-it.done .tags span{background:rgba(255,255,255,.14);color:#fff}
+#hsheet .hs-it .how{margin:0;font-size:12px;line-height:17px;color:rgba(10,10,10,.55)}
+#hsheet .hs-it.done .how{color:rgba(255,255,255,.6)}
+/* the notch button: icon action for 'do it yourself' items, quiet label for auto items */
+#hsheet .hs-it .act{position:absolute;right:0;top:0;width:52px;height:52px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:#0A0A0A;color:#fff;cursor:pointer;transition:transform .15s}
+#hsheet .hs-it .act svg{width:22px;height:22px}
+#hsheet .hs-it .act svg path{stroke:#fff}
+#hsheet .hs-it .act:active{transform:scale(.92)}
+#hsheet .hs-it .act.auto{background:#F4F4F5;cursor:default}
+#hsheet .hs-it .act.auto svg path{stroke:rgba(10,10,10,.5)}
+#hsheet .hs-it.done .act{background:#C2FF0A}
+#hsheet .hs-it.done .act svg path{stroke:#0A0A0A}
+#hsheet .hs-note{margin:4px 0 14px;color:rgba(10,10,10,.45)}
+#hsheet .hs-go{background:#0A0A0A}
 </style>
 
 <div id="probe"></div>
@@ -1139,7 +1192,7 @@ body.mob .screen{left:0;top:0;border-radius:0}
     </div>
     <div id="helmGrab"></div>
     <div id="hsheet" aria-hidden="true"><div class="hs-dim"></div><div class="hs-panel" role="dialog" aria-label="오늘의 항해">
-      <div class="hs-hd"></div><div class="hs-top"><h3>오늘의 항해</h3><b id="hsCnt">0/3</b><span>23:59까지</span></div>
+      <div class="hs-hd"></div><div class="hs-top"><h3>오늘의 항해</h3><span class="cnt"><b id="hsCnt">0/3</b><small>23:59까지</small></span><button type="button" class="hs-redo" id="hsRedo" aria-label="미션 다시 조합하기"><svg viewBox="0 0 24 24" fill="none"><path d="M4.5 12.0002C4.49848 13.7355 5.0987 15.4176 6.19839 16.7599C7.29808 18.1022 8.82919 19.0216 10.5308 19.3615C12.2324 19.7015 13.9993 19.4408 15.5303 18.624C17.0613 17.8072 18.2617 16.4848 18.9269 14.8822C19.5922 13.2795 19.6811 11.4958 19.1786 9.83488C18.6761 8.17399 17.6132 6.73873 16.1711 5.77369C14.7289 4.80865 12.9968 4.37353 11.2698 4.54248C9.54276 4.71144 7.92777 5.474 6.7 6.70024" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V8.5H8.5" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>다시 하기</button></div>
       <p class="hs-mis" id="hsMis"></p><div class="hs-seg" id="hsSeg"></div><div id="hsList"></div>
       <p class="hs-note">다 채우면 오늘의 인증 카드가 자동으로 만들어져요.<br>못 채운 칸이 있어도 채운 만큼은 이번 주 기운에 남아요.</p>
       <button type="button" class="hs-go" id="hsGo">출발하기</button></div></div>
@@ -2394,7 +2447,7 @@ onShow($('#gdetail'),on=>{if(on)gFilter('all');});
 (function(){const _rc=revealChips;revealChips=function(){const m=$('#mission');let fs=parseFloat(m.style.fontSize)||28;
  const lines=()=>Math.round(m.offsetHeight/parseFloat(getComputedStyle(m).lineHeight));
  while(lines()>2&&fs>21){fs-=1;m.style.fontSize=fs+'px';m.style.lineHeight=(fs*1.35)+'px';}
- $('#chips').style.top=Math.max(250,m.offsetTop+m.offsetHeight+14)+'px';return _rc.apply(this,arguments);};})();
+ $('#chips').style.top=Math.max(250,m.offsetTop+m.offsetHeight+16)+'px';return _rc.apply(this,arguments);};})();
 /* home guard: whenever the home tab is active and nothing is stacked on it, home must be fully shown */
 setInterval(()=>{try{if(TB.idx!==0||HM.committing||!S.home)return;
  const stacked=document.querySelector('.page.show');if(stacked)return;
@@ -2460,14 +2513,30 @@ function setMission(){S.mission={full:missionTokens(ITEMS.map(x=>x.k).filter(k=>
 function applyMission(){const m=S.mission,on=!!m;home.classList.toggle('mission',on);scrEl.classList.toggle('mission',on);if(!on)return;
  const t=$('#mText'),f=fitMission(m.keys,m.durKey,326,[22,21,20],2);t.style.fontSize=f.fs+'px';t.innerHTML=lnHTML(f.lines);
  $('#mProg').innerHTML=m.keys.map((k,i)=>`<i class="${i<m.done?'on':''}"></i>`).join('');}
+
+/* ===== sheet v2 renderer: notched cards, orb glyphs, icon actions ===== */
+const HS_ICON={"camera": "<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M4 8H7L9 5.5H15L17 8H20V19H4V8Z\" stroke=\"#0A0A0A\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M12 16.5C13.933 16.5 15.5 14.933 15.5 13C15.5 11.067 13.933 9.5 12 9.5C10.067 9.5 8.5 11.067 8.5 13C8.5 14.933 10.067 16.5 12 16.5Z\" stroke=\"#0A0A0A\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "pin": "<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 21C12 21 6 15.5 6 10C6 8.4087 6.63214 6.88258 7.75736 5.75736C8.88258 4.63214 10.4087 4 12 4C13.5913 4 15.1174 4.63214 16.2426 5.75736C17.3679 6.88258 18 8.4087 18 10C18 15.5 12 21 12 21Z\" stroke=\"#0A0A0A\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M11.9992 12.3002C13.2695 12.3002 14.2992 11.2705 14.2992 10.0002C14.2992 8.72994 13.2695 7.7002 11.9992 7.7002C10.729 7.7002 9.69922 8.72994 9.69922 10.0002C9.69922 11.2705 10.729 12.3002 11.9992 12.3002Z\" stroke=\"#0A0A0A\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "clock": "<svg viewBox=\"0 0 24 24\" fill=\"none\"><circle cx=\"12\" cy=\"12\" r=\"8\" stroke=\"#0A0A0A\" stroke-width=\"1.6\"/><path d=\"M12 8v4l2.5 2\" stroke=\"#0A0A0A\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "timer": "<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M9 3h6M12 3v3\" stroke=\"#0A0A0A\" stroke-width=\"1.6\" stroke-linecap=\"round\"/><circle cx=\"12\" cy=\"14\" r=\"7\" stroke=\"#0A0A0A\" stroke-width=\"1.6\"/><path d=\"M12 14l3-3\" stroke=\"#0A0A0A\" stroke-width=\"1.6\" stroke-linecap=\"round\"/></svg>", "retry": "<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M4.5 12.0002C4.49848 13.7355 5.0987 15.4176 6.19839 16.7599C7.29808 18.1022 8.82919 19.0216 10.5308 19.3615C12.2324 19.7015 13.9993 19.4408 15.5303 18.624C17.0613 17.8072 18.2617 16.4848 18.9269 14.8822C19.5922 13.2795 19.6811 11.4958 19.1786 9.83488C18.6761 8.17399 17.6132 6.73873 16.1711 5.77369C14.7289 4.80865 12.9968 4.37353 11.2698 4.54248C9.54276 4.71144 7.92777 5.474 6.7 6.70024\" stroke=\"#0A0A0A\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M4.5 4.5V8.5H8.5\" stroke=\"#0A0A0A\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "check": "<svg viewBox=\"0 0 18 18\" fill=\"none\"><path d=\"M4 9.5l3.2 3.2L14 5.8\" stroke=\"#0A0A0A\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"};
+/* card outline: the challenge-card notch, stretched to the item's width/height (corner radii stay fixed) */
+function notchPath(w,h){const r=20,nw=54,nh=52,nr=20;const x1=w-nw-nr;
+ return `M0 ${r}C0 ${r*.45} ${r*.45} 0 ${r} 0H${x1-r}C${x1-r*.55} 0 ${x1} ${r*.45} ${x1} ${r}V${nh-nr-2}C${x1} ${nh-2+nr*.45-nr} ${x1+nr*.45} ${nh-2} ${x1+nr} ${nh-2}H${w-r}C${w-r*.55} ${nh-2} ${w} ${nh-2+r*.45} ${w} ${nh-2+r}V${h-r}C${w} ${h-r*.45} ${w-r*.45} ${h} ${w-r} ${h}H${r}C${r*.45} ${h} 0 ${h-r*.45} 0 ${h-r}Z`;}
+const HS_KIND={Way:'방위',Place:'공간',Time:'시간',Action:'행위',Color:'색',Taste:'맛'};
+function hsRender(){const m=S.mission;const place=m.keys.includes('Place')||m.keys.includes('Way');
+ $('#hsList').innerHTML=m.keys.map((k,i)=>{const d=MIS_DEF[k];let how=d.how,ch=d.ch,lab=d.l,icon=d.a?(k==='Time'?'clock':k==='Action'?'timer':'pin'):'camera',sub=d.a?'자동':'';
+  if(k==='Action'){lab=`행위 · ${m.dur} 쉬기`;if(place){how=`도착한 곳에서 ${m.dur} 머물면 채워져요. 앱을 닫아도 시간은 계속 흘러요.`;ch=[['자동 · 머문 시간',1],['도착한 뒤',0]];}else{how=`쉬기 시작할 때 타이머를 켜두면 ${m.dur} 뒤 채워져요.`;ch=[['타이머',1],['어디서든',0]];icon='timer';sub='';}}
+  const done=i<m.done;const t=TINT[k];const title=lab.replace(/^(.+?) · /,'');
+  return `<div class="hs-it${done?' done':''}" style="--a:${t[0]};--b:${t[1]}"><svg class="shape" preserveAspectRatio="none"><path d=""/></svg><div class="in">
+   <div class="cap"><span class="orb">${done?HS_ICON.check:d.g}</span><span class="k">${HS_KIND[k]} · ${k}</span></div>
+   <div class="ttl">${title}</div>
+   <div class="tags">${ch.map(([c,on])=>`<span class="${on?'k':''}">${c}</span>`).join('')}</div>
+   <p class="how">${done?'채웠어요':how}</p>
+   ${d.a||k==='Action'&&!place&&0?`<span class="act auto" aria-label="${sub||'자동'}">${HS_ICON[icon]}</span>`:`<button type="button" class="act" data-k="${k}" data-icon="${icon}" aria-label="${icon==='timer'?'타이머 켜기':'사진 찍기'}">${HS_ICON[icon]}</button>`}
+  </div></div>`;}).join('');
+ requestAnimationFrame(()=>{$('#hsList').querySelectorAll('.hs-it').forEach(it=>{const w=it.clientWidth,h=it.clientHeight;const sv=it.querySelector('.shape');sv.setAttribute('viewBox',`0 0 ${w} ${h}`);sv.querySelector('path').setAttribute('d',notchPath(w,h));});});}
 function hsOpen(){const m=S.mission;if(!m)return;const n=m.keys.length;
  $('#hsCnt').textContent=`${m.done}/${n}`;$('#hsMis').textContent=m.full;
  $('#hsSeg').innerHTML=m.keys.map((k,i)=>`<i class="${i<m.done?'on':''}"></i>`).join('');
  const place=m.keys.includes('Place')||m.keys.includes('Way');
- $('#hsList').innerHTML=m.keys.map(k=>{const d=MIS_DEF[k];let how=d.how,desc=d.d,ch=d.ch,lab=d.l;
-  if(k==='Action'){lab=`행위 · ${m.dur} 쉬기`;if(place){desc=`도착 후 ${m.dur} 머물면 채워져요`;how=`도착한 곳에서 ${m.dur} 머물면 채워져요. 앱을 닫아도 시간은 계속 흘러요.`;ch=[['자동 · 머문 시간',1],['도착한 뒤',0]];}
-   else{desc=`${m.dur} 쉬면 채워져요`;how=`쉬기 시작할 때 타이머를 켜두면 ${m.dur} 뒤 채워져요.`;ch=[['타이머',1],['어디서든',0]];}}
-  return `<div class="hs-it"><div class="hs-row"><span class="hs-gl">${d.g}</span><span class="hs-tx"><b>${lab}</b><small>${desc}</small></span>${d.a?`<span class="hs-st">${d.st}</span>`:`<button type="button" class="hs-st hs-do" data-k="${k}">${d.st}</button>`}</div><p class="hs-how">${how}</p><div class="hs-chips">${ch.map(([c,on])=>`<span class="${on?'k':''}">${c}</span>`).join('')}</div></div>`;}).join('');
+ hsRender();
  const go=$('#hsGo');go.dataset.act=place?'map':'cam';
  go.textContent=place?(m.keys.includes('Way')?(m.keys.includes('Place')?'북쪽 물가로 출발':'북쪽으로 출발'):'물가로 출발'):(m.keys.includes('Color')?'파란 것 찍으러 가기':m.keys.includes('Taste')?'짭짤한 것 찍으러 가기':'타이머 켜기');
  const sh=$('#hsheet');sh.querySelector('.hs-panel').scrollTop=0;sh.classList.add('show');sh.setAttribute('aria-hidden','false');buzz(8);}
@@ -2481,7 +2550,8 @@ $('#hsheet .hs-dim').addEventListener('click',hsClose);
  pn.addEventListener('pointermove',e=>{if(!d||e.pointerId!==d.id)return;d.dy=Math.max(0,(e.clientY-d.y)/(parseFloat($('#phone').dataset.s)||1));if(d.dy>6){pn.style.transition='none';pn.style.transform=`translateY(${d.dy}px)`;}});
  const end=e=>{if(!d||e.pointerId!==d.id)return;const dy=d.dy;d=null;pn.style.transition='';pn.style.transform='';if(dy>90)hsClose();};
  pn.addEventListener('pointerup',end);pn.addEventListener('pointercancel',end);})();
-$('#hsList').addEventListener('click',e=>{const b=e.target.closest('.hs-st.hs-do');if(!b)return;hsClose();setTimeout(()=>openCam('home'),250);});
+$('#hsList').addEventListener('click',e=>{const b=e.target.closest('button.act');if(!b)return;buzz(8);if(b.dataset.icon==='timer'){toastMsg('타이머는 다음 단계에서 열려요');return;}hsClose();setTimeout(()=>openCam('home'),250);});
+$('#hsRedo').addEventListener('click',()=>{buzz(10);hsClose();setTimeout(()=>{const keep=S.mission?S.mission.keys.slice():[];S.mission=null;applyMission();keep.forEach(k=>S.sel.add(k));S.everOpened=true;stream(false);renderAux();homeCommit();setTimeout(()=>coach('구슬을 바꿔 다시 조합해 보세요'),1100);},300);});
 $('#hsGo').addEventListener('click',()=>{const a=$('#hsGo').dataset.act;hsClose();buzz(10);
  if(a==='map'){setTimeout(()=>{tabTo(1);openMap();},250);}else if(a==='cam'){setTimeout(()=>openCam('home'),250);}else toastMsg('타이머는 다음 단계에서 열려요');});
 /* idle life: the docked helm sways now and then, the card catches the light now and then */
