@@ -1384,6 +1384,11 @@ body.mob .screen{left:0;top:0;border-radius:0}
 @keyframes tagSw{from{opacity:.15;transform:translateY(6px)}to{opacity:1;transform:none}}
 #screen #ftag{translate:var(--dx,0px) var(--dyM,0px)}
 #screen.leaving #ftag,#screen.home #ftag{opacity:0}
+
+/* bubble: opacity/scale are driven per frame from the tail, width still eases on text swaps */
+#ftag,#ftag.vis{transition:width .26s cubic-bezier(.2,.9,.2,1)}
+#ftag .tx{opacity:calc((.5 + .5*var(--al,1))*var(--ap,1))}
+#screen.leaving #ftag,#screen.home #ftag{opacity:0!important}
 </style>
 
 <div id="probe"></div>
@@ -1400,7 +1405,7 @@ body.mob .screen{left:0;top:0;border-radius:0}
     <svg class="abs" id="helm" width="412" height="891"><defs id="hdefs"></defs><g id="hshadow"></g><g id="hbody"></g></svg>
     <div class="abs" id="holdring"></div>
     <div class="abs" id="wheel"></div>
-    <div class="abs" id="ftag" aria-live="polite"><span class="tx"><i class="tck"></i><b class="tnm"></b><i class="tdot">·</i><span class="tds"></span></span></div><svg class="abs" id="ptr" width="24" height="22" viewBox="0 0 24 22"><path fill="#101010" d="M10.2308 1C11.0006-.3333 12.9251-.3333 13.6949 1L23.6542 18.25C24.424 19.5833 23.4618 21.25 21.9222 21.25L2.0036 21.25C.464 21.25-.4983 19.5833.2715 18.25L10.2308 1Z"/></svg>
+    <div class="abs" id="ftag" aria-live="polite"><span class="tx"><i class="tck"></i><b class="tnm"></b><i class="tdot">·</i><span class="tds"></span></span></div><svg class="abs" id="ptr" width="24" height="22" viewBox="0 0 24 22"><path fill="#0A0A0A" d="M10.2308 1C11.0006-.3333 12.9251-.3333 13.6949 1L23.6542 18.25C24.424 19.5833 23.4618 21.25 21.9222 21.25L2.0036 21.25C.464 21.25-.4983 19.5833.2715 18.25L10.2308 1Z"/></svg>
     <div class="abs" id="coach">조타키를 꾹 눌러 보세요</div>
     <div class="abs hide" id="toast"></div>
     <div class="abs" id="times"></div>
@@ -1954,7 +1959,9 @@ function renderOrbs(){const n=focusIdx(S.c.rz);
   el.classList.toggle('hot',opened&&i===n);el.classList.toggle('on',S.sel.has(it.k));});
  // ▲ pointer sits on the dial plane at 6 o'clock (does not spin)
  const pp=project(0,R_ORB+40,8*S.c.open,true);const sc=pp.k*(.9+.15*S.c.open)*(1-.34*S.c.open);$('#ptr').style.transform=`translate(${(pp.x-12).toFixed(1)}px,${(pp.y-11).toFixed(1)}px) scale(${sc.toFixed(3)})`;
- const tg=TAG.el;tg.style.setProperty('--al',(S.fe||0).toFixed(3));tg.style.transform=`translate(${(pp.x-TAG.w/2).toFixed(1)}px,${(pp.y+11*sc-1).toFixed(1)}px) scale(${pp.k.toFixed(3)})`;}
+ const tg=TAG.el,tgt=TAG.on?1:0;TAG.g+=(tgt-TAG.g)*(TAG.on?.2:.32);if(Math.abs(tgt-TAG.g)<.004)TAG.g=tgt;const g=TAG.g,ge=g*g*(3-2*g);
+ tg.style.opacity=Math.max(0,Math.min(1,(g-.12)/.3)).toFixed(3);tg.style.setProperty('--al',(S.fe||0).toFixed(3));tg.style.setProperty('--ap',Math.max(0,Math.min(1,(g-.45)/.55)).toFixed(3));
+ tg.style.transform=`translate(${(pp.x-TAG.w/2).toFixed(1)}px,${(pp.y+7.5*sc).toFixed(1)}px) scale(${(pp.k*(.42+.58*ge)).toFixed(3)},${(pp.k*(.62+.38*ge)).toFixed(3)})`;}
 
 /* ---------- loop ---------- */
 let last=performance.now(),t0=last,lastFocus=-1,mergeT0=0;S.merge=0;
@@ -1999,11 +2006,11 @@ let wheelLock=0;wheel.addEventListener('wheel',e=>{e.preventDefault();const now=
 function coach(html){const c=$('#coach');c.innerHTML=html;c.classList.remove('hide');}
 function coachDefault(){if(S.everOpened)$('#coach').classList.add('hide');else coach('조타키를 꾹 눌러 보세요');}
 function focusPill(){const k=focusKey();$('#coach').classList.add('hide');setTag(k,true);}
-const TAG={el:$('#ftag'),w:0,k:null};
+const TAG={el:$('#ftag'),w:0,k:null,g:0,on:false};
 function setTag(k,anim){const el=TAG.el,tx=el.querySelector('.tx');TAG.k=k;el.querySelector('.tnm').textContent=k;el.querySelector('.tds').textContent=TAGD[k];el.classList.toggle('on',S.sel.has(k));
  const w=Math.ceil(tx.offsetWidth)+28;TAG.w=w;el.style.width=w+'px';
  if(anim&&!reduce){tx.classList.remove('tswap');void tx.offsetWidth;tx.classList.add('tswap');}}
-function tagShow(on){TAG.el.classList.toggle('vis',!!on);}
+function tagShow(on){TAG.on=!!on;}
 let toastT=null;function toastMsg(m){const t=$('#toast');t.textContent=m;t.classList.remove('hide');$('#coach').classList.add('hide');clearTimeout(toastT);toastT=setTimeout(()=>{t.classList.add('hide');coachDefault();},1500);}
 
 /* ---------- sentence + holographic reveal ---------- */
