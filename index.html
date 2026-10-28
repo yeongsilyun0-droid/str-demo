@@ -2597,7 +2597,7 @@ navEl.querySelectorAll('.tog button').forEach(b=>b.addEventListener('click',()=>
 function openNav(){reasonEl.classList.remove('show','in');mapEl.classList.add('under');navEl.classList.add('show');navEl.classList.remove('cmp');NAV.mode='cam';navEl.querySelectorAll('.tog button').forEach(b=>b.setAttribute('aria-selected',b.dataset.m==='cam'?'true':'false'));
  navProg(0);NAV.t0=performance.now();cancelAnimationFrame(NAV.raf);NAV.raf=requestAnimationFrame(navLoop);buzz([10,30,14]);syncTab();
  /* simulated walking: 0 → 100% over ~6s, distance counts down with it, then arrival */
- clearTimeout(NAV.walkT);cancelAnimationFrame(NAV.wraf);const W0=performance.now()+500,DUR=6000,D0=86;let lastD=-1;
+ clearTimeout(NAV.walkT);cancelAnimationFrame(NAV.wraf);const W0=performance.now()+500,DUR=10000,D0=86;let lastD=-1;
  const walk=now=>{if(!navEl.classList.contains('show'))return;const p=Math.max(0,Math.min(1,(now-W0)/DUR));navProg(p);const d=Math.round(D0*(1-p));
   if(d!==lastD){lastD=d;$('#navDist').textContent=d+'m';$('#gtag').textContent=d>0?`${d}m 뒤 오른쪽`:'곧 도착';}
   if(p>=1){NAV.walkT=setTimeout(arrive,700);return;}NAV.wraf=requestAnimationFrame(walk);};NAV.wraf=requestAnimationFrame(walk);}
