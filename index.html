@@ -2701,8 +2701,8 @@ function mfRender(anim){if(window.__mapZoomReset)__mapZoomReset();MF.list=mfList
  sorbs.forEach(o=>o.classList.toggle('off',!MF.list.includes(+o.dataset.i)));
  MF.act=-1;setTimeout(()=>mfAct(MF.list[0]),anim?200:0);}
 function mfAct(i){if(MF.act===i)return;MF.act=i;sorbs.forEach(o=>o.classList.toggle('act',+o.dataset.i===i));}
-let mcT=null;$('#mcar').addEventListener('scroll',()=>{clearTimeout(mcT);mcT=setTimeout(()=>{const k=Math.round($('#mcar').scrollLeft/160);const i=MF.list[Math.max(0,Math.min(MF.list.length-1,k))];if(i!==MF.act){mfAct(i);buzz(4);}},60);},{passive:true});
-function mfGoCard(i){const k=MF.list.indexOf(i);if(k<0)return;mfAct(i);$('#mcar').scrollTo({left:k*160,behavior:'smooth'});}
+let mcT=null;$('#mcar').addEventListener('scroll',()=>{clearTimeout(mcT);mcT=setTimeout(()=>{if(performance.now()<(MF.lockT||0))return;const car=$('#mcar'),mx=car.scrollWidth-car.clientWidth;const k=car.scrollLeft>=mx-2&&mx>0?MF.list.length-1:Math.round(car.scrollLeft/160);const i=MF.list[Math.max(0,Math.min(MF.list.length-1,k))];if(i!==MF.act){mfAct(i);buzz(4);}},60);},{passive:true});
+function mfGoCard(i){const k=MF.list.indexOf(i);if(k<0)return;mfAct(i);MF.lockT=performance.now()+900;$('#mcar').scrollTo({left:k*160,behavior:'smooth'});}
 $('#mcar').addEventListener('click',e=>{const c=e.target.closest('.scard');if(!c)return;openSpot(+c.dataset.i);});
 sorbs.forEach(o=>o.addEventListener('click',()=>{const i=+o.dataset.i;buzz(6);if(MF.act===i)openSpot(i);else mfGoCard(i);}));
 $('#mchips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;buzz(6);
