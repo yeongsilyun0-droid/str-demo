@@ -1640,6 +1640,7 @@ body.mob .screen{left:0;top:0;border-radius:0}
 /* top bar */
 #onb .ob-top{position:absolute;left:0;right:0;top:46px;height:40px;z-index:5;opacity:0;transform:translateY(-6px);transition:opacity .3s,transform .4s cubic-bezier(.2,.9,.2,1);pointer-events:none}
 #onb.has-top .ob-top{opacity:1;transform:none;pointer-events:auto}
+#onb.back-only .ob-track,#onb.back-only .ob-cnt{visibility:hidden}
 #onb .ob-back{position:absolute;left:8px;top:2px;width:40px;height:40px;border:0;border-radius:20px;background:none;color:#0A0A0A;padding:8px;cursor:pointer;transition:background .2s,transform .25s cubic-bezier(.3,1.6,.5,1)}
 #onb .ob-back svg{width:24px;height:24px;display:block}
 #onb .ob-back:active{background:rgba(10,10,10,.06);transform:scale(.88) translateX(-2px)}
@@ -1737,16 +1738,7 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #onb .ob-row.on .ob-sw u{left:23px;background:#0A0A0A}
 #onb .ob-row.on:active .ob-sw u{left:17px}
 /* ON05 */
-#onb .ob5-h{position:absolute;left:0;right:0;top:500px;margin:0;text-align:center;font:900 26px/31px var(--f-ui);letter-spacing:-.52px;color:#fff}
-#onb .ob5-s{position:absolute;left:0;right:0;top:544px;margin:0;text-align:center;font:400 14px/17px var(--f-ui);letter-spacing:-.28px;color:#A8A8AE}
-#onb .ob5-bar{position:absolute;left:96px;top:600px;width:220px;height:6px;border-radius:3px;background:#2A2A2E;overflow:hidden}
-#onb .ob5-bar u{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;background:#C2FF0A;box-shadow:0 0 12px rgba(194,255,10,.6)}
-#onb .ob5 #obHelm .sbo{animation:obSpin 2.4s cubic-bezier(.6,0,.3,1) infinite}
-@keyframes obSpin{0%{transform:rotate(0)}70%{transform:rotate(200deg)}85%{transform:rotate(175deg)}100%{transform:rotate(180deg)}}
-#onb .ob5 .fl .sbo{animation:obFloat 4.2s ease-in-out infinite;animation-delay:calc(var(--d,0)*-9ms)}
 @keyframes obFloat{0%,100%{transform:translate(0,0) rotate(0)}33%{transform:translate(4px,-8px) rotate(3deg)}66%{transform:translate(-3px,5px) rotate(-2deg)}}
-#onb .ob5-h.swap{animation:obTick .35s ease}
-#onb .ob5.done .fl .sin{transition:transform .6s cubic-bezier(.6,0,.3,1),opacity .5s;transform:translate(var(--tx),var(--ty)) scale(.2) rotate(var(--r));opacity:0}
 /* results */
 #onb .ob6-bg{position:absolute;left:0;top:0;width:412px;height:430px;background:#F3FFD6}
 #onb .obs[data-s="6"]{background:#fff}
@@ -2269,15 +2261,6 @@ body.mob .screen{left:0;top:0;border-radius:0}
       <div class="ob-top"><button type="button" class="ob-back" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none"><path d="M15 5.5 8.5 12l6.5 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <i class="ob-track"><u></u></i><b class="ob-cnt"><span>1</span>/4</b></div>
 
-      <section class="obs" data-s="1" data-bg="#87E6FF">
-        <div class="ob-logo"><svg viewBox="0 0 162 119" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50.1504 0C50.8963 3.90043e-05 51.5009 0.604724 51.501 1.35059V13.6299C51.5011 14.3757 52.1057 14.9804 52.8516 14.9805H57.8359C58.5819 14.9805 59.1865 15.5851 59.1865 16.3311V18.9639C59.1869 19.5424 59.9365 19.8184 60.3457 19.4092C62.0825 17.6724 64.0801 16.3264 66.3379 15.3711C68.5957 14.329 71.0276 13.8077 73.6328 13.8076C76.1512 13.8076 78.5399 14.2859 80.7979 15.2412C83.0556 16.1096 85.0093 17.3687 86.6592 19.0186C88.396 20.6685 89.699 22.579 90.5674 24.75C91.5226 26.921 92 29.2659 92 31.7842C92 31.9008 92.1374 31.964 92.2256 31.8877C94.0065 30.347 95.9914 29.1122 98.1816 28.1855C100.886 26.9373 103.799 26.3135 106.92 26.3135C109.937 26.3135 112.797 26.886 115.502 28.0303C115.844 28.162 116.181 28.3015 116.512 28.4482C118.304 29.2438 120.674 28.1679 121.351 26.3271C121.7 25.376 122.139 24.4596 122.668 23.5781C124.231 20.9729 126.316 18.8884 128.921 17.3252C131.613 15.762 134.566 14.9805 137.779 14.9805L142.673 15.1309L130.976 3.84375C130.036 2.93676 130.678 1.34767 131.984 1.34766L143.269 1.34668C143.65 1.34668 144.017 1.49738 144.289 1.76562L161.017 18.2812C161.587 18.8447 161.593 19.7643 161.029 20.335L155.713 25.7197C155.529 25.9056 155.307 26.0299 155.072 26.0957C154.867 26.2306 154.617 26.3135 154.333 26.3135H138.561C136.824 26.3135 135.304 26.9649 134.001 28.2676C132.785 29.4833 132.178 30.9596 132.178 32.6963V79.0898C132.178 79.8357 131.573 80.4403 130.827 80.4404H121.674C120.928 80.4402 120.323 79.8356 120.323 79.0898V69.8633C120.323 67.8222 117.946 66.5682 116.086 67.4082C115.893 67.4952 115.698 67.58 115.502 67.6631C112.797 68.7033 109.884 69.2236 106.764 69.2236C106.078 69.2236 105.529 69.9218 105.803 70.5508L126.07 117.11C126.458 118.002 125.804 119 124.831 119H112.331C111.793 119 111.306 118.68 111.092 118.187L89.5996 68.5996C88.6634 66.6232 87.8307 64.5429 87.1025 62.3584C86.3744 60.1739 85.8028 57.9892 85.3867 55.8047C84.9706 53.5161 84.7627 51.2793 84.7627 49.0947C84.7627 47.9097 83.3458 47.0841 82.293 47.6279C81.8105 47.8772 81.312 48.1106 80.7979 48.3281C78.54 49.1965 76.1082 49.6308 73.5029 49.6309C72.8783 49.6309 72.3653 50.2529 72.5967 50.833L87.9521 89.334C88.3058 90.221 87.6522 91.1846 86.6973 91.1846H76.7129C76.1585 91.1846 75.6597 90.8457 75.4561 90.3301L59.1738 49.1094C58.3923 47.4595 57.6977 45.7229 57.0898 43.8994C56.4819 42.0757 56.0036 40.2514 55.6562 38.4277C55.3089 36.5173 55.1357 34.6498 55.1357 32.8262C55.1358 31.6737 55.2158 30.5611 55.375 29.4883C55.6114 27.895 54.4623 26.3135 52.8516 26.3135C52.1057 26.3135 51.501 26.9182 51.501 27.6641V89.834C51.501 90.5799 50.8963 91.1845 50.1504 91.1846H40.998C40.6269 91.1846 40.2167 91.255 39.9912 91.5498C37.6678 94.5899 34.7596 97.0746 31.2637 99.001C27.0084 101.346 22.188 102.518 16.8037 102.518H1.48047C0.734729 102.517 0.129883 101.913 0.129883 101.167V92.5352C0.130124 91.7896 0.734878 91.1848 1.48047 91.1846H16.8037C20.0169 91.1846 22.8829 90.49 25.4014 89.1006C27.9197 87.7112 29.9172 85.8877 31.3936 83.6299C32.8699 81.2851 33.6084 78.6793 33.6084 75.8135C33.6083 71.211 31.8711 67.5632 28.3975 64.8711C25.0107 62.0923 20.7553 60.2688 15.6318 59.4004C12.5923 58.8793 9.8564 57.8376 7.4248 56.2744C5.08008 54.7113 3.25673 52.7568 1.9541 50.4121C0.651529 47.9806 4.41901e-05 45.3755 0 42.5967C5.21604e-06 39.5572 0.738522 36.8212 2.21484 34.3896C3.69116 31.8713 5.68868 29.9178 8.20703 28.5283C10.8123 27.052 13.7214 26.3135 16.9346 26.3135H27.0469C27.7928 26.3135 28.3974 26.9181 28.3975 27.6641V36.2959C28.3974 37.0418 27.7928 37.6465 27.0469 37.6465H16.8037C15.2408 37.6466 13.9385 38.1241 12.8965 39.0791C11.9412 40.0344 11.4629 41.2072 11.4629 42.5967C11.463 44.0729 11.9843 45.2889 13.0264 46.2441C14.0684 47.1125 15.5447 47.764 17.4551 48.1982C22.3183 48.893 26.8345 50.4121 31.0029 52.7568C32.2668 53.4275 33.458 54.1709 34.5762 54.9873C36.4725 56.3717 39.6465 55.1321 39.6465 52.7842V27.6641C39.6465 26.9181 39.0418 26.3135 38.2959 26.3135H33.4424C32.6965 26.3135 32.0919 25.7088 32.0918 24.9629V16.3311C32.0918 15.5851 32.6964 14.9805 33.4424 14.9805H38.2959C39.0418 14.9805 39.6464 14.3758 39.6465 13.6299V1.35059C39.6466 0.6047 40.2521 0 40.998 0H50.1504ZM106.764 39.4209C105.203 39.4209 103.799 39.8368 102.551 40.6689C101.302 41.3971 100.314 42.3855 99.5859 43.6338C98.8578 44.8821 98.4932 46.2863 98.4932 47.8467C98.4932 49.407 98.8578 50.8113 99.5859 52.0596C100.314 53.3079 101.302 54.2962 102.551 55.0244C103.799 55.7525 105.203 56.1162 106.764 56.1162C108.324 56.1162 109.728 55.7526 110.977 55.0244C112.225 54.2962 113.213 53.3079 113.941 52.0596C114.774 50.8113 115.189 49.407 115.189 47.8467C115.189 46.2864 114.774 44.8821 113.941 43.6338C113.213 42.3855 112.225 41.3971 110.977 40.6689C109.728 39.8368 108.324 39.4209 106.764 39.4209ZM73.5029 24.75C72.2003 24.75 71.0275 25.0973 69.9854 25.792C68.9433 26.3999 68.1186 27.2255 67.5107 28.2676C66.903 29.3096 66.5987 30.4817 66.5986 31.7842C66.5986 33.0868 66.9029 34.2597 67.5107 35.3018C68.1186 36.3437 68.9435 37.1685 69.9854 37.7764C71.0275 38.3843 72.2003 38.6885 73.5029 38.6885C74.8054 38.6885 75.9775 38.3842 77.0195 37.7764C78.0616 37.1685 78.8872 36.3438 79.4951 35.3018C80.1898 34.2597 80.5371 33.0868 80.5371 31.7842C80.537 30.4818 80.1897 29.3095 79.4951 28.2676C78.8872 27.2255 78.0616 26.3999 77.0195 25.792C75.9776 25.0975 74.8053 24.75 73.5029 24.75Z" fill="#0A0A0A"/></svg><span class="c">ⓒ2026</span><span class="t">Steer your day</span></div>
-        <p class="ob1-cp">오늘 필요한 기운을 향해</p>
-        <span class="ob-stk" data-k="water" data-c="104.4,699.5" data-w="141.97" data-r="8"></span>
-        <span class="ob-stk" data-k="star" data-c="326.5,692" data-w="70" data-r="-12"></span>
-        <button type="button" class="ob-pri" data-go="2"><span>시작하기</span></button>
-        <button type="button" class="ob-link" data-go="home">이미 계정이 있어요</button>
-      </section>
-
       <section class="obs" data-s="2" data-bg="#FFFFFF">
         <h2 class="ob2-h"><span>사주는 재미로,</span><span>움직임은 진짜로.</span></h2>
         <p class="ob2-p"><span>Steer는 운을 예측하지 않아요.</span><span>오늘 내게 필요한 기운을 알려 주고,</span><span>그 기운을 향해 직접 움직이도록 도와요.</span></p>
@@ -2311,32 +2294,6 @@ body.mob .screen{left:0;top:0;border-radius:0}
       </section>
 
       <section class="obs" data-s="5" data-bg="#FFFFFF"><iframe class="ob-read" id="obRead" title="나의 기운" allow="autoplay"></iframe></section>
-
-      <section class="obs ob-res" data-s="6" data-bg="#F3FFD6">
-        <i class="ob6-bg"></i>
-        <p class="ob-eyebrow" style="color:#6E6E73">나는 어떤 사람</p>
-        <span class="ob-stk big" data-k="wood" data-c="193.8,274.4" data-w="361.5" data-r="8"></span>
-        <span class="ob-stk pop" data-k="clover" data-c="336.4,131.9" data-w="60" data-r="-14"></span>
-        <span class="ob-stk pop" data-k="cloud" data-c="74.7,364.4" data-w="56" data-r="10"></span>
-        <h2 class="ob-rh" style="top:456px">겨울을 견디는 나무</h2>
-        <p class="ob-rp" style="top:508px"><span>단단한 뿌리를 가진 갑목(甲木)이에요.</span><span>추운 계절에 태어나, 묵묵히 버티며</span><span>봄을 기다리는 사람이죠.</span></p>
-        <div class="ob-tags" style="top:620px"><span>일간 甲木</span><span>신약</span><span>겨울생</span></div>
-        <div class="ob-dots"><i class="on"></i><i></i></div>
-        <button type="button" class="ob-pri" data-go="7"><span>다음</span></button>
-      </section>
-
-      <section class="obs ob-res" data-s="7" data-bg="#87E6FF">
-        <p class="ob-eyebrow">지금 필요한 기운</p>
-        <span class="ob-stk big" data-k="water" data-c="213.9,241.5" data-w="344.78" data-r="-6"></span>
-        <span class="ob-stk pop" data-k="heart" data-c="82.4,155.9" data-w="56" data-r="14"></span>
-        <span class="ob-stk pop" data-k="spark" data-c="334.8,374.3" data-w="60" data-r="-10"></span>
-        <h2 class="ob-rh ob7-h" style="top:440px"><span>지금 필요한 건</span><span>물</span></h2>
-        <p class="ob-rp" style="top:540px;color:#1B3A44"><span>얼어붙은 나무를 녹이고 키우는 건 물이에요.</span><span>물가를 걷고, 쉬고, 씻는 시간이</span><span>오늘의 기운을 채워 줘요.</span></p>
-        <div class="ob-tags inv" style="top:652px"><span class="k">용신 水</span><span>희신 金</span><span>방위 북쪽</span></div>
-        <div class="ob-dots"><i></i><i class="on"></i></div>
-        <button type="button" class="ob-pri" data-go="9"><span>내 항로 시작하기</span></button>
-        <button type="button" class="ob-link" data-toast="결과 자세히 보기는 준비 중이에요">결과 자세히 보기 ›</button>
-      </section>
 
       <section class="obs" data-s="9" data-bg="#FFFFFF" data-step="3">
         <h2 class="ob-h"><span>어디를 기준으로</span><span>항로를 그릴까요?</span></h2>
@@ -3188,26 +3145,22 @@ function burst(el,n){const host=el.closest('.obs')||ob;const r=el.getBoundingCli
  for(let i=0;i<n;i++){const p=document.createElement('i');p.className='ob-bst';const a=Math.PI*2*i/n+Math.random()*.6,d=34+Math.random()*30;
   Object.assign(p.style,{left:cx-4+'px',top:cy-4+'px',background:cols[i%cols.length]});p.style.setProperty('--bx',(Math.cos(a)*d).toFixed(1)+'px');p.style.setProperty('--by',(Math.sin(a)*d).toFixed(1)+'px');host.appendChild(p);setTimeout(()=>p.remove(),720);}}
 /* ---- navigation ---- */
-const ORDER=['1','2','3','4','5','6','7','9','10'];let cur='1';const hist=[];
+const ORDER=['2','3','4','5','9','10'];let cur='2';const hist=[];
 const STEP={'3':1,'4':2,'9':3,'10':4};
 function show(id,dir){const from=ob.querySelector('.obs.on'),to=ob.querySelector(`.obs[data-s="${id}"]`);if(!to||from===to)return;
  if(from){from.classList.remove('on','enter','back');from.classList.add('leave');from.classList.toggle('back',dir<0);setTimeout(()=>from.classList.remove('leave','back'),400);}
  to.classList.remove('leave');to.classList.add('on','enter');to.classList.toggle('back',dir<0);setTimeout(()=>to.classList.remove('enter','back'),520);
  ob.style.background=to.dataset.bg;
- const st=STEP[id];ob.classList.toggle('has-top',!!st);
+ const st=STEP[id];ob.classList.toggle('has-top',!!st||id==='5');ob.classList.toggle('back-only',id==='5');
  if(st){const u=ob.querySelector('.ob-track u');u.style.width=(st*75)+'px';const tr=ob.querySelector('.ob-track');tr.classList.remove('go');void tr.offsetWidth;tr.classList.add('go');
   const c=ob.querySelector('.ob-cnt span');if(c.textContent!==String(st)){c.textContent=st;c.classList.remove('roll');void c.offsetWidth;c.classList.add('roll');}}
  if(cur==='5'&&id!=='5')readStop();cur=id;if(id==='5')readStart();if(id==='3')requestAnimationFrame(()=>WH.layout());}
 function go(id){if(id==='home'){finish();return;}hist.push(cur);show(id,1);}
-ob.querySelector('.ob-back').addEventListener('click',()=>{tick(6);let p=hist.pop();while(p==='5'||p==='6'||p==='7'){p=hist.pop();}if(!p)return;show(p,-1);});
+ob.querySelector('.ob-back').addEventListener('click',()=>{tick(6);if(cur==='5'){try{$('#obRead').contentWindow.postMessage({type:'steer-read-cmd',action:'prev'},'*');}catch(e){}return;}let p=hist.pop();while(p==='5'||p==='6'||p==='7'){p=hist.pop();}if(!p)return;show(p,-1);});
 ob.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){e.preventDefault();const t=b.dataset.go;
   if(b.dataset.done){confetti();tick([10,40,16]);setTimeout(()=>go(t),650);return;}
   setTimeout(()=>go(t),b.classList.contains('ob-pri')?140:60);return;}
  const t=e.target.closest('[data-toast]');if(t){tick(6);toastMsg(t.dataset.toast);}});
-/* swipe between the two result pages */
-(function(){let sx=null,sy=0;ob.addEventListener('pointerdown',e=>{if(cur==='6'||cur==='7'){sx=e.clientX;sy=e.clientY;}});
- ob.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy))return;
-  if(dx<0&&cur==='6')go('7');else if(dx>0&&cur==='7'){hist.pop();show('6',-1);}});})();
 /* ---- ON03 calendar chips + wheel ---- */
 const DATA={y:1992,m:1,d:19,cal:'양력',t:'오시',mid:null,unk:false};
 ob.querySelectorAll('#obCal button').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('on'))return;ob.querySelectorAll('#obCal button').forEach(x=>x.classList.toggle('on',x===b));b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');tick(6);DATA.cal=b.dataset.v;selUpd(true);}));
@@ -3293,7 +3246,7 @@ function confetti(){const host=document.createElement('div');host.className='ob-
 /* ---- exit into the app ---- */
 function finish(){tick([8,30,12]);try{home.classList.remove('in');$('#ftab').classList.add('off');}catch(e){}setTimeout(()=>ob.classList.add('gone'),60);setTimeout(()=>{ob.style.display='none';try{homeEnter(false);}catch(e){}},560);}
 window.__ob={show,go,DATA,finish};
-show('1',1);
+show('2',1);
 })();
 /* ---------- navigation ---------- */
 const NAV={mode:'cam',prog:0,t0:0,raf:null,wob:0};

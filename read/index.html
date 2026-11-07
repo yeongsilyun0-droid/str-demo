@@ -2183,36 +2183,58 @@ function resetAll(){readT.splice(0).forEach(clearTimeout);rtT.splice(0).forEach(
   addEventListener('keydown',e=>{if((e.key==='r'||e.key==='R')&&!e.metaKey&&!e.ctrlKey)run();});
   setTimeout(run,300);})();
 </script>
-<!-- ── 웹앱 온보딩 임베드 (?embed=1) : 나의 기운만 폰 화면에 맞춰 보여 줌 ── -->
+<!-- ── 웹앱 온보딩 임베드 (?embed=1) : 나의 기운만 웹앱 온보딩 화면 규격(412 기준)에 맞춰 보여 줌 ──
+     웹앱 1px = 1440/412 ≈ 3.495 스테이지px. 스테이지는 웹앱 y=70부터 시작(그림이 화면 가운데 오도록), 글자·버튼은 그만큼 올려 웹앱 위치와 맞춤. 뒤로가기·상태바는 웹앱 쪽 것을 씀 -->
 <style>
 body.embed{background:#fff!important;overflow:hidden;display:block!important;padding:0!important}
-body.embed #stage{transform-origin:0 0}
 body.embed #dev{display:none!important}
 body.embed #tv,body.embed #vRead{overflow:visible}
+/* 위쪽 색 번짐을 상태바 뒤까지 늘림 */
 body.embed #oGrad{top:-500px;height:1500px;background:linear-gradient(180deg,var(--gr,#fff) 0,var(--gr,#fff) 33%,rgba(255,255,255,0))}
-body.embed #vRead .top .stepLbl{display:none}
-body.embed #oTx .ey{font-size:48px}
-body.embed #oTx .ti{font-size:100px}
-body.embed #oTx .su{font-size:56px}
-body.embed #vRead .who{font-size:48px}
+/* 시뮬레이터 상단(뒤로·단계·날짜)은 숨기고 웹앱 상단 바를 씀 */
+body.embed #vRead .top,body.embed #vRead .who{display:none!important}
+/* 글자 : 웹앱 ob-h 28/1.35 · ob-sub 15 · eyebrow 13 */
+body.embed #oTx{top:125px;left:84px;right:84px}
+body.embed #vRead[data-s="3"] #oTx{top:130px}
+body.embed #oTx .ey{font-size:45px;font-weight:600;letter-spacing:-.02em;margin-bottom:20px;color:#8A8A8F}
+body.embed #oTx .ti{font-size:98px;line-height:1.35;letter-spacing:-.02em}
+body.embed #oTx .su{font-size:52px;line-height:1.5;letter-spacing:-.02em;color:#6E6E73;margin-top:42px}
 body.embed .oc{font-size:42px}
 body.embed .oc g-h{font-size:44px}
 body.embed #oPiv b{font-size:42px}
 body.embed #oArc .z{font-size:38px}
-body.embed #oNext{font-size:54px}
-body.embed #oCta{font-size:58px}
-body.embed #oHint{font-size:42px}
+/* 다음 버튼 없음 : 탭·옆으로 밀어서 넘김 */
+body.embed #oNext{display:none!important}
+/* 캐러셀 점 : 웹앱 ob-dots (top 760, 8px, 켜진 점 28px) */
+body.embed #vRead .prog{top:2411px;gap:28px}
+body.embed #vRead .prog i{width:28px;height:28px;border-radius:14px;background:#E6E6E9}
+body.embed #vRead .prog i.on{width:98px;background:#0A0A0A}
+body.embed #vRead .prog i.d{background:#E6E6E9}
+body.embed #oHint{top:2295px;font-size:45px;color:#A8A8AE;letter-spacing:-.02em}
+/* 마지막 버튼 : 웹앱 ob-pri (left 24 · top 795 · 364×58 · r29 · 17px bold) */
+body.embed #oCta{top:2534px;width:1272px;height:203px;margin-left:-636px;border-radius:101px;font-size:59px;font-weight:700;letter-spacing:-.02em;box-shadow:0 35px 77px -42px rgba(10,10,10,.55)}
+body.embed #oCta svg{display:none}
 </style>
 <script>
 (function(){const q=new URLSearchParams(location.search);if(!q.has('embed'))return;
   document.body.classList.add('embed');document.body.classList.remove('kiosk');
   const post=m=>{try{parent.postMessage(Object.assign({type:'steer-read'},m),'*');}catch(e){}};
-  // 폰 화면 : 가로를 꽉 채우고 세로는 가운데
-  fit=function(){const st=document.getElementById('stage'),s=innerWidth/1440;st.style.transformOrigin='0 0';st.style.transform=`scale(${s})`;st.style.margin=`${Math.max(0,(innerHeight-2560*s)/2)}px 0 0 0`;};
+  // 가로 412 웹앱 화면에 1:1로 맞추고, 스테이지를 화면 높이만큼 늘림(아래 버튼 자리 확보)
+  fit=function(){const st=document.getElementById('stage'),s=innerWidth/1440;
+    st.style.transformOrigin='0 0';st.style.transform=`scale(${s})`;st.style.margin=Math.round(70*innerWidth/412)+'px 0 0 0';st.style.height=Math.max(2560,innerHeight/s-245)+'px';};
   addEventListener('resize',()=>fit());fit();
-  // 나의 기운 밖으로는 안 나감 : 뒤로는 웹앱 시간 입력으로, 대기 화면 타이머는 무시
+  const prev=()=>{if(OS.i>0)oGo(OS.i===2?0:OS.i-1);else post({action:'back'});};
+  // 나의 기운 밖으로는 안 나감 : 첫 장면에서 뒤로 → 웹앱 시간 입력, 대기 화면 타이머 무시
   const _go=go;go=function(v){if(v==='input'){post({action:'back'});return;}if(v!=='read')return;return _go(v);};
-  // "○의 기운 찾으러 가기" → 웹앱 다음 단계로
+  // 웹앱 뒤로가기 버튼
+  addEventListener('message',e=>{const m=e.data;if(m&&m.type==='steer-read-cmd'&&m.action==='prev')prev();});
+  // 옆으로 밀어서 넘기기
+  {const v=document.getElementById('vRead');let sx=null,sy=0;
+   v.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;},true);
+   v.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;
+     if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.2)return;if(OS.ptr)OS.ptr.mv=true;
+     if(dx<0){if(OS.i<OS.n-1)oGo(OS.i+1);}else prev();},true);}
+  // "○의 기운 찾으러 가기" → 웹앱 다음 단계
   document.addEventListener('click',e=>{if(!e.target.closest('#oCta'))return;e.stopImmediatePropagation();e.preventDefault();
     const r=S.saju;post({action:'done',yongsin:r.yongsin.element,yongsinKo:ELX[r.yongsin.element].ko,dayMaster:r.dayMaster.gan,strength:r.strength.label});},true);
   // 입력 받아서 바로 시작
