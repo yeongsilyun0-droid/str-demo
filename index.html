@@ -1770,6 +1770,16 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #onb .ob-bst{position:absolute;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:4;animation:obBurst .7s cubic-bezier(.2,.8,.3,1) forwards}
 @keyframes obBurst{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--bx),var(--by)) scale(.2);opacity:0}}
 /* ON09 */
+/* ON04 자시 : 자정 전/후 */
+#onb .ob-mid{position:absolute;left:24px;top:566px;width:364px;display:flex;gap:8px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .3s,transform .4s cubic-bezier(.2,.9,.2,1)}
+#onb .ob-mid.show{opacity:1;transform:none;pointer-events:auto}
+#onb .ob-mid button{flex:1;height:52px;border:0;border-radius:16px;background:#F2F2F3;font:700 14.5px/17px var(--f-ui);letter-spacing:-.29px;color:#0A0A0A;cursor:pointer;transition:background .25s,color .25s,transform .45s cubic-bezier(.3,1.7,.45,1)}
+#onb .ob-mid button small{display:block;font:400 12px/15px var(--f-ui);color:#6E6E73;margin-top:2px}
+#onb .ob-mid button.on{background:#0A0A0A;color:#fff}#onb .ob-mid button.on small{color:#A8A8AE}
+#onb .ob-mid button:active{transform:scale(.95)}
+/* ON05 나의 기운 : 시뮬레이터 화면을 그대로 띄움 */
+#onb .ob-read{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#fff;opacity:0;transition:opacity .5s ease}
+#onb .ob-read.on{opacity:1}
 #onb .ob-map{position:absolute;left:24px;top:236px;width:364px;height:330px;border-radius:24px;background:#EEF1F2;overflow:hidden}
 #onb .ob-map .mv{position:absolute;inset:-20px;transition:transform .9s cubic-bezier(.3,1.2,.4,1)}
 #onb .ob-map .mv i{position:absolute;background:#fff;margin:20px 0 0 20px}
@@ -1778,6 +1788,8 @@ body.mob .screen{left:0;top:0;border-radius:0}
 @keyframes obFan{from{transform:scale(0) ;opacity:0}to{transform:scale(1);opacity:1}}
 #onb .ob-map .fan path{transform-origin:50% 100%;animation:obFanB 3s ease-in-out 1.3s infinite}
 @keyframes obFanB{0%,100%{fill-opacity:.8}50%{fill-opacity:.62}}
+#onb .ob-map .zone{position:absolute;left:92px;top:170px;width:180px;height:180px;border-radius:50%;background:#FFEB50;opacity:.55;display:none}
+#onb .ob-map.earth .zone{display:block}
 #onb .ob-map .home{position:absolute;left:167px;top:245px;width:30px;height:30px;border-radius:50%;background:#0A0A0A;box-sizing:border-box;border:4px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 #onb .ob-map .pulse{position:absolute;left:167px;top:245px;width:30px;height:30px;border-radius:50%;background:rgba(60,211,251,.45);animation:obPulse 1.8s ease-out infinite}
 @keyframes obPulse{from{transform:scale(1);opacity:1}to{transform:scale(3.2);opacity:0}}
@@ -2291,23 +2303,14 @@ body.mob .screen{left:0;top:0;border-radius:0}
 
       <section class="obs" data-s="4" data-bg="#FFFFFF" data-step="2">
         <h2 class="ob-h"><span>태어난 시간을</span><span>알고 있나요?</span></h2>
-        <p class="ob-sub" style="top:190px">시간이 정확할수록 해석이 섬세해져요.</p>
+        <p class="ob-sub" id="obTSub" style="top:190px">시간이 정확할수록 해석이 섬세해져요.</p>
         <div class="ob-tiles" id="obTiles"><button type="button" class="ob-tile" data-t="자시"><b>자시</b><small>23:30 ~</small></button><button type="button" class="ob-tile" data-t="축시"><b>축시</b><small>01:30 ~</small></button><button type="button" class="ob-tile" data-t="인시"><b>인시</b><small>03:30 ~</small></button><button type="button" class="ob-tile" data-t="묘시"><b>묘시</b><small>05:30 ~</small></button><button type="button" class="ob-tile" data-t="진시"><b>진시</b><small>07:30 ~</small></button><button type="button" class="ob-tile" data-t="사시"><b>사시</b><small>09:30 ~</small></button><button type="button" class="ob-tile on" data-t="오시"><b>오시</b><small>11:30 ~</small></button><button type="button" class="ob-tile" data-t="미시"><b>미시</b><small>13:30 ~</small></button><button type="button" class="ob-tile" data-t="신시"><b>신시</b><small>15:30 ~</small></button><button type="button" class="ob-tile" data-t="유시"><b>유시</b><small>17:30 ~</small></button><button type="button" class="ob-tile" data-t="술시"><b>술시</b><small>19:30 ~</small></button><button type="button" class="ob-tile" data-t="해시"><b>해시</b><small>21:30 ~</small></button></div>
-        <button type="button" class="ob-row" id="obUnk" style="top:580px" role="switch" aria-checked="false"><b>시간을 모르겠어요</b><small>정오(오시)로 가정하고 계산할게요</small><i class="ob-sw"><u></u></i></button>
+        <div class="ob-mid" id="obMid"><button type="button" data-mid="before">자정 전<small>23:30 – 23:59</small></button><button type="button" data-mid="after">자정 후<small>00:00 – 01:29</small></button></div>
+        <button type="button" class="ob-row" id="obUnk" style="top:632px" role="switch" aria-checked="false"><b>시간을 모르겠어요</b><small>시간 없이 세 기둥으로 읽어요</small><i class="ob-sw"><u></u></i></button>
         <button type="button" class="ob-pri" data-go="5"><span>다음</span></button>
       </section>
 
-      <section class="obs ob5" data-s="5" data-bg="#0A0A0A">
-        <span class="ob-stk" data-k="helm" data-c="206,360" data-w="195" data-r="0" id="obHelm"></span>
-        <p class="ob5-h" id="obAnaT">항로를 읽고 있어요</p>
-        <p class="ob5-s" id="obAnaS">1992년 1월 19일 오시 · 양력</p>
-        <i class="ob5-bar"><u id="obAnaBar"></u></i>
-        <span class="ob-stk fl" data-k="wood" data-c="83,202.9" data-w="130.14" data-r="12"></span>
-        <span class="ob-stk fl" data-k="fire" data-c="334,221.3" data-w="95.43" data-r="-10"></span>
-        <span class="ob-stk fl" data-k="earth" data-c="83.2,692.2" data-w="108.38" data-r="-8"></span>
-        <span class="ob-stk fl" data-k="metal" data-c="315.1,738.5" data-w="112.54" data-r="9"></span>
-        <span class="ob-stk fl" data-k="water" data-c="211.8,796" data-w="113.58" data-r="-4"></span>
-      </section>
+      <section class="obs" data-s="5" data-bg="#FFFFFF"><iframe class="ob-read" id="obRead" title="나의 기운" allow="autoplay"></iframe></section>
 
       <section class="obs ob-res" data-s="6" data-bg="#F3FFD6">
         <i class="ob6-bg"></i>
@@ -2342,7 +2345,7 @@ body.mob .screen{left:0;top:0;border-radius:0}
           <i style="left:0;top:90px;width:364px;height:14px"></i><i style="left:0;top:230px;width:364px;height:10px"></i>
           <i style="left:120px;top:0;width:12px;height:330px"></i><i style="left:250px;top:0;width:16px;height:330px"></i><i style="left:0;top:160px;width:200px;height:8px"></i></div>
           <svg class="fan" viewBox="0 0 297 210" width="297" height="210"><path d="M0 61.5C39.4 22.1 92.8 0 148.5 0S257.6 22.1 297 61.5L148.5 210Z" fill="#87E6FF" fill-opacity=".8"/></svg>
-          <i class="pulse"></i><i class="home"></i><b class="n">N</b>
+          <i class="zone"></i><i class="pulse"></i><i class="home"></i><b class="n">N</b>
           <span class="lab">水 · 북쪽 ±45° · 1.5km</span></div>
         <label class="ob-search"><span>⌕</span><input id="obAddr" value="서울 마포구 망원동" autocomplete="off" enterkeyhint="done"></label>
         <button type="button" class="ob-gps" id="obGps"><i>◎</i><span>현재 위치로 설정</span></button>
@@ -3190,11 +3193,11 @@ const STEP={'3':1,'4':2,'9':3,'10':4};
 function show(id,dir){const from=ob.querySelector('.obs.on'),to=ob.querySelector(`.obs[data-s="${id}"]`);if(!to||from===to)return;
  if(from){from.classList.remove('on','enter','back');from.classList.add('leave');from.classList.toggle('back',dir<0);setTimeout(()=>from.classList.remove('leave','back'),400);}
  to.classList.remove('leave');to.classList.add('on','enter');to.classList.toggle('back',dir<0);setTimeout(()=>to.classList.remove('enter','back'),520);
- ob.style.background=to.dataset.bg;ob.classList.toggle('dark',id==='5');
+ ob.style.background=to.dataset.bg;
  const st=STEP[id];ob.classList.toggle('has-top',!!st);
  if(st){const u=ob.querySelector('.ob-track u');u.style.width=(st*75)+'px';const tr=ob.querySelector('.ob-track');tr.classList.remove('go');void tr.offsetWidth;tr.classList.add('go');
   const c=ob.querySelector('.ob-cnt span');if(c.textContent!==String(st)){c.textContent=st;c.classList.remove('roll');void c.offsetWidth;c.classList.add('roll');}}
- cur=id;if(id==='5')analyze();if(id==='3')requestAnimationFrame(()=>WH.layout());}
+ if(cur==='5'&&id!=='5')readStop();cur=id;if(id==='5')readStart();if(id==='3')requestAnimationFrame(()=>WH.layout());}
 function go(id){if(id==='home'){finish();return;}hist.push(cur);show(id,1);}
 ob.querySelector('.ob-back').addEventListener('click',()=>{tick(6);let p=hist.pop();while(p==='5'||p==='6'||p==='7'){p=hist.pop();}if(!p)return;show(p,-1);});
 ob.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){e.preventDefault();const t=b.dataset.go;
@@ -3206,7 +3209,7 @@ ob.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){e.pr
  ob.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy))return;
   if(dx<0&&cur==='6')go('7');else if(dx>0&&cur==='7'){hist.pop();show('6',-1);}});})();
 /* ---- ON03 calendar chips + wheel ---- */
-const DATA={y:1992,m:1,d:19,cal:'양력',t:'오시',unk:false};
+const DATA={y:1992,m:1,d:19,cal:'양력',t:'오시',mid:null,unk:false};
 ob.querySelectorAll('#obCal button').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('on'))return;ob.querySelectorAll('#obCal button').forEach(x=>x.classList.toggle('on',x===b));b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');tick(6);DATA.cal=b.dataset.v;selUpd(true);}));
 const WH=(function(){const cols={};const H=48;
  const range={y:[1940,2012],m:[1,12]};
@@ -3243,21 +3246,34 @@ function selUpd(b){const sel=$('#obSel');$('#obSelT').textContent=`${DATA.y}년 
  $('#obSelW').textContent=DATA.cal==='양력'?WDN[new Date(DATA.y,DATA.m-1,DATA.d).getDay()]:'음력 기준';
  sel.classList.remove('bump');void sel.offsetWidth;sel.classList.add('bump');}
 /* ---- ON04 time tiles + unknown switch ---- */
-ob.querySelectorAll('#obTiles .ob-tile').forEach(t=>t.addEventListener('click',()=>{ob.querySelectorAll('#obTiles .ob-tile').forEach(x=>x.classList.toggle('on',x===t));t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');tick(6);DATA.t=t.dataset.t;}));
+ob.querySelectorAll('#obTiles .ob-tile').forEach(t=>t.addEventListener('click',()=>{ob.querySelectorAll('#obTiles .ob-tile').forEach(x=>x.classList.toggle('on',x===t));t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');tick(6);if(DATA.t!==t.dataset.t)DATA.mid=null;DATA.t=t.dataset.t;midUpd();}));
 function sw(btn,on){btn.classList.toggle('on',on);btn.setAttribute('aria-checked',String(on));tick(on?[6,30,8]:6);}
-$('#obUnk').addEventListener('click',()=>{DATA.unk=!DATA.unk;sw($('#obUnk'),DATA.unk);$('#obTiles').classList.toggle('off',DATA.unk);
- if(DATA.unk){const o=ob.querySelector('#obTiles .ob-tile[data-t="오시"]');ob.querySelectorAll('#obTiles .ob-tile').forEach(x=>x.classList.toggle('on',x===o));DATA.t='오시';}});
-/* ---- ON05 analysing ---- */
-let anaT=[];
-function analyze(){anaT.forEach(clearTimeout);anaT=[];const sc=ob.querySelector('.obs[data-s="5"]');sc.classList.remove('done');
- $('#obAnaS').textContent=`${DATA.y}년 ${DATA.m}월 ${DATA.d}일 ${DATA.unk?'시간 모름':DATA.t} · ${DATA.cal}`;
- const bar=$('#obAnaBar');bar.style.transition='none';bar.style.width='0';void bar.offsetWidth;bar.style.transition='width 3.2s cubic-bezier(.45,.05,.3,1)';bar.style.width='100%';
- const T=$('#obAnaT');const lines=['항로를 읽고 있어요','오행의 균형을 재고 있어요','오늘 필요한 기운을 찾았어요'];
- lines.forEach((l,i)=>anaT.push(setTimeout(()=>{T.textContent=l;T.classList.remove('swap');void T.offsetWidth;T.classList.add('swap');if(i)tick(4);},i*1150)));
- sc.querySelectorAll('.fl').forEach(el=>{const r=el.getBoundingClientRect(),h=$('#obHelm').getBoundingClientRect(),k=sc.getBoundingClientRect().width/412;
-  el.style.setProperty('--tx',((h.left+h.width/2-r.left-r.width/2)/k).toFixed(0)+'px');el.style.setProperty('--ty',((h.top+h.height/2-r.top-r.height/2)/k).toFixed(0)+'px');});
- anaT.push(setTimeout(()=>{sc.classList.add('done');tick([8,30,12]);},3250));
- anaT.push(setTimeout(()=>{if(cur==='5'){hist.push('5');show('6',1);}},3900));}
+$('#obUnk').addEventListener('click',()=>{DATA.unk=!DATA.unk;sw($('#obUnk'),DATA.unk);$('#obTiles').classList.toggle('off',DATA.unk);midUpd();});
+/* 자시는 자정을 넘는 구간이라 전/후를 따로 고름 (일주가 달라짐) */
+function midUpd(){const ask=!DATA.unk&&DATA.t==='자시';$('#obMid').classList.toggle('show',ask);$('#obTSub').textContent=ask?'자시는 자정 전후로 사주 글자가 달라져요.':'시간이 정확할수록 해석이 섬세해져요.';
+ ob.querySelectorAll('#obMid button').forEach(x=>x.classList.toggle('on',x.dataset.mid===DATA.mid));
+ const nx=ob.querySelector('.obs[data-s="4"] .ob-pri');nx.disabled=ask&&!DATA.mid;nx.style.opacity=nx.disabled?.35:'';}
+ob.querySelectorAll('#obMid button').forEach(b=>b.addEventListener('click',()=>{DATA.mid=b.dataset.mid;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');tick(6);midUpd();}));
+midUpd();
+/* ---- ON05 나의 기운 : 시뮬레이터(read/)의 진짜 사주 계산 + 장면. 처음 한 번만 전체, 그다음엔 용신 장면만 ---- */
+const SI_ORDER=['자시','축시','인시','묘시','진시','사시','오시','미시','신시','유시','술시','해시'];
+const CAL_Q={'양력':'solar','음력':'lunar','음력 윤달':'leap'};
+const YS={wood:{h:'木',dir:'동쪽',deg:90,c:'#C2FF0A'},fire:{h:'火',dir:'남쪽',deg:180,c:'#FF8778'},earth:{h:'土',dir:'',deg:null,c:'#FFEB50'},metal:{h:'金',dir:'서쪽',deg:270,c:'#A7A7FF'},water:{h:'水',dir:'북쪽',deg:0,c:'#87E6FF'}};
+const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}},lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+function readStart(){const f=$('#obRead');f.classList.remove('on');
+ const q=new URLSearchParams({embed:'1',y:DATA.y,m:DATA.m,d:DATA.d,cal:CAL_Q[DATA.cal]||'solar',unk:DATA.unk?'1':'0'});
+ if(!DATA.unk){q.set('si',SI_ORDER.indexOf(DATA.t));if(DATA.t==='자시')q.set('mid',DATA.mid||'before');}
+ if(lsGet('steer.readSeen')==='1')q.set('quick','1');
+ f.onload=()=>setTimeout(()=>f.classList.add('on'),60);f.src='read/index.html?'+q;}
+function readStop(){const f=$('#obRead');f.classList.remove('on');setTimeout(()=>{if(cur!=='5')f.src='about:blank';},450);}
+function applyYongsin(el){const y=YS[el]||YS.water;const fan=ob.querySelector('#obMap .fan'),lab=ob.querySelector('#obMap .lab');
+ fan.querySelector('path').setAttribute('fill',y.c);fan.style.display=y.deg==null?'none':'';ob.querySelector('#obMap').classList.toggle('earth',y.deg==null);if(y.deg!=null)fan.style.rotate=y.deg+'deg';
+ lab.textContent=y.deg==null?`${y.h} · 집 가까이 · 1km`:`${y.h} · ${y.dir} ±45° · 1.5km`;}
+addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='steer-read'||cur!=='5')return;
+ if(m.action==='done'){lsSet('steer.readSeen','1');lsSet('steer.yongsin',m.yongsin);applyYongsin(m.yongsin);tick([8,30,12]);go('9');}
+ else if(m.action==='back'){tick(6);const p=hist.pop();show(p||'4',-1);}
+ else if(m.action==='error'){const p=hist.pop();show(p||'3',-1);toastMsg('날짜를 다시 확인해 주세요');}});
+{const y=lsGet('steer.yongsin');if(y)applyYongsin(y);}
 /* ---- ON09 location ---- */
 $('#obGps').addEventListener('click',()=>{const b=$('#obGps');if(b.classList.contains('busy'))return;b.classList.add('busy');tick(6);
  setTimeout(()=>{b.classList.remove('busy');b.classList.add('ok');b.querySelector('span').textContent='현재 위치로 설정했어요';$('#obAddr').value='현재 위치 · 서울 마포구 망원동';
