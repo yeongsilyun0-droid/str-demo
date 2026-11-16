@@ -3779,6 +3779,9 @@ body.embedS .tkt .hd .ey{margin-bottom:40px}
 /* 카드 빛 띠 : overlay 섞기를 3D로 기우는 카드 위에 쓰면 안드로이드 크롬에서 번쩍거려서 폰에선 일반 섞기로 */
 body.embedS .tkt .fc .ho,body.embedS .tkt .bk .ho{mix-blend-mode:normal}
 body.embedS .tkt.in .fc .ho{opacity:.32}
+/* 폰에서 렉·번쩍임 줄이기 : 3D로 도는 카드에 큰 블러 그림자·그림자 필터 애니메이션이 무거움 */
+body.embedS .tkt.live .fc,body.embedS .tkt .bk{box-shadow:0 34px 56px -26px rgba(13,31,51,.3)}
+body.embedS .tkt .fc .stk{filter:drop-shadow(0 6px 8px rgba(13,13,26,.16))!important}
 body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
 /* 웹앱 결과 버튼 (#cta 20,758 · 372×56 / #retry 814 · 44) */
 #emB{position:absolute;left:0;right:0;top:calc(2649px + var(--dyB,0px));z-index:60;opacity:0;transform:translateY(105px);pointer-events:none;transition:opacity .5s,transform .7s cubic-bezier(.2,.9,.2,1)}
@@ -3829,7 +3832,7 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
   const _go=go;let noRise=false;
   go=function(v){if(v==='steer'){$('#emB').classList.remove('on');return _go('steer');}if(v==='route')return cardNow();if(v==='read'||v==='input')post({action:'back'});};
   // 웹앱에서 넘어올 땐 조타키가 이미 가운데 있으므로 떠오르는 동작은 뺌
-  const _ie=introEnd;introEnd=function(){_ie();['#vSteer .top','#ptr','#stGo'].forEach(q=>$(q).getAnimations().forEach(a=>a.cancel()));};
+  const _ie=introEnd;introEnd=function(){_ie();['#vSteer .top','#ptr','#stGo','#stYs'].forEach(q=>$(q).getAnimations().forEach(a=>a.cancel()));};
   const _si=steerIntro;steerIntro=function(fx){const t=_si(fx);if(noRise){$('#helm').getAnimations().forEach(a=>a.cancel());noRise=false;return t-1500;}return t;};
   // 카드 (enterRoute의 F4와 같은 계산 : 이유 문장·걷는 거리)
   function cardNow(){if(MODE==='stay')return stayCard();const r=S.saju,REC=recommend(r,ST.ans,null),P=REC.best;if(!P){toastMsg('추천할 곳을 찾지 못했어요');return;}
@@ -3851,7 +3854,7 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
   const V=document.createElement('div');V.id='emV';V.innerHTML='<button type="button" id="emX">닫기</button>';$('#stage').appendChild(V);
   const tap=el=>{const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height*.4,o={bubbles:true,clientX:x,clientY:y,pointerId:9,isPrimary:true};el.dispatchEvent(new PointerEvent('pointerdown',o));el.dispatchEvent(new PointerEvent('pointerup',o));};
   function viewCard(){const t=$('#tkt');if(!S.rec||!t.classList.contains('live')){post({action:'viewclose'});return;}
-    vMode=true;B.classList.remove('on');V.classList.add('on');const fc=t.querySelector('.fc');if(fc&&fc.style.visibility!=='hidden')setTimeout(()=>tap(t.querySelector('.c3')),380);}
+    undock();t._swayGo&&t._swayGo();vMode=true;B.classList.remove('on');V.classList.add('on');const fc=t.querySelector('.fc');if(fc&&fc.style.visibility!=='hidden')setTimeout(()=>tap(t.querySelector('.c3')),380);}
   $('#emX').addEventListener('click',()=>{vMode=false;V.classList.remove('on');const t=$('#tkt');t._front&&t._front();post({action:'viewclose'});});
   $('#emGo').addEventListener('click',()=>{if(MODE==='stay'){const R=S.stay;if(!R)return;const E=ELX[R.el];
     post({action:'start',rec:{stay:true,name:'집',title:R.title,type:'집',mission:R.mission,body:R.mission,pre:'',el:R.el,h:E.h,ko:E.ko,role:'용신',act:R.act,
@@ -3864,7 +3867,7 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
   // 웹앱 → 시작 · 화면 크기
   {const g=document.createElement('div');g.id='emBg';document.body.prepend(g);}
   // 시작하기 → 홈 카드 : 웹앱이 홈 카드 사진 원 자리(x·y 가운데, d 지름, 이쪽 화면 px)를 주면 카드가 그리로 줄어들며 들어감 → 'docked'
-  function dock(m){const t=$('#tkt'),c=t.querySelector('.c3');if(!c){post({action:'docked'});return;}
+  function dock(m){const t=$('#tkt'),c=t.querySelector('.c3');if(!c){post({action:'docked'});return;}t._swayStop&&t._swayStop();
     document.body.classList.add('emDock');const r=c.getBoundingClientRect(),k=c.offsetWidth/r.width,cx=r.left+r.width/2,cy=r.top+r.height/2,s=Math.max(.05,(+m.d||110)/r.width);
     c.style.transition='none';
     const a=c.animate([{translate:'0 0',scale:1,opacity:1},{translate:`${((m.x-cx)*k*.55).toFixed(1)}px ${((m.y-cy)*k*.55).toFixed(1)}px`,scale:(1+s)/2*.9,opacity:1,offset:.55},{translate:`${((m.x-cx)*k*.95).toFixed(1)}px ${((m.y-cy)*k*.95).toFixed(1)}px`,scale:s*1.15,opacity:1,offset:.86},{translate:`${((m.x-cx)*k).toFixed(1)}px ${((m.y-cy)*k).toFixed(1)}px`,scale:s,opacity:0}],{duration:760,easing:'cubic-bezier(.55,0,.25,1)',fill:'forwards'});
@@ -3983,22 +3986,20 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
   // 흔들어 고르는 동안엔 조타키·칩·Steer를 눌러도 끼어들지 않게
   [wheel,$('#stMeta'),$('#stGo')].forEach(el=>['pointerdown','click'].forEach(ev=>el.addEventListener(ev,e=>{if(SHK){e.stopImmediatePropagation();e.preventDefault();}},true)));
   addEventListener('keydown',e=>{if((e.key==='s'||e.key==='S')&&!e.repeat)shakeRandom();});
-  // 카드 등장 : 화면 밖 아래에서 Y축으로 한 바퀴 반 돌며 휙 올라옴(뒤로 돈 동안엔 뒷면이 보임) → 다 올라오면 안 만져도 3D로 슬쩍슬쩍 기울며 둥둥(만지면 잠깐 멈춤)
-  {const t=$('#tkt');let seen=false,touchT=0;const EO=u=>1-Math.pow(1-u,4);
-   t.addEventListener('pointerdown',()=>{touchT=performance.now();},true);
-   const sway=tok=>{const c=t.querySelector('.c3');if(!c)return;const t0=performance.now();let A=0;
-     const fr=n=>{if(t._ent!==tok)return;const on=view==='route'&&t.classList.contains('in')&&!document.body.classList.contains('emDock')&&n-touchT>2200?1:0;A+=(on-A)*.035;
-       const s=(n-t0)/1000,ry=A*Math.sin(s*1.45)*6,rx=A*Math.sin(s*1.1+1.2)*4,ty=A*Math.sin(s*1.7+.6)*14,ang=Math.hypot(rx,ry);
-       c.style.rotate=ang>.01?`${(rx/ang).toFixed(4)} ${(ry/ang).toFixed(4)} 0 ${ang.toFixed(2)}deg`:'';c.style.translate=A>.002?`0 ${ty.toFixed(1)}px`:'';requestAnimationFrame(fr);};
-     requestAnimationFrame(fr);};
-   const enter=()=>{const c=t.querySelector('.c3'),FC=t.querySelector('.fc'),BK=t.querySelector('.bk');if(!c)return;const tok={};t._ent=tok;const T=1250,t0=performance.now();c.style.transition='none';
-     const fr=n=>{if(t._ent!==tok)return;const u=Math.min(1,(n-t0)/T),e=EO(u),a=-540*(1-e);
-       c.style.translate=`0 ${(2200*(1-e)).toFixed(1)}px`;c.style.rotate=`0.1 1 -0.18 ${a.toFixed(2)}deg`;c.style.scale=(.62+.38*e).toFixed(3);c.style.opacity=Math.min(1,u*4).toFixed(3);
-       const back=Math.cos(a*Math.PI/180)<0;if(FC)FC.style.visibility=back?'hidden':'';if(BK)BK.style.visibility=back?'':'hidden';
-       if(u<1){requestAnimationFrame(fr);return;}
-       c.style.translate=c.style.rotate=c.style.scale=c.style.opacity='';if(FC)FC.style.visibility='';if(BK)BK.style.visibility='hidden';requestAnimationFrame(()=>{c.style.transition='';});sway(tok);};
-     requestAnimationFrame(fr);};
-   new MutationObserver(()=>{const on=t.classList.contains('in');if(on&&!seen){seen=true;enter();}else if(!on&&seen){seen=false;t._ent=null;const c=t.querySelector('.c3');if(c){c.style.rotate=c.style.translate='';}}}).observe(t,{attributes:true,attributeFilter:['class']});}
+  // 카드 등장 : 화면 밖 아래에서 Y축으로 한 바퀴 반 돌며 휙 올라옴 → 다 올라오면 안 만져도 3D로 슬쩍슬쩍 기울며 둥둥
+  //  (폰에서 번쩍이던 것 : 프레임마다 JS로 자세를 쓰고 앞·뒷면 visibility를 바꾸던 것 → WAAPI 한 번(컴포지터)로, 도는 동안은 양면을 backface-visibility로만 가림)
+  {const t=$('#tkt');let seen=false;
+   const sway=tok=>{const c=t.querySelector('.c3');if(!c||t._ent!==tok)return;
+     const R=(x,y,d)=>({rotate:`${x} ${y} 0 ${d}deg`,easing:'ease-in-out'});
+     c._sw=c.animate([R(1,0,0),R(.45,1,5.5),R(-.6,.8,6),R(.3,-1,5),R(-1,-.35,4.5),R(1,0,0)],{duration:9000,iterations:Infinity,delay:400});
+     c._sb=c.animate([{translate:'0 0',easing:'ease-in-out'},{translate:'0 -12px',easing:'ease-in-out'},{translate:'0 0'}],{duration:5200,iterations:Infinity,delay:400});};
+   const stop=()=>{const c=t.querySelector('.c3');if(!c)return;[c._sw,c._sb].forEach(a=>a&&a.cancel());c._sw=c._sb=null;c.style.willChange='';};
+   const enter=()=>{const c=t.querySelector('.c3'),FC=t.querySelector('.fc'),BK=t.querySelector('.bk');if(!c)return;const tok={};t._ent=tok;stop();
+     c.style.transition='none';c.style.willChange='transform';if(FC)FC.style.visibility='';if(BK)BK.style.visibility='';
+     const a=c.animate([{translate:'0 2200px',rotate:'0.1 1 -0.18 -540deg',scale:'.62',opacity:0},{opacity:1,offset:.1},{translate:'0 0',rotate:'0.1 1 -0.18 0deg',scale:'1',opacity:1}],{duration:1250,easing:'cubic-bezier(.16,.84,.3,1)'});
+     a.onfinish=()=>{if(t._ent!==tok)return;if(BK)BK.style.visibility='hidden';requestAnimationFrame(()=>{c.style.transition='';});sway(tok);};};
+   new MutationObserver(()=>{const on=t.classList.contains('in');if(on&&!seen){seen=true;enter();}else if(!on&&seen){seen=false;t._ent=null;stop();}}).observe(t,{attributes:true,attributeFilter:['class']});
+   t._swayStop=stop;t._swayGo=()=>{if(t._ent&&!t.querySelector('.c3')._sw)sway(t._ent);};}
   kick=function(){clearTimeout(idleT);};
   // 대기 화면이 비치지 않게 처음엔 아무 화면도 안 켬
   $$('.view').forEach(v=>v.classList.remove('on'));view='';
