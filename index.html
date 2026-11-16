@@ -483,7 +483,7 @@ body{background:var(--page);color:var(--text);font-family:var(--f-ui);padding-le
 #mapP .msheet p{position:absolute;left:20px;top:56px;margin:0;font:500 12px/15px var(--f-ui);color:#6E6E73}
 /* reason sheet */
 #reason{background:#fff}
-#reason .pin{height:920px;zoom:var(--pk,1)}   /* 화면이 412보다 넓으면(울트라 약 422) 양옆 흰 틈이 남아서 폭에 맞춰 키움 */
+#reason .pin{height:920px}
 #reason .pin>img{position:absolute;left:0}
 #reason .pstatus{background:linear-gradient(rgba(10,10,10,.32),rgba(10,10,10,0));transition:background .25s}
 #reason .pstatus .status{color:#fff;transition:color .25s}#reason .pstatus svg{fill:#fff}#reason .pstatus .batt{background:#fff;color:#0A0A0A}
@@ -1011,7 +1011,7 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #post.show{transform:none}
 .pscroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
 .pscroll::-webkit-scrollbar{display:none}
-.pin{position:relative;width:412px;margin:0 auto}
+.pin{position:relative;width:412px;margin:0 auto;zoom:var(--pk,1)}   /* 화면이 412보다 넓으면(울트라 등 약 422) 양옆 흰 틈이 남아서 폭에 맞춰 키움(--pk = 화면 폭/412) */
 .pin>img{display:block;width:412px}
 .pstatus{position:absolute;left:0;right:0;top:0;height:49px;background:linear-gradient(#fff 70%,rgba(255,255,255,0));z-index:3;pointer-events:none}
 .pstatus .status{position:absolute;left:0;top:0;width:100%}
