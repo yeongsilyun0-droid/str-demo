@@ -3962,15 +3962,43 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
       const n2=bk.querySelector('.nd.n2');if(n2){const wc=n2.querySelector('.wc');if(wc)wc.innerHTML=`<i class="si">${REC.T.ic||''}</i>`;n2.querySelector(':scope > em').textContent='이 행동';n2.querySelector(':scope > b').textContent=REC.T.lb;}}
     const fh=t.querySelector('.fh');if(fh)new MutationObserver(()=>{if(fh.textContent.includes('가는 길과 이곳을'))fh.textContent=fh.textContent.replace('가는 길과 이곳을','이 미션을');}).observe(fh,{childList:true,characterData:true,subtree:true});
     if(t._i){t._i.ty='집';t._i.pl=[REC.M.lb,REC.T.lb,'집에서'];}}
-  // 흔들면 무작위 조합 : 웹앱(맨 위 문서)이 흔들림을 감지해 'shake'로 알려 줌. 작업용으로 S 키도
-  let shCool=0;
-  function shakeRandom(){if(view!=='steer'||holding||PRIMED||B.classList.contains('on'))return;const now=performance.now();if(now<shCool)return;shCool=now+1800;
-    if(ST.intro)introEnd();clearTimeout(ST.nextT);if(opened)closeDial();
+  // 흔들면 무작위 조합 : 질문마다 구슬이 펼쳐지고 조타키가 촤라라락 2바퀴 넘게 돌다 멈춘 자리의 구슬이 뿅 골라짐. 웹앱(맨 위 문서)이 흔들림을 감지해 'shake'로 알려 줌. 작업용으로 S 키도
+  let shCool=0,SHK=false;
+  function shakeRandom(){if(view!=='steer'||holding||PRIMED||SHK||B.classList.contains('on'))return;const now=performance.now();if(now<shCool)return;
+    if(ST.intro)introEnd();clearTimeout(ST.nextT);SHK=true;
     const pick=Q.map((q,i)=>{const ok=q.opts.filter(o=>!(MODE==='go'&&i===0&&ST.lim&&ST.lim.tone==='흐린 날'&&o.k==='180'));return ok[Math.floor(Math.random()*ok.length)].k;});
-    ST.ans=Q.map(()=>null);renderMeta();buzz([18,40,18,40,26]);D.t.rz+=360;
-    pick.forEach((k,i)=>setTimeout(()=>{if(view!=='steer')return;ST.ans[i]=k;renderMeta();const b=$$('#stMeta .ans')[i];if(b)b.animate([{transform:'scale(.7)'},{transform:'scale(1.1)'},{transform:'scale(1)'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'});buzz(10);},260+i*280));
-    setTimeout(()=>{if(view!=='steer')return;gotoStep(3);setTimeout(()=>toastMsg('흔들어서 골랐어요 · 또 흔들면 다시 골라요'),60);},260+pick.length*280+180);}
+    ST.ans=Q.map(()=>null);renderMeta();buzz([18,40,18,40,26]);
+    const EO=u=>1-Math.pow(1-u,4);let i=0;
+    const next=()=>{if(view!=='steer'){SHK=false;return;}
+      if(i>=Q.length){SHK=false;shCool=performance.now()+800;gotoStep(3);setTimeout(()=>toastMsg('흔들어서 골랐어요 · 또 흔들면 다시 골라요'),60);return;}
+      ST.step=i;if(opened)closeDial();buildOrbs();renderSteer(true);openDial(null);
+      const idx=Math.max(0,ITEMS.findIndex(it=>it.k===pick[i])),from=D.t.rz,base=-idx*STEP,to=base+360*Math.ceil((from+760-base)/360),T=900,t0=performance.now()+160;
+      const spin=n=>{if(view!=='steer'){SHK=false;return;}const u=Math.max(0,Math.min(1,(n-t0)/T));D.t.rz=from+(to-from)*EO(u);if(u<1){requestAnimationFrame(spin);return;}
+        setTimeout(()=>{if(view!=='steer'){SHK=false;return;}ST.ans[i]=pick[i];const el=orbEls[idx];if(el){el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
+            el.animate([{scale:'1'},{scale:'1.35'},{scale:'1'}],{duration:380,easing:'cubic-bezier(.3,1.6,.5,1)'});}
+          buzz(18);renderMeta();const b=$$('#stMeta .ans')[i];if(b)b.animate([{transform:'scale(.7)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'});
+          coach(`<b>${ITEMS[idx].o.lb}</b>&nbsp;골랐어요`);setTimeout(()=>{closeDial();i++;setTimeout(next,320);},460);},90);};
+      requestAnimationFrame(spin);};
+    next();}
+  // 흔들어 고르는 동안엔 조타키·칩·Steer를 눌러도 끼어들지 않게
+  [wheel,$('#stMeta'),$('#stGo')].forEach(el=>['pointerdown','click'].forEach(ev=>el.addEventListener(ev,e=>{if(SHK){e.stopImmediatePropagation();e.preventDefault();}},true)));
   addEventListener('keydown',e=>{if((e.key==='s'||e.key==='S')&&!e.repeat)shakeRandom();});
+  // 카드 등장 : 화면 밖 아래에서 Y축으로 한 바퀴 반 돌며 휙 올라옴(뒤로 돈 동안엔 뒷면이 보임) → 다 올라오면 안 만져도 3D로 슬쩍슬쩍 기울며 둥둥(만지면 잠깐 멈춤)
+  {const t=$('#tkt');let seen=false,touchT=0;const EO=u=>1-Math.pow(1-u,4);
+   t.addEventListener('pointerdown',()=>{touchT=performance.now();},true);
+   const sway=tok=>{const c=t.querySelector('.c3');if(!c)return;const t0=performance.now();let A=0;
+     const fr=n=>{if(t._ent!==tok)return;const on=view==='route'&&t.classList.contains('in')&&!document.body.classList.contains('emDock')&&n-touchT>2200?1:0;A+=(on-A)*.035;
+       const s=(n-t0)/1000,ry=A*Math.sin(s*1.45)*6,rx=A*Math.sin(s*1.1+1.2)*4,ty=A*Math.sin(s*1.7+.6)*14,ang=Math.hypot(rx,ry);
+       c.style.rotate=ang>.01?`${(rx/ang).toFixed(4)} ${(ry/ang).toFixed(4)} 0 ${ang.toFixed(2)}deg`:'';c.style.translate=A>.002?`0 ${ty.toFixed(1)}px`:'';requestAnimationFrame(fr);};
+     requestAnimationFrame(fr);};
+   const enter=()=>{const c=t.querySelector('.c3'),FC=t.querySelector('.fc'),BK=t.querySelector('.bk');if(!c)return;const tok={};t._ent=tok;const T=1250,t0=performance.now();c.style.transition='none';
+     const fr=n=>{if(t._ent!==tok)return;const u=Math.min(1,(n-t0)/T),e=EO(u),a=-540*(1-e);
+       c.style.translate=`0 ${(2200*(1-e)).toFixed(1)}px`;c.style.rotate=`0.1 1 -0.18 ${a.toFixed(2)}deg`;c.style.scale=(.62+.38*e).toFixed(3);c.style.opacity=Math.min(1,u*4).toFixed(3);
+       const back=Math.cos(a*Math.PI/180)<0;if(FC)FC.style.visibility=back?'hidden':'';if(BK)BK.style.visibility=back?'':'hidden';
+       if(u<1){requestAnimationFrame(fr);return;}
+       c.style.translate=c.style.rotate=c.style.scale=c.style.opacity='';if(FC)FC.style.visibility='';if(BK)BK.style.visibility='hidden';requestAnimationFrame(()=>{c.style.transition='';});sway(tok);};
+     requestAnimationFrame(fr);};
+   new MutationObserver(()=>{const on=t.classList.contains('in');if(on&&!seen){seen=true;enter();}else if(!on&&seen){seen=false;t._ent=null;const c=t.querySelector('.c3');if(c){c.style.rotate=c.style.translate='';}}}).observe(t,{attributes:true,attributeFilter:['class']});}
   kick=function(){clearTimeout(idleT);};
   // 대기 화면이 비치지 않게 처음엔 아무 화면도 안 켬
   $$('.view').forEach(v=>v.classList.remove('on'));view='';
