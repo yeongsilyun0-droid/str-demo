@@ -2116,15 +2116,15 @@ let hold=null,holdT0=0;const goBtn=$('#stGo'),circ=goBtn.querySelector('circle')
    예전엔 막대 두 개 + SVG 흐림 필터(goo)였는데 가벼운 모드가 흐림을 끄면 막대만 남아 이상해 보였음 → 모양을 직접 계산(필터 없음). 백업 index-v142 */
 const NK={cx:720,yb:1885,cy:2121.5,r:140.5};
 function neck(f){const p=$('#neckP');if(!p)return;f=Math.max(0,Math.min(1,f));if(f<.01){p.setAttribute('d','');return;}
- const{cx,yb,cy,r}=NK,yt=cy-r,gap=yt-yb,io=f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2,J=.64,N=28;const L=[],R=[];
+ const{cx,yb,cy,r}=NK,Z=r/140.5,yt=cy-r,gap=yt-yb,io=f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2,J=.64,N=28;const L=[],R=[];
  const side=(ys,hs)=>{ys.forEach((y,i)=>{L.push([cx-hs[i],y]);R.push([cx+hs[i],y]);});};
  if(io<J){// 이어지기 전 : 위(시트)에서 늘어지는 방울 + 아래(원)에서 솟는 방울, 밑동은 오목하게 퍼짐
   const k=io/J,drip=(y0,dir,len,a,F)=>{const ys=[],hs=[];for(let i=0;i<=N;i++){const s=i/N;ys.push(y0+dir*s*len);hs.push(a*Math.sqrt(Math.max(0,1-s*s))+F*Math.pow(1-s,3));}return [ys,hs];};
-  const top=drip(yb-2,1,gap*.56*Math.pow(k,1.15),16+22*k,34*k),bot=drip(yt+14,-1,14+gap*.48*Math.pow(k,1.15),14+20*k,30*k);
+  const top=drip(yb-2,1,gap*.56*Math.pow(k,1.15),(16+22*k)*Z,34*k*Z),bot=drip(yt+14*Z,-1,14*Z+gap*.48*Math.pow(k,1.15),(14+20*k)*Z,30*k*Z);
   const path=([ys,hs])=>{let d='';ys.forEach((y,i)=>{d+=(i?'L':'M')+(cx-hs[i]).toFixed(1)+' '+y.toFixed(1);});for(let i=ys.length-1;i>=0;i--)d+='L'+(cx+hs[i]).toFixed(1)+' '+ys[i].toFixed(1);return d+'Z';};
   p.setAttribute('d',path(top)+path(bot));return;}
  // 이어진 뒤 : 허리가 굵어지며(살짝 넘쳤다 돌아옴) 한 덩어리 목
- const k=(io-J)/(1-J),bk=1+2.4*Math.pow(k-1,3)+1.4*Math.pow(k-1,2),w=8+26*bk,Ft=26+4*k,Fb=20+4*k,y1=yt+16;
+ const k=(io-J)/(1-J),bk=1+2.4*Math.pow(k-1,3)+1.4*Math.pow(k-1,2),w=(8+26*bk)*Z,Ft=(26+4*k)*Z,Fb=(20+4*k)*Z,y1=yt+16*Z;
  const ys=[],hs=[];for(let i=0;i<=N;i++){const u=i/N;ys.push(yb-2+(y1-yb+2)*u);hs.push(w+Ft*Math.pow(1-u,4)+Fb*Math.pow(u,4));}side(ys,hs);
  let d='';L.forEach((q,i)=>{d+=(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);});for(let i=R.length-1;i>=0;i--)d+='L'+R[i][0].toFixed(1)+' '+R[i][1].toFixed(1);p.setAttribute('d',d+'Z');}
 neck(0);
@@ -3783,8 +3783,9 @@ body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
     const sv=$('#stSheet'),HH=H*K,SB=712*K+dB,CYb=802.6*K+dB,R=53.44*K;sv.setAttribute('height',HH.toFixed(0));sv.setAttribute('viewBox',`0 0 1440 ${HH.toFixed(0)}`);
     sv.querySelectorAll('rect:not([id])').forEach(r=>{r.setAttribute('height',(SB+200).toFixed(1));r.setAttribute('rx',(54.7*K).toFixed(1));});
     sv.querySelectorAll('circle').forEach(c=>{c.setAttribute('cy',CYb.toFixed(1));c.setAttribute('r',R.toFixed(1));});
-    const f=sv.querySelector('filter');f.setAttribute('y',(SB-400).toFixed(0));f.setAttribute('height',(CYb+R-SB+800).toFixed(0));
-    NK.yb=SB;NK.ct=CYb-R;neck(0);};
+    // 목(시트 ↔ Steer 원) : 필터 대신 path(#neckP, 작은 svg #stNeck). 웹앱 좌표에 맞춰 자리·크기를 다시 잡음
+    const nk=$('#stNeck'),nt=SB-40,nh=CYb-SB+80;if(nk){nk.style.top=nt.toFixed(1)+'px';nk.style.height=nh.toFixed(1)+'px';nk.setAttribute('viewBox',`560 ${nt.toFixed(1)} 320 ${nh.toFixed(1)}`);}
+    NK.yb=SB;NK.cy=CYb;NK.r=R;neck(0);};
   addEventListener('resize',()=>fit());fit();
   // 사주 : 웹앱 온보딩과 같은 값(y·m·d·cal·unk·si·mid). 없으면 기본(1998.5.25 사시 · 용신 水 · 희신 金)
   IN.cal=q.get('cal')||'solar';IN.v.y=+(q.get('y')||1998);IN.v.m=+(q.get('m')||5);IN.v.d=+(q.get('d')||25);
