@@ -987,9 +987,9 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #hMode .hm.up{top:calc(197px + var(--dyM,0px));transform-origin:50% 70px}
 #hMode .hm.dn{top:calc(573px + var(--dyM,0px));transform-origin:50% 54px}
 #hMode .hm.dn{gap:8px}
-#hMode .ball{width:64px;height:64px;border-radius:50%;background:#F2F5F7;color:#0A0A0A;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 18px -8px rgba(20,40,70,.45);transition:background .2s,color .2s,transform .25s cubic-bezier(.3,1.4,.5,1)}
+#hMode .ball{width:64px;height:64px;border-radius:50%;background:#F2F5F7;color:#0A0A0A;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px -2px rgba(20,40,70,.16);transition:background .2s,color .2s,transform .25s cubic-bezier(.3,1.4,.5,1)}
 #hMode .ball svg{width:30px;height:30px;display:block}
-#hMode .tg{height:28px;padding:0 12px;border-radius:14px;background:#fff;box-shadow:0 4px 10px -4px rgba(20,40,70,.35);display:inline-flex;align-items:center;font-size:14px;font-weight:600;color:#0A0A0A;white-space:nowrap;letter-spacing:-.01em;transition:background .2s,color .2s}
+#hMode .tg{height:28px;padding:0 12px;border-radius:14px;background:#fff;box-shadow:0 1px 3px rgba(20,40,70,.12);display:inline-flex;align-items:center;font-size:14px;font-weight:600;color:#0A0A0A;white-space:nowrap;letter-spacing:-.01em;transition:background .2s,color .2s}
 #hMode .tg i{font-style:normal;font-weight:500;color:#8C8C91}
 #hMode .tg i::before{content:"·";margin:0 5px}
 #hMode .ar{width:14px;height:14px;color:#8C8C91}
@@ -1982,9 +1982,9 @@ body.mob .screen{left:0;top:0;border-radius:0}
     </div>
     <div id="hModeDim"></div>
     <div id="hMode" aria-hidden="true">
-      <p class="hq"><b>오늘은 어떻게 항해할까요?</b><span>조타키를 위로 밀면 나서기, 아래로 밀면 머물기</span></p>
-      <button type="button" class="hm up" data-m="go" aria-label="밖으로 나서기"><span class="tg">밖으로 나서기<i>장소 추천</i></span><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 19C4.59373 18.0625 3.80546 16.9647 3.39377 15.9482C3.10599 15.2376 2.96211 14.8823 3.2594 14.4411C3.55669 14 4.0378 14 5 14L19 14C19.9622 14 20.4433 14 20.7406 14.4411C21.0379 14.8823 20.894 15.2376 20.6062 15.9482C20.1945 16.9647 19.4063 18.0625 18 19"/><path d="M15.1049 3.67393L17.0016 6.92522C17.7979 8.29018 18.1961 8.97266 17.9047 9.48633C17.6133 10 16.8281 10 15.2575 10L10.326 10C8.32157 10 7.31937 10 7.05561 9.38447C6.79185 8.76895 7.47873 8.03307 8.85247 6.56134L11.8873 3.31006C12.7349 2.40195 13.1587 1.9479 13.6615 2.00476C14.1643 2.06161 14.4778 2.59905 15.1049 3.67393Z"/><path d="M14 14L14 3"/><path d="M2 21.6083C2.79944 22.106 3.83288 22.106 4.65182 21.6083C5.95823 20.7972 7.6546 20.7972 8.9805 21.6083C8.9805 21.6267 9.00001 21.6267 9.00001 21.6267C9.79945 22.1244 10.8524 22.1244 11.6518 21.6267C12.9777 20.8157 14.6741 20.8157 16 21.6267C16.7994 22.1244 17.8329 22.106 18.6518 21.6083C19.6529 20.9868 20.8831 20.8415 22 21.1726"/></svg></span><svg class="ar" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4"/></svg></button>
-      <button type="button" class="hm dn" data-m="stay" aria-label="집에 머물기"><svg class="ar" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l4 4 4-4"/></svg><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17C14.2005 17.6224 13.1502 18 12 18C10.8498 18 9.79952 17.6224 9 17"/><path d="M2.35139 13.2135C1.99837 10.9162 1.82186 9.76763 2.25617 8.74938C2.69047 7.73112 3.65403 7.03443 5.58114 5.64106L7.02099 4.6C9.41829 2.86667 10.6169 2 12 2C13.3831 2 14.5817 2.86667 16.979 4.6L18.4189 5.64106C20.346 7.03443 21.3095 7.73112 21.7438 8.74938C22.1781 9.76763 22.0016 10.9162 21.6486 13.2135L21.3476 15.1724C20.8471 18.4289 20.5969 20.0572 19.429 21.0286C18.2611 22 16.5537 22 13.1388 22H10.8612C7.44633 22 5.73891 22 4.571 21.0286C3.40309 20.0572 3.15287 18.4289 2.65243 15.1724L2.35139 13.2135Z"/></svg></span><span class="tg">집에 머물기<i>집에서 미션</i></span></button>
+      <p class="hq"><b>오늘은 어떻게 개운해볼까요?</b><span>조타키를 누른 채 위로 밀면 나서기, 아래로 밀면 머물기</span></p>
+      <button type="button" class="hm up" data-m="go" aria-label="밖으로 나서기"><span class="tg">밖으로 나서기</span><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 19C4.59373 18.0625 3.80546 16.9647 3.39377 15.9482C3.10599 15.2376 2.96211 14.8823 3.2594 14.4411C3.55669 14 4.0378 14 5 14L19 14C19.9622 14 20.4433 14 20.7406 14.4411C21.0379 14.8823 20.894 15.2376 20.6062 15.9482C20.1945 16.9647 19.4063 18.0625 18 19"/><path d="M15.1049 3.67393L17.0016 6.92522C17.7979 8.29018 18.1961 8.97266 17.9047 9.48633C17.6133 10 16.8281 10 15.2575 10L10.326 10C8.32157 10 7.31937 10 7.05561 9.38447C6.79185 8.76895 7.47873 8.03307 8.85247 6.56134L11.8873 3.31006C12.7349 2.40195 13.1587 1.9479 13.6615 2.00476C14.1643 2.06161 14.4778 2.59905 15.1049 3.67393Z"/><path d="M14 14L14 3"/><path d="M2 21.6083C2.79944 22.106 3.83288 22.106 4.65182 21.6083C5.95823 20.7972 7.6546 20.7972 8.9805 21.6083C8.9805 21.6267 9.00001 21.6267 9.00001 21.6267C9.79945 22.1244 10.8524 22.1244 11.6518 21.6267C12.9777 20.8157 14.6741 20.8157 16 21.6267C16.7994 22.1244 17.8329 22.106 18.6518 21.6083C19.6529 20.9868 20.8831 20.8415 22 21.1726"/></svg></span><svg class="ar" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4"/></svg></button>
+      <button type="button" class="hm dn" data-m="stay" aria-label="집에 머물기"><svg class="ar" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l4 4 4-4"/></svg><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 6.5V21"/><path d="M8.5 10H15.5"/><path d="M4 13.5C4 17.6421 7.58172 21 12 21C16.4183 21 20 17.6421 20 13.5"/><path d="M2.5 15.5L4 13.5L6 15"/><path d="M21.5 15.5L20 13.5L18 15"/></svg></span><span class="tg">집에 머물기</span></button>
     </div>
     <div id="helmGrab"></div>
     <div id="hsheet" aria-hidden="true"><div class="hs-dim"></div><div class="hs-panel" role="dialog" aria-label="오늘의 항해">
@@ -2944,18 +2944,20 @@ function homeLoop(t){try{
  requestAnimationFrame(homeLoop);}
 requestAnimationFrame(homeLoop);
 grab.addEventListener('pointerdown',e=>{if(!S.home||HM.committing)return;grab.setPointerCapture(e.pointerId);const p=local(e);if(HM.mode){HM.mdrag={id:e.pointerId,x0:p.x,y0:p.y,hot:null};grab.classList.add('drag');buzz(6);return;}HM.drag={id:e.pointerId,ox:p.x-206-HM.x,oy:p.y-447-HM.y,x:HM.x,y:HM.y};grab.classList.add('drag');home.classList.add('dragging');buzz(8);});
-grab.addEventListener('pointermove',e=>{if(HM.mdrag&&e.pointerId===HM.mdrag.id){hmMove(e);return;}if(!HM.drag||e.pointerId!==HM.drag.id)return;const p=local(e);HM.drag.x=p.x-206-HM.drag.ox;HM.drag.y=p.y-447-HM.drag.oy;});
-function grabEnd(e){if(HM.mdrag&&e.pointerId===HM.mdrag.id){hmRelease(e);return;}if(!HM.drag||e.pointerId!==HM.drag.id)return;grab.classList.remove('drag');const d=Math.hypot(HM.x,HM.y);HM.drag=null;home.classList.remove('dragging','near');if(d<80)hmOpen();}
+grab.addEventListener('pointermove',e=>{if(HM.mdrag&&e.pointerId===HM.mdrag.id){hmMove(e);return;}if(!HM.drag||e.pointerId!==HM.drag.id)return;const p=local(e);HM.drag.x=p.x-206-HM.drag.ox;HM.drag.y=p.y-447-HM.drag.oy;
+ if(Math.hypot(HM.drag.x,HM.drag.y)<60&&S.home&&!HM.committing){HM.drag=null;home.classList.remove('dragging','near');hmOpen();HM.mdrag={id:e.pointerId,x0:p.x,y0:p.y,hot:null};}});
+function grabEnd(e){askMotion();if(HM.mdrag&&e.pointerId===HM.mdrag.id){hmRelease(e);return;}if(!HM.drag||e.pointerId!==HM.drag.id)return;grab.classList.remove('drag');const d=Math.hypot(HM.x,HM.y);HM.drag=null;home.classList.remove('dragging','near');if(d<80)hmOpen();}
 grab.addEventListener('pointerup',grabEnd);grab.addEventListener('pointercancel',grabEnd);
 /* ---------- 나서기 / 머물기 (2026-11-16) : 가운데로 끌어온 조타키를 위로 밀면 나서기, 아래로 밀면 머물기. 구슬을 눌러도 됨, 빈 곳을 누르면 취소 ---------- */
 function hmHot(k){document.querySelectorAll('#hMode .hm').forEach(b=>b.classList.toggle('hot',b.dataset.m===k));}
-function hmOpen(){if(HM.mode||!S.home||HM.committing)return;HM.mode=true;HM.my=0;HM.mdrag=null;hmHot(null);scrEl.classList.add('hmode');document.getElementById('hMode').setAttribute('aria-hidden','false');buzz([10,30,10]);askMotion();}
+function hmOpen(){if(HM.mode||!S.home||HM.committing)return;HM.mode=true;HM.my=0;HM.mdrag=null;hmHot(null);scrEl.classList.add('hmode');document.getElementById('hMode').setAttribute('aria-hidden','false');buzz([10,30,10]);}
 function hmClose(){HM.mdrag=null;if(!HM.mode)return;HM.mode=false;HM.my=0;hmHot(null);document.getElementById('screen').classList.remove('hmode');document.getElementById('hMode').setAttribute('aria-hidden','true');}
 function hmMove(e){const d=HM.mdrag,p=local(e),dx=p.x-d.x0,dy=p.y-d.y0;
  // 옆으로 크게 끌면 모드 고르기를 접고 그냥 끌기로(제자리로 돌려놓을 수 있게)
  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.4){hmClose();HM.drag={id:e.pointerId,ox:p.x-206-HM.x,oy:p.y-447-HM.y,x:HM.x,y:HM.y};home.classList.add('dragging');return;}
  const R=120,k=dy*.75;HM.my=Math.sign(k)*R*(1-Math.exp(-Math.abs(k)/R));
- const hot=dy<-34?'go':dy>34?'stay':null;if(hot!==d.hot){d.hot=hot;hmHot(hot);if(hot)buzz(8);}}
+ const hot=dy<-34?'go':dy>34?'stay':null;if(hot!==d.hot){d.hot=hot;hmHot(hot);if(hot)buzz(8);}
+ if(Math.abs(dy)>130){HM.mdrag=null;grab.classList.remove('drag');homeCommit(dy<0?'go':'stay');}}
 function hmRelease(e){const d=HM.mdrag,p=local(e),dy=p.y-d.y0;HM.mdrag=null;grab.classList.remove('drag');
  if(dy<-60)homeCommit('go');else if(dy>60)homeCommit('stay');else{HM.my=0;hmHot(null);}}
 document.querySelectorAll('#hMode .hm').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();if(HM.mode)homeCommit(b.dataset.m);}));
@@ -3945,6 +3947,7 @@ addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='steer-combo'||!SE
  else if(m.action==='helmshown'){$('#helm').style.opacity='0';SE.f.classList.remove('under');SE.f.classList.add('on');try{SE.f.focus();}catch(e){}}
  else if(m.action==='back'){seClose();reset();}
  else if(m.action==='start'&&m.rec)dockV2(m.rec);
+ else if(m.action==='docked'&&SE.dk){const f=SE.dk;SE.dk=null;f();}
  else if(m.action==='viewclose'){seClose();if(S.mission&&S.mission.v2)setTimeout(hsOpen,280);}
  else if(m.action==='error'){seClose();reset();toastMsg('생년월일을 다시 확인해 주세요');}});
 setTimeout(seLoad,2500);   // 미리 불러 둠 (조타키를 끌어올 때 바로 뜨게)
@@ -3952,8 +3955,16 @@ setTimeout(seLoad,2500);   // 미리 불러 둠 (조타키를 끌어올 때 바�
 function dockV2(rec){const AK={eat:'Taste',see:'Color',hear:'Action',do:'Action',walk:'Way'};
  const keys=rec.stay?[AK[rec.act]||'Action','Time']:rec.act==='walk'?['Way','Time']:['Place',AK[rec.act]||'Action','Time'];
  S.mission={v2:true,st:0,rec,doneBy:{},doneAt:{},full:rec.mission,lines:v2Lines(rec.mission),keys,dur:rec.time,durKey:'3h',done:0};S.sel.clear();
- home.classList.add('reveal');reset();seClose();
- setTimeout(()=>{const c=$('#cMission'),r=c.querySelector('.ring');c.classList.add('grow');r.classList.remove('go');void r.offsetWidth;r.classList.add('go');buzz([10,24,14]);finishDock(1);},300);}   // 카드가 원으로 퍼지며 나타남(missionDock과 같은 연출, 날아오는 구슬만 없음)
+ const hb=$('#home .hbg');if(hb){hb.style.transition='none';setTimeout(()=>hb.style.transition='',1800);}   // 홈 흰 바탕은 바로 깔림(서서히 나타나면 그 아래 옛 조합 화면이 비쳤음)
+ home.classList.add('reveal');reset();
+ // 카드가 홈 카드 사진 원 자리로 쏙 들어간 뒤(iframe 'docked') 그 자리에서 홈 카드가 원으로 퍼짐. iframe은 그동안 흰 바탕을 걷어 홈이 비침
+ const grow=()=>{seClose();const c=$('#cMission'),r=c.querySelector('.ring');c.classList.add('grow');r.classList.remove('go');void r.offsetWidth;r.classList.add('go');buzz([10,24,14]);finishDock(1);};
+ const go2=()=>{const f=SE.f,c=$('#cMission');if(!f||!SE.on||!c){seClose();setTimeout(grow,300);return;}
+  const fr=f.getBoundingClientRect(),k=fr.width/(parseFloat(scrEl.style.width)||412),cr=c.getBoundingClientRect(),ck=cr.width/c.offsetWidth;
+  const x=(cr.left+330*ck-fr.left)/k,y=(cr.top+82*ck-fr.top)/k;SE.dk=grow;
+  try{f.contentWindow.postMessage({type:'steer-combo-cmd',action:'dock',x,y,d:118},'*');}catch(e){SE.dk=null;grow();return;}
+  setTimeout(()=>{if(SE.dk){const g=SE.dk;SE.dk=null;g();}},1500);};
+ requestAnimationFrame(()=>requestAnimationFrame(go2));}   // 카드가 원으로 퍼지며 나타남(missionDock과 같은 연출, 날아오는 구슬만 없음)
 function hsRowV2(k,m){const R=m.rec,body=String(R.body||R.mission||''),act=(body.split(/에서 |가는 길에 /).slice(1).join(' ')||body).trim();
  const C={Place:[`${R.name} 가기`,'도착하면 <i>자동으로</i> 채워져요','장소','auto'],Way:[body,'도착하면 <i>자동으로</i> 채워져요','방향','auto'],
   Time:R.stay?[`집에서 ${R.time} 머물기`,'시작하고 다 하면 <i>자동으로</i> 채워져요','시간','auto']:[`${R.time} 안에 다녀오기`,`출발하고 ${R.time} 안에 채우면 <i>자동으로</i>`,'시간','auto'],

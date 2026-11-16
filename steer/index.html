@@ -2168,7 +2168,7 @@ function recommend(r,A,home){const M=Q[0].opts.find(o=>o.k===A[0]),T=Q[1].opts.f
   const Y=r.roles.용신.element,H=r.roles.희신&&r.roles.희신.element;const act=T.k;
   const seed=r.today.date+r.pillars.day.hanja+A.join('');
   ORIGIN=home?{lat:home.lat,lng:home.lng}:EWHA;
-  let P2=window.STEER_PLACES2||[],SP=window.STEER_SPACES||[];
+  let P2=(window.STEER_PLACES2||[]).filter(p=>!EXCL.test(p.name)),SP=(window.STEER_SPACES||[]).filter(p=>!EXCL.test(p.name));   // 뺀 곳(BLOCK 등)은 지도 점·곳 수에서도 아예 뺌
   if(home){P2=homePlaces().map(p=>({...p,distance:dist(p,ORIGIN)}));   // 서울 전체 (가까운 곳이 없으면 조금 먼 곳까지)
     SP=P2.filter(p=>p.distance<=2400&&SIT_OK.test(typeKo(p))).map(p=>({...p,why:''}));}
   const bearing=p=>{const dx=(p.lng-ORIGIN.lng)*Math.cos(ORIGIN.lat*Math.PI/180),dy=p.lat-ORIGIN.lat;return (Math.atan2(dx,dy)*180/Math.PI+360)%360;};
@@ -3761,8 +3761,19 @@ body.embedS #vSteer .go svg.rg{inset:-32px;width:344px;height:344px}
 /* 카드 : 항로 화면 요소는 다 숨기고 카드만. 카드는 1.3배(폭 362 · 폰에서 글자가 너무 작지 않게), 머리말 75 · 카드 243~672 (웹앱 단위) */
 body.embedS #vRoute{transform-origin:720px -230px;transform:translateY(var(--dyM,0px)) scale(1.3)}
 body.embedS #vRoute > :not(.tkt){display:none!important}
-body.embedS #vRoute.tk{background:#fff}
-body.embedS .tkt .bg{top:-700px;bottom:-900px}
+body.embedS #vRoute.tk{background:transparent}
+body.embedS .tkt .bg{display:none}   /* 카드 화면 배경은 아래 #emBg(화면 기준 하늘색 그라디언트)로. 예전 .bg는 1.3배·위로 밀려 그라디언트가 화면 밖이었음 */
+body.embedS #tv{background:transparent}
+#emBg{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,#BDEFFF 0,#E3F8FF 150px,#fff 340px);opacity:0;transition:opacity .5s;pointer-events:none}
+body.embedS:has(#vRoute.on.tk) #emBg{opacity:1}
+/* 카드 등장 : 구슬 → 카드 모핑(clip-path)은 안드로이드에서 깜빡여서 폰에선 아래에서 살짝 떠오르며 나타나게(투명도·위치만) */
+body.embedS .tkt .fc.f3{clip-path:none!important;transition:none!important}
+body.embedS .tkt .f3 .mo,body.embedS .tkt .ppc{display:none!important}
+body.embedS .tkt .c3{opacity:0;translate:0 90px;scale:.94;transition:opacity .55s ease .05s,translate .9s cubic-bezier(.2,.9,.2,1),scale .9s cubic-bezier(.2,.9,.2,1)}
+body.embedS .tkt.in .c3{opacity:1;translate:0 0;scale:1}
+/* 시작하기 → 홈 카드로 : 흰 바탕이 걷히고 카드만 홈 카드 사진 원으로 쏙 */
+body.embedS.emDock{background:transparent!important;transition:background-color .35s}
+body.embedS.emDock #emBg,body.embedS.emDock #emB,body.embedS.emDock .tkt .hd,body.embedS.emDock .tkt .fh{opacity:0!important;transition:opacity .25s!important}
 body.embedS .tkt .hd{top:150px}
 body.embedS .tkt .hd .ey{margin-bottom:40px}
 /* 카드 빛 띠 : overlay 섞기를 3D로 기우는 카드 위에 쓰면 안드로이드 크롬에서 번쩍거려서 폰에선 일반 섞기로 */
@@ -3851,7 +3862,17 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
       time:R.M.lb,timeK:R.M.k,what:R.T.lb,with:R.W.lb,withK:R.W.k,det:R.det,min:Math.max(1,Math.round(RT.t/60)),dist:RT.d,real:!!RT.real,ph:PLACE_PH[tk]||'',lat:P.lat,lng:P.lng}});});
   $('#emRe').addEventListener('click',()=>{B.classList.remove('on');_go('steer');setTimeout(()=>introEnd(),30);});
   // 웹앱 → 시작 · 화면 크기
+  {const g=document.createElement('div');g.id='emBg';document.body.prepend(g);}
+  // 시작하기 → 홈 카드 : 웹앱이 홈 카드 사진 원 자리(x·y 가운데, d 지름, 이쪽 화면 px)를 주면 카드가 그리로 줄어들며 들어감 → 'docked'
+  function dock(m){const t=$('#tkt'),c=t.querySelector('.c3');if(!c){post({action:'docked'});return;}
+    document.body.classList.add('emDock');const r=c.getBoundingClientRect(),k=c.offsetWidth/r.width,cx=r.left+r.width/2,cy=r.top+r.height/2,s=Math.max(.05,(+m.d||110)/r.width);
+    c.style.transition='none';
+    const a=c.animate([{translate:'0 0',scale:1,opacity:1},{translate:`${((m.x-cx)*k*.55).toFixed(1)}px ${((m.y-cy)*k*.55).toFixed(1)}px`,scale:(1+s)/2*.9,opacity:1,offset:.55},{translate:`${((m.x-cx)*k*.95).toFixed(1)}px ${((m.y-cy)*k*.95).toFixed(1)}px`,scale:s*1.15,opacity:1,offset:.86},{translate:`${((m.x-cx)*k).toFixed(1)}px ${((m.y-cy)*k).toFixed(1)}px`,scale:s,opacity:0}],{duration:760,easing:'cubic-bezier(.55,0,.25,1)',fill:'forwards'});
+    a.onfinish=()=>post({action:'docked'});setTimeout(()=>post({action:'docked'}),1100);}
+  function undock(){document.body.classList.remove('emDock');const c=document.querySelector('#tkt .c3');if(c){c.getAnimations().forEach(a=>a.cancel());c.style.transition='';}}
   addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='steer-combo-cmd')return;
+    if(m.action==='dock'){dock(m);return;}
+    if(m.action==='prime'||m.action==='enter')undock();
     if(m.action==='cfg'){CFG.W=+m.W||412;CFG.H=+m.H||0;fit();}
     else if(m.action==='view')viewCard();
     else if(m.action==='shake')shakeRandom();
