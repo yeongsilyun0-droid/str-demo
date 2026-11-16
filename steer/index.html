@@ -22,7 +22,8 @@
     font-family:var(--f-ui);color:var(--ink)}
   body.kiosk{padding:0}
   body.kiosk #stage{transform:none!important;width:100vw;height:100vh}
-  button{font-family:inherit;color:inherit;cursor:pointer}
+  *{-webkit-tap-highlight-color:transparent}
+  button{font-family:inherit;color:inherit;cursor:pointer;-webkit-user-select:none;user-select:none;outline:none}
   button:focus-visible{outline:4px solid var(--lime);outline-offset:4px}
 
   /* 화면 전환 */
@@ -1124,7 +1125,6 @@
   <section class="view on" id="vIdle">
     <img class="photo" src="assets/cover-photo.jpg" alt="" onerror="this.hidden=true">
     <div class="cLogo" aria-label="Steer"><svg width="30" height="26" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.1807 7.51041C16.1807 8.14098 16.9215 8.47992 17.3986 8.06762L22.3632 3.77746C22.6397 3.53848 23.0497 3.53849 23.3262 3.77749L23.8622 4.24068C24.202 4.5344 24.202 5.06131 23.8622 5.35502L19.8297 8.84018C19.3136 9.28628 19.6291 10.1338 20.3113 10.1338H29.2636C29.6703 10.1338 30 10.4635 30 10.8702V11.5897C30 11.9965 29.6703 12.3262 29.2636 12.3262H19.5515C18.8693 12.3262 18.5538 13.1737 19.07 13.6198L26.5057 20.0463C26.8456 20.3401 26.8456 20.867 26.5057 21.1607L25.9699 21.6238C25.6933 21.8629 25.2833 21.8628 25.0067 21.6238L17.3987 15.0479C16.9216 14.6355 16.1807 14.9744 16.1807 15.605V24.5536C16.1807 24.9603 15.851 25.29 15.4442 25.29H14.5675C14.1608 25.29 13.8311 24.9603 13.8311 24.5536V15.6343C13.8311 15.0037 13.0901 14.6648 12.613 15.0772L5.06945 21.5974C4.7929 21.8365 4.38288 21.8365 4.10632 21.5975L3.57046 21.1343C3.23061 20.8406 3.23062 20.3137 3.57046 20.02L10.9759 13.6198C11.492 13.1737 11.1765 12.3262 10.4943 12.3262H0.736433C0.329712 12.3262 0 11.9965 0 11.5897V10.8702C0 10.4635 0.329713 10.1338 0.736434 10.1338H9.73463C10.4168 10.1338 10.7323 9.28629 10.2162 8.84019L6.16125 5.33549C5.82142 5.04177 5.82142 4.51487 6.16126 4.22116L6.69718 3.75798C6.97372 3.51897 7.38371 3.51896 7.66026 3.75796L12.6131 8.03824C13.0902 8.45056 13.8311 8.11163 13.8311 7.48105V0.736433C13.8311 0.329712 14.1608 0 14.5675 0H15.4442C15.851 0 16.1807 0.329713 16.1807 0.736434V7.51041Z" fill="#0A0A0A"/></svg></div>
-    <p class="event">졸업전시 2026</p>
     <p class="intro">생년월일시로 내게 필요한 기운을 읽고<br>조타키를 돌려 오늘의 개운 조합을 만들어요.</p>
     <p class="tap">화면을 터치해 시작하기</p>
     <p class="note">약 3분 · 오늘의 카드는 QR로 가져가요</p>
@@ -1146,7 +1146,7 @@
     <h1 class="h1" data-step="date">언제 태어났나요?</h1>
     <p class="lead" data-step="date">사주를 읽기 위해 태어난 날이 필요해요.</p>
     <h1 class="h1" data-step="time">몇 시에 태어났나요?</h1>
-    <p class="lead" data-step="time">시간을 알면 시주까지 함께 읽어요. 모르면 세 기둥으로 읽어요.</p>
+    <p class="lead" data-step="time">시간을 알면 시주까지 함께 읽어요. 모르면 생년월일로만 분석해 드릴게요.</p>
     <div class="chips" id="calChips" data-step="date">
       <button type="button" data-cal="solar" aria-pressed="true">양력</button>
       <button type="button" data-cal="lunar" aria-pressed="false">음력</button>
@@ -1183,9 +1183,8 @@
 
   <!-- 3 조타 -->
   <section class="view" id="vSteer">
-    <div class="ysG" id="stYs"></div><svg id="stSheet" width="1440" height="2560" viewBox="0 0 1440 2560" aria-hidden="true"><defs><filter id="stGoo" filterUnits="userSpaceOnUse" x="0" y="1640" width="1440" height="720"><feGaussianBlur in="SourceGraphic" stdDeviation="18" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 22 -10"/></filter></defs>
-      <g filter="url(#stGoo)"><rect x="0" y="-200" width="1440" height="2085" rx="116" fill="#fff"/><circle cx="720" cy="2121.5" r="140.5" fill="#fff"/><rect id="neckA" fill="#fff"/><rect id="neckB" fill="#fff"/></g>
-      <rect x="0" y="-200" width="1440" height="2085" rx="116" fill="#fff"/><circle cx="720" cy="2121.5" r="140.5" fill="#fff"/></svg><div id="stCover"></div>
+    <div class="ysG" id="stYs"></div><svg id="stSheet" width="1440" height="2560" viewBox="0 0 1440 2560" aria-hidden="true">
+      <rect x="0" y="-200" width="1440" height="2085" rx="116" fill="#fff"/><circle cx="720" cy="2121.5" r="140.5" fill="#fff"/><path id="neckP" fill="#fff"/></svg><div id="stCover"></div>
     <div class="top"><button class="back" id="stBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl">3 / 3 · 오늘의 조합</span></div>
     <div class="live"><div class="cap" id="stCap"></div><p class="txt" id="stTxt"></p></div>
     <div class="meta" id="stMeta"></div>
@@ -1279,7 +1278,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 // ── 가벼운 모드 : 그래픽이 약한 기기(스탠바이미 webOS)용. ?lite=1 로 켬, webOS면 자동, ?lite=0 이면 끔
 //    움직이는 캔버스 해상도를 낮추고(LQ), CSS 흐림·그림자·배경 흐림, 항로 유리 굴절을 끔
 const LITE=(()=>{const q=new URLSearchParams(location.search).get('lite');if(q==='0')return false;if(q==='1')return true;return /web0s|webos|netcast/i.test(navigator.userAgent);})();
-const LQ={og:.65,dial:.6,route:.75,ar:.5};
+const LQ={og:.65,dial:1,route:.75,ar:.5};   // dial : 로딩 글리프는 가는 검정 획이라 낮추면 바로 거칠어 보여서 제 해상도
 if(LITE)document.documentElement.classList.add('lite');
 // ── FPS 표시 : ?perf=1 → 왼쪽 위에 초당 프레임·가장 느린 프레임·지금 화면
 (()=>{if(new URLSearchParams(location.search).get('perf')!=='1')return;const d=document.createElement('div');
@@ -1510,7 +1509,7 @@ const camInv=p=>{const sy=p.y-OC.y+CM.dy,den=CM.c*CM.D+sy*CM.s,Y=den>1?sy*CM.D/d
 /* 원 렌더러 : 캔버스 하나에 평면 원을 그림. 사진은 일간과 용신만, 나머지 오행은 단색 면 */
 const OT={wood:'#ADF41D',fire:'#FF8C7B',earth:'#F7E648',metal:'#BFCCFF',water:'#87E6FF'},OG_GHOST=[.945,.945,.957],OG_GRY=[.886,.886,.898];
 const hexRGB=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255);
-const OG={gl:null,ok:false,ready:false,Q:LITE?LQ.og:1,Qs:LITE?[LQ.og,.5]:[1,.8,.65,.5],slow:0,n:0,tile:{},atlas:null,A:new Float32Array(56),B:new Float32Array(56),C:new Float32Array(56),R:new Float32Array(56),S:new Float32Array(56),u:{},
+const OG={gl:null,ok:false,ready:false,Q:LITE?LQ.og:1,Qs:LITE?[LQ.og,.5,.4]:[1,.8,.65,.5],slow:0,n:0,tile:{},atlas:null,A:new Float32Array(56),B:new Float32Array(56),C:new Float32Array(56),R:new Float32Array(56),S:new Float32Array(56),u:{},
   FS:`precision highp float;
 uniform vec4 uA[14],uB[14],uC[14],uR[14],uS[14];uniform int uN;uniform float uT,uAA;uniform vec4 uCam;uniform sampler2D uTx;varying vec2 vP;
 vec3 sam(float t,vec2 uv,float b){return texture2D(uTx,(vec2(mod(t,3.),floor(t/3.))+clamp(uv,.02,.98))/3.,b).rgb;}
@@ -1520,9 +1519,11 @@ void main(){vec2 sp=vec2(vP.x-720.,vP.y-1250.+uCam.w);float den=uCam.x*uCam.z+sp
  // 오행별로 따로 그림 : 같은 오행끼리만 합쳐지고, 다른 오행은 겹쳐 지나감 (큰 오행이 아래)
  float air=clamp((1230.-vP.y)/555.,0.,1.);
  for(int gi=0;gi<5;gi++){float fg=float(gi),D=1e5,M=1e5,W=0.,G=0.,E=0.,F=0.;vec3 C=vec3(0.);
- for(int i=0;i<14;i++){if(i>=uN)break;vec4 b=uB[i];if(abs(b.y-fg)>.5)continue;vec4 a=uA[i],c=uC[i];float r=a.z;vec2 q=p-a.xy,dr=vec2(cos(b.x),sin(b.x));
-  float al=dot(q,dr),s=1.+b.z;vec2 pe=q-dr*al;q=dr*al/s+pe*s;
-  float tl=length(c.xy);q*=1.+clamp(dot(q,c.xy)/(r*3.),-.5,.5);
+ for(int i=0;i<14;i++){if(i>=uN)break;vec4 b=uB[i];if(abs(b.y-fg)>.5)continue;vec4 a=uA[i],c=uC[i];float r=a.z;vec2 q=p-a.xy;float s=1.+b.z,tl=length(c.xy);
+  // 이 픽셀에서 먼 원은 건너뜀(늘어남·기울기로 가까워질 수 있는 만큼 여유를 둠) — 원마다 삼각함수를 도는 게 약한 GPU에서 무거웠음
+  if(dot(q,q)*pow(min(s,1./s)*(tl>.001?.5:1.),2.)>pow(r+b.w*150.+110.,2.))continue;
+  vec2 dr=vec2(cos(b.x),sin(b.x));float al=dot(q,dr);vec2 pe=q-dr*al;q=dr*al/s+pe*s;
+  q*=1.+clamp(dot(q,c.xy)/(r*3.),-.5,.5);
   if(tl>.001){vec2 tn=c.xy/tl;q+=tn*dot(q,tn)*(1./cos(tl)-1.);}
   float l=length(q),d=l-r,g=b.w,k=g*150.*min(1.,r/70.);
   if(k>1.){float h=max(k-abs(D-d),0.)/k;D=min(D,d)-h*h*k*.25;}else D=min(D,d);M=min(M,d);
@@ -1622,7 +1623,7 @@ function runRead(){readT.splice(0).forEach(clearTimeout);OS.t.splice(0).forEach(
     const mn=Math.min(...q.P.map(p=>ex+p.x-p.r)),mx=Math.max(...q.P.map(p=>ex+p.x+p.r)),ox=mn<150?150-mn:mx>1290?1290-mx:0;
     arr.forEach((s,i)=>{s[key]={x:ex+ox+q.P[i].x,y:ey-14-bottom+q.P[i].y,d:it[i].d};});return {x:ex,y:ey};};
   const isH=s=>s.meta.grp==='비겁'||s.meta.grp==='인성';
-  $('#oGrad').style.setProperty('--gr',OT[Y]);
+  {const g_=$('#oGrad');g_.style.transition='none';g_.classList.remove('on');void g_.offsetWidth;g_.style.setProperty('--gr',OT[Y]);g_.style.transition='';}
   const elH=els.filter(isH),elP=els.filter(s=>!isH(s));
   side(elH,-1,th,'p3');side(elP,1,th,'p3');OS.PV=PV;OS.chipY=PV.y+400*Math.abs(Math.sin(th))+46;
   // 용신 등장 : 어떤 사주든 용신이 커지면 시소가 수평이 됨. 중화·조후·종격은 문구만 다름
@@ -2101,10 +2102,21 @@ function sentence(res,anim){const c=res.chosen;const chip=t=>`<span class="nw"><
 
 // 출발: 0.8초 꾹 (앱의 시간 버튼 홀드와 같은 방식)
 let hold=null,holdT0=0;const goBtn=$('#stGo'),circ=goBtn.querySelector('circle');const CIRC=1131;
-/* 꾹 누르는 동안 흰 시트와 버튼 뒤 흰 원이 서로 뻗어 이어짐(웹앱 neck과 같은 방식, 좌표만 ×2.63) */
-const NK={cx:720,yb:1885,ct:1981};
-function neck(f){const a=$('#neckA'),b=$('#neckB');const e=f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2,ext=e*(NK.ct-NK.yb)*.62,w=47+32*e,x=NK.cx-w/2;
- for(const [el,y,h] of [[a,NK.yb-105,105+ext],[b,NK.ct-ext,105+ext]]){el.setAttribute('x',x.toFixed(1));el.setAttribute('y',y.toFixed(1));el.setAttribute('width',w.toFixed(1));el.setAttribute('height',h.toFixed(1));el.setAttribute('rx',(w/2).toFixed(1));}}
+/* 꾹 누르는 동안 흰 시트와 버튼 뒤 흰 원이 물방울처럼 서로 뻗다가 이어짐.
+   예전엔 막대 두 개 + SVG 흐림 필터(goo)였는데 가벼운 모드가 흐림을 끄면 막대만 남아 이상해 보였음 → 모양을 직접 계산(필터 없음). 백업 index-v142 */
+const NK={cx:720,yb:1885,cy:2121.5,r:140.5};
+function neck(f){const p=$('#neckP');if(!p)return;f=Math.max(0,Math.min(1,f));if(f<.01){p.setAttribute('d','');return;}
+ const{cx,yb,cy,r}=NK,yt=cy-r,gap=yt-yb,io=f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2,J=.64,N=28;const L=[],R=[];
+ const side=(ys,hs)=>{ys.forEach((y,i)=>{L.push([cx-hs[i],y]);R.push([cx+hs[i],y]);});};
+ if(io<J){// 이어지기 전 : 위(시트)에서 늘어지는 방울 + 아래(원)에서 솟는 방울, 밑동은 오목하게 퍼짐
+  const k=io/J,drip=(y0,dir,len,a,F)=>{const ys=[],hs=[];for(let i=0;i<=N;i++){const s=i/N;ys.push(y0+dir*s*len);hs.push(a*Math.sqrt(Math.max(0,1-s*s))+F*Math.pow(1-s,3));}return [ys,hs];};
+  const top=drip(yb-2,1,gap*.56*Math.pow(k,1.15),16+22*k,34*k),bot=drip(yt+14,-1,14+gap*.48*Math.pow(k,1.15),14+20*k,30*k);
+  const path=([ys,hs])=>{let d='';ys.forEach((y,i)=>{d+=(i?'L':'M')+(cx-hs[i]).toFixed(1)+' '+y.toFixed(1);});for(let i=ys.length-1;i>=0;i--)d+='L'+(cx+hs[i]).toFixed(1)+' '+ys[i].toFixed(1);return d+'Z';};
+  p.setAttribute('d',path(top)+path(bot));return;}
+ // 이어진 뒤 : 허리가 굵어지며(살짝 넘쳤다 돌아옴) 한 덩어리 목
+ const k=(io-J)/(1-J),bk=1+2.4*Math.pow(k-1,3)+1.4*Math.pow(k-1,2),w=8+26*bk,Ft=26+4*k,Fb=20+4*k,y1=yt+16;
+ const ys=[],hs=[];for(let i=0;i<=N;i++){const u=i/N;ys.push(yb-2+(y1-yb+2)*u);hs.push(w+Ft*Math.pow(1-u,4)+Fb*Math.pow(u,4));}side(ys,hs);
+ let d='';L.forEach((q,i)=>{d+=(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);});for(let i=R.length-1;i>=0;i--)d+='L'+R[i][0].toFixed(1)+' '+R[i][1].toFixed(1);p.setAttribute('d',d+'Z');}
 neck(0);
 function holdStart(){if(!(ST.ans&&ST.ans.every(v=>v!=null))){goBtn.animate([{transform:'translateX(-50%)'},{transform:'translateX(calc(-50% - 14px))'},{transform:'translateX(calc(-50% + 14px))'},{transform:'translateX(-50%)'}],{duration:300});toastMsg('세 가지 질문에 먼저 답해 주세요');return;}
  holdT0=performance.now();goBtn.classList.add('press');$('#stHint').textContent='계속 누르고 있어요…';
@@ -2442,6 +2454,8 @@ void main(){vec2 S=vec2(vU.x*1440.,(1.-vU.y)*2560.);vec3 c=vec3(0.);float a=0.;
 const RS_DARK=(()=>{const u=new URLSearchParams(location.search),t=u.get('theme'),r=(u.get('route')||'paper').toLowerCase();return t?t==='dark':r==='dust';})();   // 파티클 항로는 기본 다크, &theme=light로 흰 바탕
 const RS={on:false,raf:0,p:0,tg:0,drag:null,wAcc:0,wLock:0,fin:null,done:false};
 function rsStop(){{const b_=$('#rsc');if(b_)b_.classList.remove('fx');const r_=$('#rscRg');if(r_)r_.getContext('2d').clearRect(0,0,1440,2560);}RS.on=false;cancelAnimationFrame(RS.raf);const c=$('#rsc');if(c){c.classList.remove('on');c.style.opacity='';}const v=$('#vRoute');if(v)v.classList.remove('dk');}
+// 지도 단계 자동 넘김 시간(ms) : 첫 단계(지도가 펼쳐지는 시간 포함) · 가운데 단계 · 마지막 구슬. 주소 &auto=0 이면 끔
+const RS_AUTO=new URLSearchParams(location.search).get('auto')==='0'?null:[5200,3600,3800];
 function rsGo(d){if(!RS.on)return;const t=Math.max(0,Math.min(RS.mx||6,Math.round(RS.tg)+d));if(RT_MODE==='paper'&&t!==RS.tg)rsTw(t);else RS.tg=t;}
 // 종이 겹 : 단계 사이를 정해진 시간 동안 쭉(이징) 이동
 function rsTw(t,d){RS.drag=null;RS.tw={a:RS.p,b:t,t0:performance.now(),d:d||Math.max(420,880*Math.min(1,Math.abs(t-RS.p)))};RS.tg=t;}
@@ -2477,7 +2491,7 @@ function scrollRun(REC,HM,onFin){
   const sts=[...$$('#rscTx .st')],pgs=(()=>{$('#rscPg').innerHTML='<i></i>'.repeat(TX.length);return [...$$('#rscPg i')];})(),hn=$('#rscHn'),hnT=hn.querySelector('span'),gr=box.querySelector('.gr');
   gr.style.setProperty('--gr',OT[REC.el]);
   hn.querySelector('svg').innerHTML=RT_MODE==='paper'?'<path d="M14 10l6-6M15 4h5v5M10 14l-6 6M4 15v5h5"/>':'<path d="M6 15l6-6 6 6"/>';
-  const LS=TX.length-1;Object.assign(RS,{on:true,p:0,tg:0,tw:null,pin:null,snap:null,drag:null,wAcc:0,done:false,fin:onFin,mx:LS+1});if(RT_MODE==='paper')glassFX();
+  const LS=TX.length-1;Object.assign(RS,{on:true,p:0,tg:0,it:0,tw:null,pin:null,snap:null,drag:null,wAcc:0,done:false,fin:onFin,mx:LS+1});if(RT_MODE==='paper')glassFX();
   box.classList.toggle('dk',RS_DARK);box.classList.toggle('pp',RT_MODE==='paper');box.style.transition='none';box.style.opacity=1;box.classList.add('on');
   let last=performance.now(),pgOn=-1;
   // 원판 깔때기 : 조건마다 원판 한 장, 남은 점만 아래 판으로 내려감. 위로 밀면 카메라가 층을 따라 내려감
@@ -2822,13 +2836,15 @@ function scrollRun(REC,HM,onFin){
     // 글
     sts.forEach((el,i)=>{const d=p-i,o=cl(1-Math.abs(d)*2.4);el.style.opacity=o;el.style.transform=`translateY(${(-d*90).toFixed(1)}px)`;el.style.visibility=o>0?'visible':'hidden';});
     gr.style.opacity=DK?0:(cl(p)*.6).toFixed(3);
-    const on=Math.max(0,Math.min(LS,Math.round(p)));if(on!==pgOn){pgOn=on;pgs.forEach((x,i)=>x.classList.toggle('on',i===on));hnT.textContent=RT_MODE==='paper'?(on>=LS?'벌리거나 밀어서 자세히 보기':'벌리거나 위로 밀어 보세요'):on>=5?'위로 밀어 자세히 보기':'위로 밀어 보세요';}
+    const on=Math.max(0,Math.min(LS,Math.round(p)));if(on!==pgOn){pgOn=on;pgs.forEach((x,i)=>x.classList.toggle('on',i===on));hnT.textContent=RT_MODE==='paper'?(RS_AUTO?(on>=LS?'잠시 뒤 길을 보여 드려요':'잠시 뒤 다음으로 넘어가요 · 밀어서 바로 넘길 수 있어요'):on>=LS?'벌리거나 밀어서 자세히 보기':'벌리거나 위로 밀어 보세요'):on>=5?'위로 밀어 자세히 보기':'위로 밀어 보세요';}
     hn.style.opacity=RS.drag?0:(1-cl(Math.abs(p-Math.round(p))*6)).toFixed(2);
     box.style.opacity=(1-ez(cl(p-LS))).toFixed(3);};
   const frame=now=>{if(!RS.on||view!=='route'){RS.on=false;return;}const dt=Math.min(64,now-last);last=now;
     if(RS.tw){const w=RS.tw,k=Math.max(0,Math.min(1,(now-w.t0)/w.d)),e=k<.5?8*k**4:1-8*(1-k)**4;RS.p=w.a+(w.b-w.a)*e;if(k>=1){RS.tw=null;RS.p=RS.tg=w.b;}}
     else if(!RS.drag){const df=RS.tg-RS.p;RS.p=Math.abs(df)<.0008?RS.tg:RS.p+df*(1-Math.exp(-dt/120));}
     if(RS.p>LS+.12&&RS.fin){const f=RS.fin;RS.fin=null;f();}
+    // 자동 넘김(종이 항로) : 손대지 않고 읽을 시간이 지나면 다음 단계로. 만지는 동안·넘어가는 동안엔 시간을 다시 셈. 손으로 넘기는 것도 그대로 됨
+    if(RT_MODE==='paper'&&RS_AUTO){if(!RS.it||RS.tw||RS.drag||RS.pin||Math.abs(RS.p-RS.tg)>.001)RS.it=now;else if(RS.tg<=LS&&now-RS.it>(RS.tg<1?RS_AUTO[0]:RS.tg>=LS?RS_AUTO[2]:RS_AUTO[1])){RS.it=now;rsGo(1);}}
     draw(RS.p);
     if(RS.p>=LS+.999&&RS.tg>=LS+1){RS.on=false;box.classList.remove('on');box.style.transition='';return;}
     RS.raf=requestAnimationFrame(frame);};
@@ -2922,7 +2938,7 @@ function dialRun(REC,HM,onDone){dialStop();const dl=$('#dial'),sv=$('#dlSv'),CX=
 const GLM=(()=>{const CUT={wood:[138,256,375],fire:[60,205,258],earth:[55,158,200,338],metal:[108,211,262,390],water:[137,226,270,368]};
   let GCY=1280,gl=null,cv=null,pr,U={},VW=0,VH=0,TX={},PCS=[],aspect=.45,raf=0,on=false,el='water',ink=[10/255,10/255,10/255],I;
   const AMT=.7,JIG=.3,SPD=1,D=Math.PI/180,F=640,GW=600;
-  function init(){cv=$('#dlGL');gl=cv.getContext('webgl2',{premultipliedAlpha:true,antialias:!LITE});if(!gl)return false;
+  function init(){cv=$('#dlGL');gl=cv.getContext('webgl2',{premultipliedAlpha:true,antialias:true});if(!gl)return false;
     const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o;};pr=gl.createProgram();
     gl.attachShader(pr,sh(gl.VERTEX_SHADER,`#version 300 es
 in vec2 a;uniform vec4 P1;uniform vec4 P2;uniform vec2 R;uniform vec3 G;uniform float A;uniform vec3 Z;uniform float B;uniform vec4 L;uniform vec2 O;out vec2 v;
@@ -3123,7 +3139,7 @@ const PLACE_PH={'로스터리 카페':'cafe','카페':'cafe','책방':'book','�
  '과일 가게':'fruit','국밥집':'gukbap','낙지·쭈꾸미집':'nakji','냉면집':'naengmyeon','떡볶이집':'tteokbokki','떡집':'tteok','마라탕집':'mala','빙수집':'bingsu','샐러드 가게':'salad',
  '짬뽕집':'jjamppong','호떡집':'hotteok','간식 가게':'hotteok','횟집':'sashimi','한옥':'hanok','한옥 스테이':'hanok','서예원':'calli','셀프 사진관':'booth','화방':'artsup','공연장':'concert','소극장':'concert','영화관':'cinema','산·숲길':'forest'};
 // ── 창문 나침반 AR : 화면 뒤쪽이 보는 방위(AR_HEAD, 설치 후 맞춤 · 주소 &head=)와 장소 방위의 차이로 길을 휨. 뒤 카메라 = 이름에 back·rear·usb·external이 든 장치(주소 &arcam=이름 일부), 없으면 예시 사진
-const AR_ON=new URLSearchParams(location.search).get('ar')!=='0',AR_HEAD=+(new URLSearchParams(location.search).get('head')||160),AR_HOLD=5500;
+const AR_ON=new URLSearchParams(location.search).get('ar')!=='0',AR_HEAD=+(new URLSearchParams(location.search).get('head')||180),AR_HOLD=5500;
 const AR_COL={metal:'#97A5FF'};   // AR 길 색 : 금은 OT(#BFCCFF)가 너무 옅어 바닥 위에서 회색처럼 보여 채도를 조금 올림
 const ARW=(()=>{let A=null,st=null,T=[];const D8=['북','북동','동','남동','남','남서','서','북서'];
   // 뒤 카메라 : ① 주소 &arcam= 이름 일부 ② 아이패드·폰은 facingMode 'environment'(후면, 앞 카메라 권한을 먼저 묻지 않음) ③ 이름에 back·rear·후면·usb·external이 든 장치(스탠바이미 USB 카메라). 다 안 되면 예시 사진
