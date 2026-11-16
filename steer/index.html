@@ -3884,18 +3884,25 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
     else if(m.action==='helmshow'){
       // 홈 조타키가 가운데 왔을 때 : 같은 자세로 이쪽 조타키를 보이고 알림
       D.c.rx=(m.rx!=null?+m.rx:D.t.rx);D.c.ry=+m.ry||0;D.t.ry=0;D.c.rz=+m.rz||0;D.t.rz=0;D.v.rz=0;
+      if(m.rise)helmRise(m.rise);
       try{if(typeof renderHelm==='function')renderHelm();}catch(e){}   // 새 자세로 바로 다시 그린 뒤 보임(직전 각도가 한 프레임 비치지 않게)
       document.body.classList.remove('embNoHelm');post({action:'helmshown'});}   // 바로 알림 : 웹앱 쪽 조타키가 같은 프레임에 꺼지게
     else if(m.action==='enter'&&PRIMED){
       // 대기 화면에서 바로 이어짐 : 화면은 그대로 두고 안내 글자만 시작
       PRIMED=false;vMode=false;document.body.classList.remove('embPrime');if(m.hideHelm)document.body.classList.add('embNoHelm');
       setMode(m.mode);ST.intro=true;$('#vSteer').classList.add('intro');renderSteer(false);noRise=true;const t=steerIntro(false);clearTimeout(ST.introT);ST.introT=setTimeout(introEnd,t+900);B.classList.remove('on');}
-    else if(m.action==='enter'){if(!S.saju){post({action:'error'});return;}PRIMED=false;document.body.classList.remove('embPrime','embNoHelm');noRise=!!m.noRise;vMode=false;V.classList.remove('on');
+    else if(m.action==='enter'&&!PRIMED&&m.rise&&S.saju){setTimeout(()=>helmRise(m.rise),0);handleEnter(m);}
+    else if(m.action==='enter'){handleEnter(m);}
+  });
+  function handleEnter(m){{if(!S.saju){post({action:'error'});return;}PRIMED=false;document.body.classList.remove('embPrime','embNoHelm');noRise=!!m.noRise;vMode=false;V.classList.remove('on');
       // 이전 화면(카드 등)이 비치지 않게 바로 끄고 시작
       $$('.view').forEach(v=>{v.style.transition='none';v.classList.remove('on');});requestAnimationFrame(()=>requestAnimationFrame(()=>$$('.view').forEach(v=>v.style.transition='')));
       const nr=noRise;applyMode(m.mode);_go('steer');B.classList.remove('on');
       // 웹앱 홈 조타키에서 이어질 땐 기울기도 처음부터 제자리(기울며 움직이면 갈아 끼울 때 두 겹으로 보임)
-      if(nr){D.c.rx=(m.rx!=null?+m.rx:D.t.rx);D.c.ry=+m.ry||0;D.t.ry=0;D.c.rz=+m.rz||0;D.t.rz=0;D.v.rz=0;}}});
+      if(nr){D.c.rx=(m.rx!=null?+m.rx:D.t.rx);D.c.ry=+m.ry||0;D.t.ry=0;D.c.rz=+m.rz||0;D.t.rz=0;D.v.rz=0;}}}
+  // 홈에서 민 방향의 반대쪽에서 조타키가 휙 들어옴(위로 밀었으면 아래에서 위로), 돌면서 자리 잡음
+  function helmRise(r){const H=$('#helm');D.c.rz+=r>0?-140:140;D.v.rz=0;H.getAnimations().forEach(a=>a.cancel());
+    H.animate([{translate:`0 ${r>0?640:-640}px`,scale:'.84'},{translate:'0 0',scale:'1'}],{duration:640,easing:'cubic-bezier(.16,.84,.28,1)'});}
   // ── 나서기 / 머물기 (2026-11-16) : 웹앱 홈에서 조타키를 가운데로 끌어온 뒤 위로 밀면 나서기(얼마나·무엇을·누구와 → 장소 카드),
   //    아래로 밀면 머물기(얼마나·무엇을 → 집에서 하는 미션 카드). 질문 배열 Q를 모드에 맞게 갈아 끼움(웹앱 사본에서만, 시뮬레이터 본체는 그대로)
   const Q_GO=Q.slice();

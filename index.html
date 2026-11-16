@@ -977,17 +977,18 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #screen.home #helmGrab{display:block}
 #helmGrab{display:none}
 /* 나서기 / 머물기 고르기 : 가운데로 끌어온 조타키 위·아래에 조합 화면 구슬 모양 두 개 (아이콘 Hugeicons sailboat-offshore · home-01) */
-#hModeDim{position:absolute;inset:0;z-index:12;display:none}
-#screen.hmode #hModeDim{display:block}
+#hModeDim{position:absolute;inset:0;z-index:12;background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15);opacity:0;pointer-events:none;transition:opacity .35s}
+#screen.hmode #hModeDim{opacity:1;pointer-events:auto}
+#screen.hmode #helm{z-index:13}
 #hMode{position:absolute;inset:0;z-index:14;pointer-events:none}
 #hMode .hq{position:absolute;left:calc(var(--dx,0px));width:412px;top:64px;height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0;transform:translateY(-10px);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.2,1)}
 #hMode .hq .cp{font-size:14px;font-weight:500;line-height:18px;color:rgba(10,10,10,.45)}
 #hMode .hq .tt{margin:0;font-size:30px;font-weight:700;line-height:1.35;letter-spacing:-.02em;color:#0A0A0A}
 #hMode .hq .g{color:rgba(10,10,10,.3)}
-#hMode .hh{position:absolute;left:calc(var(--dx,0px));width:412px;top:calc(706px + var(--dyB,0px));margin:0;text-align:center;font-size:16px;font-weight:500;line-height:22px;color:rgba(10,10,10,.6);letter-spacing:-.01em;opacity:0;transition:opacity .35s}
+#hMode .hh{position:absolute;left:calc(var(--dx,0px));width:412px;top:calc(812px + var(--dyB,0px));margin:0;text-align:center;font-size:16px;font-weight:500;line-height:22px;color:rgba(10,10,10,.6);letter-spacing:-.01em;opacity:0;transition:opacity .35s}
 #hMode .hm{position:absolute;left:calc(106px + var(--dx,0px));width:200px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:inherit;opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .3s,transform .45s cubic-bezier(.3,1.4,.5,1)}
-#hMode .hm.up{top:calc(212px + var(--dyM,0px));transform-origin:50% 68px}
-#hMode .hm.dn{top:calc(582px + var(--dyM,0px));transform-origin:50% 32px}
+#hMode .hm.up{top:calc(232px + var(--dyM,0px));transform-origin:50% 67px}
+#hMode .hm.dn{top:calc(563px + var(--dyM,0px));transform-origin:50% 32px}
 #hMode .ball{width:64px;height:64px;border-radius:50%;background:#F2F5F7;color:#0A0A0A;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px -2px rgba(20,40,70,.16);transition:background .2s,color .2s,transform .25s cubic-bezier(.3,1.4,.5,1)}
 #hMode .ball svg{width:28px;height:28px;display:block}
 #hMode .tg{height:27px;padding:0 12px;border-radius:14px;background:#fff;box-shadow:0 1px 3px rgba(20,40,70,.12);display:inline-flex;align-items:center;font-size:14px;font-weight:700;color:#0A0A0A;white-space:nowrap;letter-spacing:-.01em;transition:background .2s,color .2s}
@@ -998,7 +999,8 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #screen.hmode #hMode .hh{opacity:1}
 #screen.hmode #hMode .hm{opacity:1;transform:none;pointer-events:auto}
 #screen.hmode #hMode .hm.dn{transition-delay:.06s}
-#screen.hmode #home .scrub-up,#screen.hmode #home .scrub-down,#screen.hmode #home #hGreet{opacity:0!important;transition:opacity .25s}
+#screen.hmode #home .scrub-up,#screen.hmode #home .scrub-down,#screen.hmode #home #hGreet{opacity:1!important;transform:none!important;transition:opacity .35s,transform .35s}
+#screen.hmode #home #hTab{opacity:0!important}
 #screen.hmode #home #drop,#screen.hmode #home #hHint{opacity:0!important}
 /* 머물기 미션 시트 : 장소 사진 대신 용신 색 + 흰 글리프 */
 #hsV2 .pl.stay{background-color:var(--ys,#87E6FF)}
@@ -2899,7 +2901,7 @@ addEventListener('resize',fit);window.visualViewport&&visualViewport.addEventLis
 const home=$('#home'),grab=$('#helmGrab'),scrEl=$('#screen');
 const HM={x:0,y:0,vx:0,vy:0,k:1,vk:0,drag:null,committing:false};
 function homePos(){return {x:382-206,y:404+DYB-447-DYM};}   // helm offset (from dial centre) in mid-group space
-function homeEnter(first){hmClose();if(typeof applyMission==='function')applyMission();HM.t.forEach(clearTimeout);HM.t=[];HM.step=3;S.home=true;$('#coach').classList.add('hide');HM.committing=false;HM.drag=null;scrEl.classList.add('home');scrEl.classList.remove('entering');
+function homeEnter(first){hmClose();HM.fly=null;if(typeof SE!=='undefined'&&SE)SE.rise=0;if(typeof applyMission==='function')applyMission();HM.t.forEach(clearTimeout);HM.t=[];HM.step=3;S.home=true;$('#coach').classList.add('hide');HM.committing=false;HM.drag=null;scrEl.classList.add('home');scrEl.classList.remove('entering');
  home.classList.remove('exit','gone','dragging','near');home.style.setProperty('--hp',0);
  if(first){const p=homePos();HM.x=p.x+160;HM.y=p.y;}HM.k=1;
  $('#helm').classList.remove('fly','gone');
@@ -2911,24 +2913,27 @@ HM.t=[];HM.step=0;
 function hcStep1(){if(HM.step>=1)return;HM.step=1;scrEl.classList.add('entering');S.home=false;S.t.rx=POSES[pose];}
 function hcStep2(){if(HM.step>=2)return;hcStep1();HM.step=2;home.classList.add('gone');home.classList.remove('in');scrEl.classList.remove('home');$('#helm').style.transform='';HM.committing=false;syncTab();coachDefault();}
 function hcStep3(){if(HM.step>=3)return;hcStep2();HM.step=3;scrEl.classList.remove('entering');}
-function homeCommit(mode){if(HM.committing||!S.home)return;mode=mode==='stay'?'stay':'go';SE.mode=mode;hmHot(mode);setTimeout(hmClose,320);HM.committing=true;HM.step=0;HM.commitT=performance.now();syncTab();HM.drag=null;home.classList.remove('dragging','near');home.classList.add('exit');buzz([12,30,18]);
+function homeCommit(mode){if(HM.committing||!S.home)return;mode=mode==='stay'?'stay':'go';SE.mode=mode;
+ const fly=HM.mode?(mode==='stay'?1:-1):0;HM.fly=fly?{dir:fly,t0:performance.now(),y0:HM.y||0}:null;SE.rise=-fly;   // 위로 밀면(나서기) 위로 나가고 조합 화면에선 아래에서 올라옴, 머물기는 반대
+ hmHot(mode);setTimeout(hmClose,320);HM.committing=true;HM.step=0;HM.commitT=performance.now();syncTab();HM.drag=null;home.classList.remove('dragging','near');home.classList.add('exit');buzz([12,30,18]);
  S.t.rz=Math.round(S.c.rz/45)*45;S.t.ry=0;S.t.rx=POSES[pose];   // 조합 화면 조타키와 같은 자세로 맞춰 둠(갈아 끼울 때 각도가 튀지 않게)
  scrEl.classList.add('stemb');HM.t.forEach(clearTimeout);
  if(SE.primed&&SE.ready&&SE.f){
   // 홈 아래 깔린 조합 화면이 그대로 드러남 : 안내 글자 시작, 조타키는 홈 조타키가 가운데 올 때 같은 자세로 넘겨받음
   SE.primed=false;SE.on=true;try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'enter',noRise:true,primed:true,hideHelm:true,mode},'*');}catch(e){}
   HM.t=[setTimeout(hcStep1,380),setTimeout(hcStep2,1000),setTimeout(hcStep3,1400),setTimeout(()=>{const rz=((S.c.rz+22.5)%45+45)%45-22.5;   // 45° 단위에서 벗어난 만큼만 넘김(iframe 조타키 0° = 홈 조타키 45° 단위)
-   try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'helmshow',rz,rx:S.c.rx,ry:S.c.ry},'*');}catch(e){}},430)];}
+   try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'helmshow',rz,rx:S.c.rx,ry:S.c.ry,rise:SE.rise||0},'*');}catch(e){}},HM.fly?210:430)];}
  else{seLoad();HM.t=[setTimeout(hcStep1,380),setTimeout(hcStep2,1000),setTimeout(hcStep3,1400),setTimeout(seOpen,380)];}}
 function homeLoop(t){try{
  if(HM.committing&&performance.now()-HM.commitT>1700)hcStep3();
  if(S.home&&!HM.committing&&home.classList.contains('exit'))homeEnter(false);
  if((S.home||HM.committing)&&!coverOn()){const s=t/1000;const p=homePos();let tx,ty,tk;
-  if(HM.committing){tx=0;ty=0;tk=1;}
-  else if(HM.mode){tx=0;ty=HM.my||0;tk=1;}
+  if(HM.committing&&HM.fly){const u=Math.min(1,(performance.now()-HM.fly.t0)/360),e=u*u;tx=0;ty=HM.fly.y0+HM.fly.dir*e*(780+Math.abs(DYB));tk=.8;}
+  else if(HM.committing){tx=0;ty=0;tk=1;}
+  else if(HM.mode){tx=0;ty=HM.my||0;tk=.8;}
   else if(HM.drag){tx=HM.drag.x;ty=HM.drag.y;tk=1.06;}
   else{tx=p.x+Math.sin(s*1.1)*10;ty=p.y+Math.sin(s*.8+1)*4;tk=1;}
-  const st=HM.committing?.12:HM.mode?.3:HM.drag?.35:.08;HM.x+=(tx-HM.x)*st;HM.y+=(ty-HM.y)*st;HM.k+=(tk-HM.k)*.15;
+  const st=HM.committing?.12:HM.mode?.3:HM.drag?.35:.08;HM.x+=(tx-HM.x)*st;if(HM.committing&&HM.fly)HM.y=ty;else HM.y+=(ty-HM.y)*st;HM.k+=(tk-HM.k)*.15;
   if(S.home&&!HM.committing){S.t.rx=0;S.t.ry=0;S.t.rz=55+Math.sin(s*1.1)*12+(HM.drag?HM.x*.25:0)+(HM.mode?(HM.my||0)*.35:0);}
   if(!HM.committing||Math.hypot(HM.x,HM.y)>.5)$('#helm').style.transform=`translate(${HM.x.toFixed(2)}px,${HM.y.toFixed(2)}px) scale(${HM.k.toFixed(3)})`;
   grab.style.transform=`translate(${(206+DX+HM.x).toFixed(1)}px,${(447+DYM+HM.y).toFixed(1)}px)`;
@@ -3926,12 +3931,13 @@ function finishDock(anim){const c=$('#cMission'),hh=$('#hHelm');
    '오늘의 항해 시작하기' → 결과(rec)를 받아 홈 '오늘의 항해' 카드와 미션 시트(장소 · 하기 · 시간 칸)로 */
 var SE={f:null,ready:false,src:'',on:false,pending:null};   // var : fit()이 먼저 부를 수 있음
 const seLS=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
-function seSrc(){const b=seLS('steer.birth');return 'steer/index.html?embed=steer&ar=0'+(b?'&'+b:'');}
+const SE_V='20261117a';   // 조합 화면 사본을 고치면 올릴 것(폰 캐시에 남은 옛 사본 방지)
+function seSrc(){const b=seLS('steer.birth');return 'steer/index.html?embed=steer&ar=0&v='+SE_V+(b?'&'+b:'');}
 function seCfg(){if(!SE||!SE.f||!SE.f.contentWindow)return;const scr=$('#screen');try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'cfg',W:parseFloat(scr.style.width)||412,H:parseFloat(scr.style.height)||891},'*');}catch(e){}}
 function seLoad(){const src=seSrc();SE.f=SE.f||$('#stEmb');if(SE.src===src)return;SE.ready=false;SE.src=src;SE.f.src=src;}
 function seOpen(){if(SE.on)return;seLoad();SE.on=true;scrEl.classList.add('stemb');
  const run=()=>{seCfg();const rz=((S.c.rz+22.5)%45+45)%45-22.5;   // 홈 조타키의 지금 자세를 넘겨 같은 자세에서 이어지게
-  try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'enter',noRise:true,rz,rx:S.c.rx,ry:S.c.ry,mode:SE.mode||'go'},'*');}catch(e){}
+  try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'enter',noRise:true,rz,rx:S.c.rx,ry:S.c.ry,mode:SE.mode||'go',rise:SE.rise||0},'*');}catch(e){}
   requestAnimationFrame(()=>{SE.f.classList.add('on');try{SE.f.focus();}catch(e){}});};
  if(SE.ready)run();else SE.pending=run;}
 function sePrime(){if(!SE.ready||SE.on||!SE.f)return;seCfg();try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'prime'},'*');}catch(e){}}
