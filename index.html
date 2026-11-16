@@ -3349,7 +3349,8 @@ function confetti(){const host=document.createElement('div');host.className='ob-
 /* ---- exit into the app ---- */
 function finish(){tick([8,30,12]);try{home.classList.remove('in');$('#ftab').classList.add('off');}catch(e){}setTimeout(()=>ob.classList.add('gone'),60);setTimeout(()=>{ob.style.display='none';try{homeEnter(false);}catch(e){}},560);}
 window.__ob={show,go,DATA,finish};
-show('2',1);
+// 온보딩은 흐름에서 뺌(2026-11-16) : 스플래시 → 바로 홈. 사주는 저장된 steer.birth, 없으면 기본(1998.5.25 사시). 되살리려면 아래 대신 show('2',1)
+ob.style.display='none';ob.classList.add('gone');setTimeout(()=>{try{homeEnter(false);}catch(e){}},0);
 })();
 /* ---------- navigation ---------- */
 const NAV={mode:'cam',prog:0,t0:0,raf:null,wob:0};
