@@ -2334,7 +2334,7 @@ body.mob .screen{left:0;top:0;border-radius:0}
       <span class="batt">69</span></span></div></div>
       <div class="pnav"><button type="button" class="bk" id="rsBack" aria-label="뒤로"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="#0A0A0A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="mr" data-act="toast" data-msg="장소 옵션은 준비 중이에요" aria-label="더보기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M11.9961 12H12.0051M18 12H18.009M6 12H6.00898" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       <div class="cfade"></div>
-      <button type="button" id="rsGo">데일리 스티어 시작하기</button>
+      <button type="button" id="rsGo">길안내 시작하기</button>
     </div>
     <div class="page" id="nav" aria-label="길안내">
       <div class="vp">
@@ -3070,7 +3070,7 @@ gdScroll.addEventListener('scroll',()=>{const y=gdScroll.scrollTop;gdEl.classLis
  const dy=y-gdLast;if(dy>4&&y>80)fab.classList.add('hide');else if(dy<-4||y<40)fab.classList.remove('hide');gdLast=y;},{passive:true});
 /* gd FAB is bound by the xfab helper below */
 /* "오늘 미션 하러 가기": leave the community and start steering from home */
-function goMission(){buzz([10,30,14]);closeCommunity();tabTo(0);setTimeout(()=>{if(S.home&&!HM.committing)homeCommit();},420);}
+function goMission(){buzz([10,30,14]);closeCommunity();tabTo(0);setTimeout(()=>{if(S.home&&!HM.committing){HM.x=0;HM.y=0;hmOpen();}},420);}
 $('#chCta').addEventListener('click',goMission);
 document.querySelectorAll('.pnav [data-act=toast]').forEach(b=>b.addEventListener('click',()=>toastMsg(b.dataset.msg)));
 
@@ -3303,7 +3303,7 @@ function tcFill(){const m=S.mission;if(!m)return;const now=new Date();m.doneAt=m
  $('#tbNo').textContent='No.'+String(40+((now.getDate()*7)%60)).padStart(3,'0');}
 function tcOpen(mode){TC.mode=mode;tcFill();const now=new Date();
  {const m=S.mission,n=m.keys.length,d=Object.keys(m.doneBy||{}).length,NW=['','한','두','세','네','다섯','여섯'];
-  $('#tcTitle').textContent='오늘의 카드가 만들어졌어요';$('#tcSub').textContent=`${m.v2?(m.rec.stay?'집에서 오늘의 항해를 마쳤어요':'오늘의 한 곳을 다녀왔어요'):d===n?NW[n]+' 칸을 모두 채웠어요':n+'칸 중 '+d+'칸을 채웠어요'} · ${now.getMonth()+1}월 ${now.getDate()}일 ${WD[now.getDay()]}요일`;}
+  $('#tcTitle').textContent='오늘의 카드가 만들어졌어요';$('#tcSub').textContent=`${m.v2?(m.rec.stay?'집에서 항해를 마쳤어요':'오늘의 한 곳을 다녀왔어요'):d===n?NW[n]+' 칸을 모두 채웠어요':n+'칸 중 '+d+'칸을 채웠어요'} · ${now.getMonth()+1}월 ${now.getDate()}일 ${WD[now.getDay()]}요일`;}
  tcSetFlip(false,true);TC.rx=TC.ry=TC.tx=TC.ty=0;TC.base=null;
  TC.el.classList.remove('landed');TC.el.classList.add('show');buzz(mode==='new'?[10,40,18]:8);syncTab();
  const rise=$('#tcRise');rise.getAnimations().forEach(a=>a.cancel());
@@ -3582,7 +3582,8 @@ function camStop(){if(CAM.st){CAM.st.getTracks().forEach(t=>t.stop());CAM.st=nul
 function camGrab(){const V=$('#camV');const vw=V.videoWidth,vh=V.videoHeight;if(!CAM.st||!vw)return null;
  const ar=5/4;let w=vw,h=vw*ar;if(h>vh){h=vh;w=vh/ar;}const W=900,H=1125,c=document.createElement('canvas');c.width=W;c.height=H;
  c.getContext('2d').drawImage(V,(vw-w)/2,(vh-h)/2,w,h,0,0,W,H);try{return c.toDataURL('image/jpeg',.88);}catch(e){return null;}}
-function openCam(from){SV.from=from;camEl.classList.remove('alb');camEl.classList.add('show');buzz(8);syncTab();CAM.want=true;camStart();}
+const misTag=()=>{const m=S.mission;if(!m)return '';if(m.v2&&m.rec)return `${m.rec.h} · ${m.rec.stay?(m.rec.title||'집에서'):m.rec.name}`;return '水 · 북쪽 수변에서 쉬다 오기';};
+function openCam(from){SV.from=from;{const m=S.mission,h=$('#camHint');const tg=$('#cam .ctag');if(tg)tg.textContent=misTag();if(h)h.textContent=m&&m.rec&&m.rec.stay?'집에서 한 것을 한 장 남겨요':'오늘 걸은 곳을 한 장 남겨요';}camEl.classList.remove('alb');camEl.classList.add('show');buzz(8);syncTab();CAM.want=true;camStart();}
 function closeCam(){camEl.classList.remove('show','alb');syncTab();CAM.want=false;camStop();}
 document.addEventListener('visibilitychange',()=>{if(!CAM.want)return;if(document.hidden)camStop();else camStart();});
 $('#dnGo').replaceWith($('#dnGo').cloneNode(true));
@@ -3602,7 +3603,7 @@ function pickMedia(m){if(SV.from==='mission'&&SV.mk){const k=SV.mk;if(S.mission&
  if(changed&&SV.stk.length&&SV.m)toastMsg('스티커는 그대로 옮겨 붙였어요');
  SV.m=m;openShare(null,false);setTimeout(()=>closeCam(),420);}
 /* share sheet */
-function openShare(_,keep){shareEl.classList.remove('drop');paintShare(!keep&&SV.stk.length>0);shareEl.classList.add('show');syncTab();}
+function openShare(_,keep){{const st=$('#share .stag');if(st)st.innerHTML=`${misTag()} · <em>완료</em>`;}shareEl.classList.remove('drop');paintShare(!keep&&SV.stk.length>0);shareEl.classList.add('show');syncTab();}
 function hideShare(){shareEl.classList.add('drop');setTimeout(()=>{shareEl.classList.remove('show','drop');syncTab();},380);}
 $('#shDim').addEventListener('click',()=>{$('#shIn').blur();hideShare();});
 $('#shRt').addEventListener('click',()=>{buzz(6);$('#shIn').blur();hideShare();setTimeout(()=>openCam('share'),120);});
@@ -4006,7 +4007,7 @@ function finishDock(anim){const c=$('#cMission'),hh=$('#hHelm');
    '오늘의 항해 시작하기' → 결과(rec)를 받아 홈 '오늘의 항해' 카드와 미션 시트(장소 · 하기 · 시간 칸)로 */
 var SE={f:null,ready:false,src:'',on:false,pending:null};   // var : fit()이 먼저 부를 수 있음
 const seLS=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
-const SE_V='20261117d';   // 조합 화면 사본을 고치면 올릴 것(폰 캐시에 남은 옛 사본 방지)
+const SE_V='20261117e';   // 조합 화면 사본을 고치면 올릴 것(폰 캐시에 남은 옛 사본 방지)
 function seSrc(){const b=seLS('steer.birth');return 'steer/index.html?embed=steer&ar=0&v='+SE_V+(b?'&'+b:'');}
 function seCfg(){if(!SE||!SE.f||!SE.f.contentWindow)return;const scr=$('#screen');try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'cfg',W:parseFloat(scr.style.width)||412,H:parseFloat(scr.style.height)||891},'*');}catch(e){}}
 function seLoad(){const src=seSrc();SE.f=SE.f||$('#stEmb');if(SE.src===src)return;SE.ready=false;SE.src=src;SE.f.src=src;}

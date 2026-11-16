@@ -3983,6 +3983,8 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
           coach(`<b>${ITEMS[idx].o.lb}</b>&nbsp;골랐어요`);setTimeout(()=>{closeDial();i++;setTimeout(next,320);},460);},90);};
       requestAnimationFrame(spin);};
     next();}
+  // 폰 렉 줄이기 : 구슬 글자(구 표면 데칼)는 yaw가 바뀔 때마다 240×240 픽셀을 JS로 다시 그림 → 흔들어 돌 땐 정면 고정, 손으로 돌릴 땐 0.1rad(약 6°) 단위로만
+  const _dsp=drawSph;drawSph=function(cv,k,t,yaw,hex){return _dsp(cv,k,t,SHK?0:Math.round(yaw/.1)*.1,hex);};
   // 흔들어 고르는 동안엔 조타키·칩·Steer를 눌러도 끼어들지 않게
   [wheel,$('#stMeta'),$('#stGo')].forEach(el=>['pointerdown','click'].forEach(ev=>el.addEventListener(ev,e=>{if(SHK){e.stopImmediatePropagation();e.preventDefault();}},true)));
   addEventListener('keydown',e=>{if((e.key==='s'||e.key==='S')&&!e.repeat)shakeRandom();});
