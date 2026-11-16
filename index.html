@@ -507,7 +507,7 @@ body{background:var(--page);color:var(--text);font-family:var(--f-ui);padding-le
 /* navigation (AR / compass) */
 #nav{background:#0A0A0A;z-index:19;transform:translateY(100%);opacity:1;transition:transform .55s cubic-bezier(.2,.9,.2,1),visibility 0s .55s}
 #nav.show{transform:none;transition:transform .55s cubic-bezier(.2,.9,.2,1),visibility 0s}
-#nav .vp{position:absolute;left:50%;margin-left:-206px;top:0;width:412px;height:100%;overflow:hidden}
+#nav .vp{position:absolute;left:0;top:0;width:412px;height:100%;overflow:hidden;zoom:var(--pk,1)}   /* 화면이 412보다 넓으면(울트라 등 약 420) 양옆 검은 틈이 남아서 폭에 맞춰 키움(--pk = 화면 폭/412, .pin과 같은 방식) */
 #nav .camv{position:absolute;inset:0;transition:opacity .5s}
 #nav .camv img.ph{position:absolute;left:0;top:0;width:412px;height:891px;transform:scale(1.06);transition:transform 12s linear}
 #nav.show .camv img.ph{transform:scale(1)}
