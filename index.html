@@ -980,28 +980,22 @@ body.mob .screen{left:0;top:0;border-radius:0}
 #hModeDim{position:absolute;inset:0;z-index:12;display:none}
 #screen.hmode #hModeDim{display:block}
 #hMode{position:absolute;inset:0;z-index:14;pointer-events:none}
-#hMode .hq{position:absolute;left:calc(var(--dx,0px));width:412px;top:92px;margin:0;text-align:center;opacity:0;transform:translateY(-10px);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.2,1)}
-#hMode .hq b{display:block;font-size:22px;font-weight:700;line-height:30px;letter-spacing:-.02em;color:#0A0A0A}
-#hMode .hq span{display:block;margin-top:6px;font-size:14px;line-height:20px;color:#8C8C91;letter-spacing:-.01em}
-#hMode .hm{position:absolute;left:calc(106px + var(--dx,0px));width:200px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:inherit;opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .3s,transform .45s cubic-bezier(.3,1.4,.5,1)}
-#hMode .hm.up{top:calc(197px + var(--dyM,0px));transform-origin:50% 70px}
-#hMode .hm.dn{top:calc(573px + var(--dyM,0px));transform-origin:50% 54px}
-#hMode .hm.dn{gap:8px}
+#hMode .hq{position:absolute;left:calc(var(--dx,0px));width:412px;top:64px;height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0;transform:translateY(-10px);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.2,1)}
+#hMode .hq .cp{font-size:14px;font-weight:500;line-height:18px;color:rgba(10,10,10,.45)}
+#hMode .hq .tt{margin:0;font-size:30px;font-weight:700;line-height:1.35;letter-spacing:-.02em;color:#0A0A0A}
+#hMode .hq .g{color:rgba(10,10,10,.3)}
+#hMode .hh{position:absolute;left:calc(var(--dx,0px));width:412px;top:calc(706px + var(--dyB,0px));margin:0;text-align:center;font-size:16px;font-weight:500;line-height:22px;color:rgba(10,10,10,.6);letter-spacing:-.01em;opacity:0;transition:opacity .35s}
+#hMode .hm{position:absolute;left:calc(106px + var(--dx,0px));width:200px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:inherit;opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .3s,transform .45s cubic-bezier(.3,1.4,.5,1)}
+#hMode .hm.up{top:calc(212px + var(--dyM,0px));transform-origin:50% 68px}
+#hMode .hm.dn{top:calc(582px + var(--dyM,0px));transform-origin:50% 32px}
 #hMode .ball{width:64px;height:64px;border-radius:50%;background:#F2F5F7;color:#0A0A0A;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px -2px rgba(20,40,70,.16);transition:background .2s,color .2s,transform .25s cubic-bezier(.3,1.4,.5,1)}
-#hMode .ball svg{width:30px;height:30px;display:block}
-#hMode .tg{height:28px;padding:0 12px;border-radius:14px;background:#fff;box-shadow:0 1px 3px rgba(20,40,70,.12);display:inline-flex;align-items:center;font-size:14px;font-weight:600;color:#0A0A0A;white-space:nowrap;letter-spacing:-.01em;transition:background .2s,color .2s}
-#hMode .tg i{font-style:normal;font-weight:500;color:#8C8C91}
-#hMode .tg i::before{content:"·";margin:0 5px}
-#hMode .ar{width:14px;height:14px;color:#8C8C91}
-#hMode .up .ar{animation:hmUp 1.4s ease-in-out infinite}
-#hMode .dn .ar{animation:hmDn 1.4s ease-in-out infinite}
-@keyframes hmUp{50%{transform:translateY(-4px)}}
-@keyframes hmDn{50%{transform:translateY(4px)}}
+#hMode .ball svg{width:28px;height:28px;display:block}
+#hMode .tg{height:27px;padding:0 12px;border-radius:14px;background:#fff;box-shadow:0 1px 3px rgba(20,40,70,.12);display:inline-flex;align-items:center;font-size:14px;font-weight:700;color:#0A0A0A;white-space:nowrap;letter-spacing:-.01em;transition:background .2s,color .2s}
 #hMode .hm.hot .ball{background:#0A0A0A;color:#fff;transform:scale(1.12)}
 #hMode .hm.hot .tg{background:#0A0A0A;color:#fff}
-#hMode .hm.hot .tg i{color:#CACACE}
 #hMode .hm:active .ball{transform:scale(.94)}
 #screen.hmode #hMode .hq{opacity:1;transform:none}
+#screen.hmode #hMode .hh{opacity:1}
 #screen.hmode #hMode .hm{opacity:1;transform:none;pointer-events:auto}
 #screen.hmode #hMode .hm.dn{transition-delay:.06s}
 #screen.hmode #home .scrub-up,#screen.hmode #home .scrub-down,#screen.hmode #home #hGreet{opacity:0!important;transition:opacity .25s}
@@ -1982,9 +1976,10 @@ body.mob .screen{left:0;top:0;border-radius:0}
     </div>
     <div id="hModeDim"></div>
     <div id="hMode" aria-hidden="true">
-      <p class="hq"><b>오늘은 어떻게 개운해볼까요?</b><span>조타키를 누른 채 위로 밀면 나서기, 아래로 밀면 머물기</span></p>
-      <button type="button" class="hm up" data-m="go" aria-label="밖으로 나서기"><span class="tg">밖으로 나서기</span><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 19C4.59373 18.0625 3.80546 16.9647 3.39377 15.9482C3.10599 15.2376 2.96211 14.8823 3.2594 14.4411C3.55669 14 4.0378 14 5 14L19 14C19.9622 14 20.4433 14 20.7406 14.4411C21.0379 14.8823 20.894 15.2376 20.6062 15.9482C20.1945 16.9647 19.4063 18.0625 18 19"/><path d="M15.1049 3.67393L17.0016 6.92522C17.7979 8.29018 18.1961 8.97266 17.9047 9.48633C17.6133 10 16.8281 10 15.2575 10L10.326 10C8.32157 10 7.31937 10 7.05561 9.38447C6.79185 8.76895 7.47873 8.03307 8.85247 6.56134L11.8873 3.31006C12.7349 2.40195 13.1587 1.9479 13.6615 2.00476C14.1643 2.06161 14.4778 2.59905 15.1049 3.67393Z"/><path d="M14 14L14 3"/><path d="M2 21.6083C2.79944 22.106 3.83288 22.106 4.65182 21.6083C5.95823 20.7972 7.6546 20.7972 8.9805 21.6083C8.9805 21.6267 9.00001 21.6267 9.00001 21.6267C9.79945 22.1244 10.8524 22.1244 11.6518 21.6267C12.9777 20.8157 14.6741 20.8157 16 21.6267C16.7994 22.1244 17.8329 22.106 18.6518 21.6083C19.6529 20.9868 20.8831 20.8415 22 21.1726"/></svg></span><svg class="ar" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4"/></svg></button>
-      <button type="button" class="hm dn" data-m="stay" aria-label="집에 머물기"><svg class="ar" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l4 4 4-4"/></svg><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 6.5V21"/><path d="M8.5 10H15.5"/><path d="M4 13.5C4 17.6421 7.58172 21 12 21C16.4183 21 20 17.6421 20 13.5"/><path d="M2.5 15.5L4 13.5L6 15"/><path d="M21.5 15.5L20 13.5L18 15"/></svg></span><span class="tg">집에 머물기</span></button>
+      <div class="hq"><span class="cp">오늘의 항해</span><p class="tt"><span class="g">오늘은 어떻게</span><br>개운해볼까요?</p></div>
+      <p class="hh">조타키를 누른 채 위로 밀면 나서기, 아래로 밀면 머물기</p>
+      <button type="button" class="hm up" data-m="go" aria-label="밖으로 나서기"><span class="tg">밖으로 나서기</span><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 19C4.59373 18.0625 3.80546 16.9647 3.39377 15.9482C3.10599 15.2376 2.96211 14.8823 3.2594 14.4411C3.55669 14 4.0378 14 5 14L19 14C19.9622 14 20.4433 14 20.7406 14.4411C21.0379 14.8823 20.894 15.2376 20.6062 15.9482C20.1945 16.9647 19.4063 18.0625 18 19"/><path d="M15.1049 3.67393L17.0016 6.92522C17.7979 8.29018 18.1961 8.97266 17.9047 9.48633C17.6133 10 16.8281 10 15.2575 10L10.326 10C8.32157 10 7.31937 10 7.05561 9.38447C6.79185 8.76895 7.47873 8.03307 8.85247 6.56134L11.8873 3.31006C12.7349 2.40195 13.1587 1.9479 13.6615 2.00476C14.1643 2.06161 14.4778 2.59905 15.1049 3.67393Z"/><path d="M14 14L14 3"/><path d="M2 21.6083C2.79944 22.106 3.83288 22.106 4.65182 21.6083C5.95823 20.7972 7.6546 20.7972 8.9805 21.6083C8.9805 21.6267 9.00001 21.6267 9.00001 21.6267C9.79945 22.1244 10.8524 22.1244 11.6518 21.6267C12.9777 20.8157 14.6741 20.8157 16 21.6267C16.7994 22.1244 17.8329 22.106 18.6518 21.6083C19.6529 20.9868 20.8831 20.8415 22 21.1726"/></svg></span></button>
+      <button type="button" class="hm dn" data-m="stay" aria-label="집에 머물기"><span class="ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 6.5V21"/><path d="M8.5 10H15.5"/><path d="M4 13.5C4 17.6421 7.58172 21 12 21C16.4183 21 20 17.6421 20 13.5"/><path d="M2.5 15.5L4 13.5L6 15"/><path d="M21.5 15.5L20 13.5L18 15"/></svg></span><span class="tg">집에 머물기</span></button>
     </div>
     <div id="helmGrab"></div>
     <div id="hsheet" aria-hidden="true"><div class="hs-dim"></div><div class="hs-panel" role="dialog" aria-label="오늘의 항해">
