@@ -3901,8 +3901,10 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
       // 웹앱 홈 조타키에서 이어질 땐 기울기도 처음부터 제자리(기울며 움직이면 갈아 끼울 때 두 겹으로 보임)
       if(nr){D.c.rx=(m.rx!=null?+m.rx:D.t.rx);D.c.ry=+m.ry||0;D.t.ry=0;D.c.rz=+m.rz||0;D.t.rz=0;D.v.rz=0;}}}
   // 홈에서 민 방향의 반대쪽에서 조타키가 휙 들어옴(위로 밀었으면 아래에서 위로), 돌면서 자리 잡음
-  function helmRise(r){const H=$('#helm');D.c.rz+=r>0?-140:140;D.v.rz=0;H.getAnimations().forEach(a=>a.cancel());
-    H.animate([{translate:`0 ${r>0?640:-640}px`,scale:'.84'},{translate:'0 0',scale:'1'}],{duration:640,easing:'cubic-bezier(.16,.84,.28,1)'});}
+  function helmRise(r){const H=$('#helm'),off=r>0?-150:150,T=1000,t0=performance.now(),base=D.c.rz;H.getAnimations().forEach(a=>a.cancel());
+    D.c.rz=base+off;D.t.rz=base+off;D.v.rz=0;
+    H.animate([{translate:`0 ${r>0?560:-560}px`,scale:'.8'},{translate:'0 0',scale:'1'}],{duration:T,easing:'cubic-bezier(.65,0,.35,1)'});   // 이지 인·아웃
+    const step=now=>{const u=Math.min(1,(now-t0)/T),e=u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;D.t.rz=base+off*(1-e);if(u<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
   // ── 나서기 / 머물기 (2026-11-16) : 웹앱 홈에서 조타키를 가운데로 끌어온 뒤 위로 밀면 나서기(얼마나·무엇을·누구와 → 장소 카드),
   //    아래로 밀면 머물기(얼마나·무엇을 → 집에서 하는 미션 카드). 질문 배열 Q를 모드에 맞게 갈아 끼움(웹앱 사본에서만, 시뮬레이터 본체는 그대로)
   const Q_GO=Q.slice();
