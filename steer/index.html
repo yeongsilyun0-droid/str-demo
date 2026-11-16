@@ -1908,7 +1908,7 @@ const WITHK={'과일 가게':'solo family','냉면집':'solo family friend','샐
  'see.도자기 공방':'solo lover','do.도자기 공방':'lover friend family','현악기 가게':'solo','노래방':'friend family','합주실':'friend','악기 가게':'solo','레코드숍':'solo lover'};
 const withOk=(p,w)=>{const k=kindOf(p);if(!k)return true;const v=WITHK[p.act+'.'+k[3]]||WITHK[k[3]];return !v||v.split(' ').includes(w);};
 // 네이버 지도에 없거나 추천하기 애매한 곳 — 여기에 이름을 추가하면 모든 추천에서 빠져요
-const BLOCK=['정림민화커넥션','앤드뉴 갤러리','김알파카자수공방'];
+const BLOCK=['정림민화커넥션','앤드뉴 갤러리','김알파카자수공방','김대중도서관'];   // 김대중도서관 : 정치 인물 이름이라 뺌(2026-11-17)
 const EXCL=new RegExp('투워치|미광당|키즈|^캔들$|'+BLOCK.map(n=>n.replace(/\s/g,'\\s*')).join('|'));
 const kindOf=p=>(p.kk?KIND.find(k=>k[5]===p.kk):null)||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&!k[5]&&k[2].test(p.name))||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&k[5]==='flower'&&p.act==='see')||null;
 const typeKo=p=>{const k=kindOf(p);return k?k[3]:(TYPE_KO[p.type]||p.type.replace(/ 소매업| 전문|\/.*$/,''));};
@@ -3777,6 +3777,18 @@ body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
 #emGo:active{transform:scale(.97)}
 #emRe{width:560px;height:154px;border-radius:77px;background:none;color:#6E6E73;font-size:56px;font-weight:500;letter-spacing:-.005em}
 #emRe:active{background:rgba(10,10,10,.06)}
+/* 머물기 카드 : 장소 사진 대신 용신 색 + 흰 글리프(희미하게) */
+body.embedS .tkt.stay .fc .ys{display:none}
+body.embedS .tkt.stay .bk .stx{margin:30px 0 0;width:860px;height:440px;border-radius:40px;background:#16181C;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center}
+body.embedS .tkt.stay .bk .stx .ic{width:150px;height:150px;border-radius:50%;background:var(--ot);color:#0A0A0A;display:flex;align-items:center;justify-content:center;margin-bottom:26px}
+body.embedS .tkt.stay .bk .stx .ic svg{width:70px;height:70px}
+body.embedS .tkt.stay .bk .stx b{font-size:76px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+body.embedS .tkt.stay .bk .stx span{margin-top:12px;font-size:34px;color:rgba(255,255,255,.55);letter-spacing:-.01em}
+body.embedS .tkt.stay .bk .n2 .wc{background:#2A2D33;color:#fff}
+body.embedS .tkt.stay .bk .n2 .wc .si{display:flex;width:56px;height:56px}
+body.embedS .tkt.stay .bk .n2 .wc .si svg{width:100%;height:100%}
+body.embedS .tkt.stay .fc .sh{opacity:.55}
+body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px;height:560px;background:#fff;opacity:.38;-webkit-mask:var(--gm2) center/contain no-repeat;mask:var(--gm2) center/contain no-repeat;pointer-events:none}
 </style>
 <script>
 (function(){const q=new URLSearchParams(location.search);if(q.get('embed')!=='steer')return;
@@ -3809,7 +3821,7 @@ body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
   const _ie=introEnd;introEnd=function(){_ie();['#vSteer .top','#ptr','#stGo'].forEach(q=>$(q).getAnimations().forEach(a=>a.cancel()));};
   const _si=steerIntro;steerIntro=function(fx){const t=_si(fx);if(noRise){$('#helm').getAnimations().forEach(a=>a.cancel());noRise=false;return t-1500;}return t;};
   // 카드 (enterRoute의 F4와 같은 계산 : 이유 문장·걷는 거리)
-  function cardNow(){const r=S.saju,REC=recommend(r,ST.ans,null),P=REC.best;if(!P){toastMsg('추천할 곳을 찾지 못했어요');return;}
+  function cardNow(){if(MODE==='stay')return stayCard();const r=S.saju,REC=recommend(r,ST.ans,null),P=REC.best;if(!P){toastMsg('추천할 곳을 찾지 못했어요');return;}
     S.rec=REC;S.spot=P;tkRouteFetch(P);
     view='route';$$('.view').forEach(e=>e.classList.remove('on'));const sec=$('#vRoute');void sec.offsetWidth;sec.classList.add('on');
     const E=ELX[REC.el];sec.style.setProperty('--ec',E.c);sec.style.setProperty('--ot',OT[REC.el]);sec.style.setProperty('--ec2',E.c2);
@@ -3830,7 +3842,10 @@ body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
   function viewCard(){const t=$('#tkt');if(!S.rec||!t.classList.contains('live')){post({action:'viewclose'});return;}
     vMode=true;B.classList.remove('on');V.classList.add('on');const fc=t.querySelector('.fc');if(fc&&fc.style.visibility!=='hidden')setTimeout(()=>tap(t.querySelector('.c3')),380);}
   $('#emX').addEventListener('click',()=>{vMode=false;V.classList.remove('on');const t=$('#tkt');t._front&&t._front();post({action:'viewclose'});});
-  $('#emGo').addEventListener('click',()=>{const R=S.rec,P=S.spot;if(!R||!P)return;const E=ELX[R.el],RT=tkRoute(P),tk=typeKo(P);
+  $('#emGo').addEventListener('click',()=>{if(MODE==='stay'){const R=S.stay;if(!R)return;const E=ELX[R.el];
+    post({action:'start',rec:{stay:true,name:'집',title:R.title,type:'집',mission:R.mission,body:R.mission,pre:'',el:R.el,h:E.h,ko:E.ko,role:'용신',act:R.act,
+      time:R.M.lb,timeK:R.M.k,what:R.T.lb,with:'집에서',withK:'home',det:R.det,min:0,dist:0,real:false,ph:'',lat:null,lng:null}});return;}
+    const R=S.rec,P=S.spot;if(!R||!P)return;const E=ELX[R.el],RT=tkRoute(P),tk=typeKo(P);
     const body=String(R.mission||'').slice((R.W.pre||'').length);
     post({action:'start',rec:{name:P.name,type:tk,mission:R.mission,body,pre:R.W.pre||'',el:R.el,h:E.h,ko:E.ko,role:R.alt?'희신':'용신',act:R.act,
       time:R.M.lb,timeK:R.M.k,what:R.T.lb,with:R.W.lb,withK:R.W.k,det:R.det,min:Math.max(1,Math.round(RT.t/60)),dist:RT.d,real:!!RT.real,ph:PLACE_PH[tk]||'',lat:P.lat,lng:P.lng}});});
@@ -3839,6 +3854,7 @@ body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
   addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='steer-combo-cmd')return;
     if(m.action==='cfg'){CFG.W=+m.W||412;CFG.H=+m.H||0;fit();}
     else if(m.action==='view')viewCard();
+    else if(m.action==='shake')shakeRandom();
     else if(m.action==='prime'){if(!S.saju){post({action:'error'});return;}
       // 홈 아래에 깔아 둘 대기 화면 : 조합 화면을 켜 두되 안내 글자는 숨기고 안내 타이머도 멈춤
       vMode=false;V.classList.remove('on');B.classList.remove('on');noRise=true;
@@ -3852,18 +3868,84 @@ body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
     else if(m.action==='enter'&&PRIMED){
       // 대기 화면에서 바로 이어짐 : 화면은 그대로 두고 안내 글자만 시작
       PRIMED=false;vMode=false;document.body.classList.remove('embPrime');if(m.hideHelm)document.body.classList.add('embNoHelm');
-      ST.intro=true;$('#vSteer').classList.add('intro');noRise=true;const t=steerIntro(false);clearTimeout(ST.introT);ST.introT=setTimeout(introEnd,t+900);B.classList.remove('on');}
+      setMode(m.mode);ST.intro=true;$('#vSteer').classList.add('intro');renderSteer(false);noRise=true;const t=steerIntro(false);clearTimeout(ST.introT);ST.introT=setTimeout(introEnd,t+900);B.classList.remove('on');}
     else if(m.action==='enter'){if(!S.saju){post({action:'error'});return;}PRIMED=false;document.body.classList.remove('embPrime','embNoHelm');noRise=!!m.noRise;vMode=false;V.classList.remove('on');
       // 이전 화면(카드 등)이 비치지 않게 바로 끄고 시작
       $$('.view').forEach(v=>{v.style.transition='none';v.classList.remove('on');});requestAnimationFrame(()=>requestAnimationFrame(()=>$$('.view').forEach(v=>v.style.transition='')));
-      const nr=noRise;_go('steer');B.classList.remove('on');
+      const nr=noRise;applyMode(m.mode);_go('steer');B.classList.remove('on');
       // 웹앱 홈 조타키에서 이어질 땐 기울기도 처음부터 제자리(기울며 움직이면 갈아 끼울 때 두 겹으로 보임)
       if(nr){D.c.rx=(m.rx!=null?+m.rx:D.t.rx);D.c.ry=+m.ry||0;D.t.ry=0;D.c.rz=+m.rz||0;D.t.rz=0;D.v.rz=0;}}});
+  // ── 나서기 / 머물기 (2026-11-16) : 웹앱 홈에서 조타키를 가운데로 끌어온 뒤 위로 밀면 나서기(얼마나·무엇을·누구와 → 장소 카드),
+  //    아래로 밀면 머물기(얼마나·무엇을 → 집에서 하는 미션 카드). 질문 배열 Q를 모드에 맞게 갈아 끼움(웹앱 사본에서만, 시뮬레이터 본체는 그대로)
+  const Q_GO=Q.slice();
+  const Q_STAY=[
+   {key:'time',ko:'얼마나',q:'<span class="g">집에서</span><br>얼마나 머물 수 있나요?',hint:'머무는 시간만큼 미션 길이가 정해져요',
+    opts:[{k:'10',lb:'10분',sub:'잠깐 숨 고르기',r:0,ic:'',gl:'10m'},{k:'30',lb:'30분',sub:'느긋하게 쉬어 가기',r:0,ic:'',gl:'30m'},{k:'60',lb:'1시간',sub:'푹 머물기',r:0,ic:'',gl:'1h'}]},
+   Object.assign({},Q_GO[1],{q:'<span class="g">집에서</span> 오늘<br>무엇을 해 볼까요?',opts:Q_GO[1].opts.filter(o=>o.k!=='walk')})];
+  let MODE='go';
+  function applyMode(m){MODE=m==='stay'?'stay':'go';Q.splice(0,Q.length,...(MODE==='stay'?Q_STAY:Q_GO));document.body.classList.toggle('emStay',MODE==='stay');}
+  function setMode(m){applyMode(m);clearTimeout(ST.nextT);ST.ans=Q.map(()=>null);ST.step=0;opened=false;D.t.rz=0;buildOrbs();}
+  // 10분 구슬 글자 : 피그마 글자(30m의 '0m' + 1h의 '1')를 이어 붙임
+  const _sph=sphTex;sphTex=function(k){if(k!=='10m'||SPH_T[k])return _sph(k);
+    const c=document.createElement('canvas');c.width=c.height=SPH_S;const g=c.getContext('2d');g.scale(SPH_S/205.1,SPH_S/205.1);g.fillStyle='#fff';
+    g.save();g.translate(-8.4,0);g.fill(new Path2D(GLY['30m'][0]));g.fill(new Path2D(GLY['30m'][1]));g.restore();
+    g.save();g.translate(-41.4,0);g.fill(new Path2D(GLY['1h'][0]));g.restore();
+    const a=g.getImageData(0,0,SPH_S,SPH_S).data,t=new Uint8Array(SPH_S*SPH_S);for(let i=0;i<t.length;i++)t[i]=a[i*4+3];return SPH_T[k]=t;};
+  const _es=enterSteer;enterSteer=function(){applyMode(MODE);_es();ST.ans=Q.map(()=>null);};
+  // 안내 문장 · 질문 수 · 아래 안내를 모드에 맞게
+  const _rs=renderSteer;renderSteer=function(anim){_rs(anim);const r=S.saju;if(!r)return;
+    const st=MODE==='stay',n=Q.length,NK=['','한','두','세'][n],done=ST.ans.length===n&&ST.ans.every(v=>v!=null)&&ST.step>=n,cap=$('#stCap'),txt=$('#stTxt'),ko=ELX[r.yongsin.element].ko;
+    if(ST.intro){cap.innerHTML=st?'집에 머물기':'밖으로 나서기';txt.innerHTML=st?`<span class="g">두 가지만 고르면</span><br>집에서 채울 ${ko}의 기운을 찾아요`:`<span class="g">세 가지만 고르면</span><br>${ko}의 기운이 있는 곳을 찾아요`;}
+    else if(!done)cap.innerHTML=`질문 ${Math.min(ST.step,n-1)+1} / ${n}`+(!st&&ST.step===0&&ST.lim&&ST.lim.tone==='흐린 날'?' · 오늘은 흐린 날이라 1시간까지':'');
+    else if(st){txt.innerHTML='<span class="g">두 가지를 다 골랐어요</span><br>아래 Steer를 꾹 눌러 시작해요';$('#stHint').textContent='꾹 누르고 있다가 놓으면 시작해요';}
+    if(!done&&!ST.intro&&!D.everOpened)$('#stHint').textContent=`${NK} 가지 질문에 답하거나, 폰을 흔들어 보세요`;};
+  const _tm=toastMsg;toastMsg=function(m){if(MODE==='stay')m=String(m).replace('세 가지 질문','두 가지 질문');return _tm(m);};
+  // 머물기 미션 : 집에서 + 용신 단서 하나 + 행동 하나 (25자 안쪽). [카드 제목, 미션]
+  const STAY={
+   eat:{wood:['귤 한 조각','귤 한 조각 천천히 맛보기'],fire:['쌉쌀한 차 한 잔','쌉쌀한 차 한 잔 우려 마시기'],earth:['꿀차 한 잔','꿀 한 숟갈 탄 차 마시기'],metal:['생강차 한 잔','매콤한 생강차 한 잔 마시기'],water:['구운 김 한 장','짭짤한 김 한 장 천천히 맛보기']},
+   see:{wood:['초록 화분','초록 화분 오래 바라보기'],fire:['붉은 물건 하나','붉은 물건 하나 책상에 두기'],earth:['노란 불빛','노란 조명 켜고 쉬어 가기'],metal:['하얀 이불','흰 이불 반듯하게 펴 두기'],water:['검은 밤하늘','불 끄고 창밖 어둠 바라보기']},
+   hear:{wood:['기타 연주 한 곡','기타 연주 한 곡 듣기'],fire:['신나는 노래 한 곡','신나는 노래 한 곡 크게 듣기'],earth:['낮은 목소리 노래','낮은 목소리 노래 한 곡 듣기'],metal:['피아노 연주 한 곡','피아노 연주 한 곡 듣기'],water:['빗소리','빗소리 틀어 놓고 눈 감기']},
+   do:{wood:['책 한 권','책 한 권 골라 첫 장 읽기'],fire:['향 하나','향 하나 피우고 쉬어 가기'],earth:['화분 흙','화분 흙 손으로 골라 주기'],metal:['반짝이는 숟가락','숟가락 반짝이게 닦아 두기'],water:['따뜻한 물','따뜻한 물에 몸 담그기']}};
+  const HOME_IC="<path d='M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z'/>";
+  function stayRec(){const r=S.saju,el=r.yongsin.element,M=Q_STAY[0].opts.find(o=>o.k===ST.ans[0])||Q_STAY[0].opts[0],T=Q_STAY[1].opts.find(o=>o.k===ST.ans[1])||Q_STAY[1].opts[0],s=STAY[T.k][el];
+    return {el,Y:el,alt:false,act:T.k,M:{lb:M.lb,k:M.k,r:0},T,W:{k:'home',lb:'집에서',pre:'',go:'집에서'},det:DET[T.k][el],title:s[0],mission:'집에서 '+s[1],all:[],mine:[],inR:[],fin:[],far:false,withUsed:true};}
+  // 머물기 카드 : 오늘의 카드 틀을 그대로 쓰되 장소 사진 대신 용신 색 + 글리프, 뒷면은 지도 없이 '왜 이 미션이 나왔나요'
+  function stayCard(){const r=S.saju,REC=stayRec(),E=ELX[REC.el];S.stay=REC;
+    const P={name:REC.title,lat:ORIGIN.lat+.0004,lng:ORIGIN.lng,type:'집',act:REC.act,element:REC.el};
+    view='route';$$('.view').forEach(e=>e.classList.remove('on'));const sec=$('#vRoute');void sec.offsetWidth;sec.classList.add('on');
+    sec.style.setProperty('--ec',E.c);sec.style.setProperty('--ot',OT[REC.el]);sec.style.setProperty('--ec2',E.c2);
+    const D_=readData(r),needY=r.yongsin.method==='조후'?`${ZSEA[D_.mz]}에 태어나 차고 더운 균형을 맞춰 줘요`:D_.weak?`기운이 약한 나를 받쳐 줘요`:D_.strong?`넘치는 기운을 밖으로 흘려보내 줘요`:`고른 기운을 더 단단하게 해 줘요`;
+    const cue=String(REC.det).split(' · ')[0];
+    const WR=[[E.h,'왜 이 행동이에요?',`<b>${cue}</b>${J(cue,'은','는')} ${BASIS[REC.act]}에서 ${E.ko}의 자리예요`],[E.h,'왜 지금 나에게 필요해요?',`${J(E.ko,'은','는')} 나의 <b>용신</b> · ${needY}`],[E.h,'오늘 답은 어떻게 반영됐어요?',`<b>${REC.M.lb}</b> 동안 집에서 · 오늘 일진 ${r.today.gan}${r.today.zhi}일 기준으로 골랐어요`]];
+    const sw=Q.slice();Q.splice(0,Q.length,...Q_GO);try{ticket(REC,null,P,'집에서',WR);}finally{Q.splice(0,Q.length,...sw);}
+    const t=$('#tkt'),dt=new Date(),WD='일월화수목금토'[dt.getDay()],dd=`${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`;
+    t.classList.add('stay');
+    const hp=t.querySelector('.hd p');if(hp)hp.textContent=`집에서 하는 오늘의 항해 · ${dt.getMonth()+1}월 ${dt.getDate()}일 ${WD}요일`;
+    const fc=t.querySelector('.fc');if(fc){fc.classList.remove('wph');fc.querySelectorAll('img.ph').forEach(e=>e.remove());const art=fc.querySelector('.art3');if(art){const g=art.getContext('2d');g.fillStyle=OT[REC.el];g.fillRect(0,0,art.width,art.height);}
+      const gw=document.createElement('div');gw.className='sg';const sh=fc.querySelector('.sh');sh?sh.before(gw):fc.prepend(gw);
+      const sp=fc.querySelectorAll('.cs span');if(sp[2])sp[2].innerHTML=`<svg viewBox="0 0 256 256">${HOME_IC}</svg>집에서`;
+      const mt=fc.querySelector('.mt');if(mt)mt.textContent=`${REC.M.lb} 동안 집에서 · ${dd}`;}
+    const bk=t.querySelector('.bk');if(bk){const sb=bk.querySelector('.sb');if(sb)sb.textContent=`집에서 ${REC.M.lb} · 걷지 않아도 돼요`;
+      // 지도 자리 : 머무는 시간 + 하는 것
+      const rm=bk.querySelector('.rmap');if(rm){const sx=document.createElement('div');sx.className='stx';sx.innerHTML=`<i class="ic">${REC.T.ic||''}</i><b>${REC.M.lb}</b><span>집에서 · ${REC.T.lb}</span>`;rm.replaceWith(sx);}
+      const wq=bk.querySelector('.wq');if(wq)wq.textContent='왜 이 미션이 나왔나요?';
+      const n2=bk.querySelector('.nd.n2');if(n2){const wc=n2.querySelector('.wc');if(wc)wc.innerHTML=`<i class="si">${REC.T.ic||''}</i>`;n2.querySelector(':scope > em').textContent='이 행동';n2.querySelector(':scope > b').textContent=REC.T.lb;}}
+    const fh=t.querySelector('.fh');if(fh)new MutationObserver(()=>{if(fh.textContent.includes('가는 길과 이곳을'))fh.textContent=fh.textContent.replace('가는 길과 이곳을','이 미션을');}).observe(fh,{childList:true,characterData:true,subtree:true});
+    if(t._i){t._i.ty='집';t._i.pl=[REC.M.lb,REC.T.lb,'집에서'];}}
+  // 흔들면 무작위 조합 : 웹앱(맨 위 문서)이 흔들림을 감지해 'shake'로 알려 줌. 작업용으로 S 키도
+  let shCool=0;
+  function shakeRandom(){if(view!=='steer'||holding||PRIMED||B.classList.contains('on'))return;const now=performance.now();if(now<shCool)return;shCool=now+1800;
+    if(ST.intro)introEnd();clearTimeout(ST.nextT);if(opened)closeDial();
+    const pick=Q.map((q,i)=>{const ok=q.opts.filter(o=>!(MODE==='go'&&i===0&&ST.lim&&ST.lim.tone==='흐린 날'&&o.k==='180'));return ok[Math.floor(Math.random()*ok.length)].k;});
+    ST.ans=Q.map(()=>null);renderMeta();buzz([18,40,18,40,26]);D.t.rz+=360;
+    pick.forEach((k,i)=>setTimeout(()=>{if(view!=='steer')return;ST.ans[i]=k;renderMeta();const b=$$('#stMeta .ans')[i];if(b)b.animate([{transform:'scale(.7)'},{transform:'scale(1.1)'},{transform:'scale(1)'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'});buzz(10);},260+i*280));
+    setTimeout(()=>{if(view!=='steer')return;gotoStep(3);setTimeout(()=>toastMsg('흔들어서 골랐어요 · 또 흔들면 다시 골라요'),60);},260+pick.length*280+180);}
+  addEventListener('keydown',e=>{if((e.key==='s'||e.key==='S')&&!e.repeat)shakeRandom();});
   kick=function(){clearTimeout(idleT);};
   // 대기 화면이 비치지 않게 처음엔 아무 화면도 안 켬
   $$('.view').forEach(v=>v.classList.remove('on'));view='';
   post(S.saju?{action:'ready',yongsin:S.saju.yongsin.element}:{action:'error'});
   // 혼자 열었을 때(작업용) 바로 시작
-  if(parent===window)setTimeout(()=>_go('steer'),300);
+  if(parent===window){applyMode(q.get('mode'));setTimeout(()=>_go('steer'),300);}   // 작업용 : &mode=stay 면 머물기
 })();
 </script>
