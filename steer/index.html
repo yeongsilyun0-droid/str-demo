@@ -3765,6 +3765,9 @@ body.embedS #vRoute.tk{background:#fff}
 body.embedS .tkt .bg{top:-700px;bottom:-900px}
 body.embedS .tkt .hd{top:150px}
 body.embedS .tkt .hd .ey{margin-bottom:40px}
+/* 카드 빛 띠 : overlay 섞기를 3D로 기우는 카드 위에 쓰면 안드로이드 크롬에서 번쩍거려서 폰에선 일반 섞기로 */
+body.embedS .tkt .fc .ho,body.embedS .tkt .bk .ho{mix-blend-mode:normal}
+body.embedS .tkt.in .fc .ho{opacity:.32}
 body.embedS .tkt .fh{top:1790px;color:rgba(10,10,10,.42);font-size:34px}
 /* 웹앱 결과 버튼 (#cta 20,758 · 372×56 / #retry 814 · 44) */
 #emB{position:absolute;left:0;right:0;top:calc(2649px + var(--dyB,0px));z-index:60;opacity:0;transform:translateY(105px);pointer-events:none;transition:opacity .5s,transform .7s cubic-bezier(.2,.9,.2,1)}
