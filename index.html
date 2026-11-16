@@ -3393,12 +3393,13 @@ function openNav(){reasonEl.classList.remove('show','in');mapEl.classList.add('u
  const walk=now=>{if(!navEl.classList.contains('show'))return;const p=Math.max(0,Math.min(1,(now-W0)/DUR));navProg(p);const d=Math.round(D0*(1-p));
   if(d!==lastD){lastD=d;$('#navDist').textContent=d+'m';$('#gtag').textContent=d>0?`${d}m 뒤 오른쪽`:'곧 도착';}
   if(p>=1){NAV.walkT=setTimeout(arrive,700);return;}NAV.wraf=requestAnimationFrame(walk);};NAV.wraf=requestAnimationFrame(walk);}
-function closeNav(){clearTimeout(NAV.walkT);cancelAnimationFrame(NAV.wraf);cancelAnimationFrame(NAV.raf);navEl.classList.remove('show','cmp');mapEl.classList.remove('under');syncTab();}
+function closeNav(){NAV.v2=false;clearTimeout(NAV.walkT);cancelAnimationFrame(NAV.wraf);cancelAnimationFrame(NAV.raf);navEl.classList.remove('show','cmp');mapEl.classList.remove('under');syncTab();}
 $('#navX').addEventListener('click',()=>{closeNav();toastMsg('길안내를 종료했어요');});$('#navX2').addEventListener('click',()=>{closeNav();toastMsg('길안내를 종료했어요');});
 $('#rsGo').addEventListener('click',openNav);
 function count(el,to,unit,ms,delay){setTimeout(()=>{const t0=performance.now();const st=now=>{const t=Math.min(1,(now-t0)/ms),e=1-Math.pow(1-t,3);el.textContent=Math.round(to*e)+unit;if(t<1)requestAnimationFrame(st);};requestAnimationFrame(st);},delay);}
 $('#dnX').addEventListener('click',()=>{buzz(6);[reasonEl,navEl].forEach(p=>p.classList.remove('show','under'));doneEl.classList.remove('in');doneEl.classList.remove('show');mapEl.classList.remove('under');syncTab();});
-function arrive(){clearTimeout(NAV.walkT);if(!navEl.classList.contains('show')&&!window.__forceArrive)return;cancelAnimationFrame(NAV.raf);buzz([14,40,14,40,24]);$('#dnScroll').scrollTop=0;if(window.__dnReset)__dnReset();doneEl.classList.remove('in');doneEl.classList.add('show');navEl.classList.remove('show','cmp');
+function arrive(){clearTimeout(NAV.walkT);if(!navEl.classList.contains('show')&&!window.__forceArrive)return;
+ if(NAV.v2){NAV.v2=false;buzz([14,40,14,40,24]);closeNav();toastMsg('도착했어요! 사진으로 인증해 주세요');setTimeout(()=>{v2Go(2,1);hsOpen();},450);return;}cancelAnimationFrame(NAV.raf);buzz([14,40,14,40,24]);$('#dnScroll').scrollTop=0;if(window.__dnReset)__dnReset();doneEl.classList.remove('in');doneEl.classList.add('show');navEl.classList.remove('show','cmp');
  setTimeout(()=>{doneEl.classList.add('in');},80);syncTab();}
 $('#dnGo').addEventListener('click',()=>{buzz([10,30,14]);closeMap();tabTo(0);setTimeout(()=>{if(S.home&&!HM.committing)homeCommit();},420);});
 doneEl.querySelectorAll('.hot[data-act=toast]').forEach(h=>h.addEventListener('click',()=>toastMsg(h.dataset.msg)));
@@ -3722,16 +3723,16 @@ function v2Card(){const m=S.mission,c=$('#cMission');if(!c)return;const on=!!(m&
 function hsRenderV2(pop){const m=S.mission,R=m.rec,st=m.st||0,v=$('#hsV2');
  const km=R.dist<1000?Math.round(R.dist/10)*10+'m':(R.dist/1000).toFixed(1)+'km',shot=st>=3&&v2Shot(m),ph=shot||v2Ph(m);
  const S3=['출발','도착','인증'],stp=S3.map((l,i)=>{const done=st>i,cur=st===i;return `${i?`<span class="ln${st>=i?' on':''}"></span>`:''}<span class="s${done?' on':cur?' cur':''}${pop===i?' pop':''}"><i>${done?V2I.check:i+1}</i>${l}</span>`;}).join('');
- const act=v2Act(m),NOTE=[`길을 보며 ${R.name}까지 가요. 도착하면 버튼으로 알려 주세요.`,`${R.name}에 도착하면 눌러 주세요.`,`${act}, 사진 1장으로 남겨 주세요.<br>인증해야 오늘의 항해가 끝나요.`,`오늘 ${R.ko}의 기운을 채웠어요.<br>채운 기운은 이번 주 기록에 남아요.`];
+ const act=v2Act(m),NOTE=[`${R.name}까지 가는 길을 먼저 봐요.`,`길안내를 따라가면 ${R.name}에 도착해요.`,`${act}, 사진 1장으로 남겨 주세요.<br>인증해야 오늘의 항해가 끝나요.`,`오늘 ${R.ko}의 기운을 채웠어요.<br>채운 기운은 이번 주 기록에 남아요.`];
  v.style.setProperty('--ys',V2C[R.el]||'#87E6FF');
  v.innerHTML=`<div class="pl" style="background-image:url(${ph})"><span class="k">${R.h} ${R.role}</span>${shot?'<span class="me">내가 찍은 사진</span>':''}<div class="tx"><b>${R.name}</b><small>이대 정문에서 걸어서 ${R.min}분 · ${km}</small></div></div>
   <div class="hs-chips"><span>${R.time}</span><span>${R.what}</span><span>${R.with}</span></div>
   <div class="stp">${stp}</div><p class="hs-note v2n">${NOTE[st]}</p>`;
  $('#hsCnt').textContent='';$('#hsheet .hs-top .cnt small').textContent=st>=3?'완료':'23:59까지';
  const go=$('#hsGo'),rd=$('#hsRedo');go.classList.remove('hide');
- go.textContent=['길 보기','도착했어요','사진 찍고 인증하기','오늘의 카드 보기'][st];go.dataset.act=['v2route','v2arrive','v2cam','card'][st];
- rd.style.display=st>=3?'none':'';rd.dataset.v2=st===0?'':'route';
- const rl=[...rd.childNodes].find(n=>n.nodeType===3);if(rl)rl.textContent=st===0?'미션 다시 조합하기':'길 다시 보기';
+ go.textContent=['길 보기','길안내 시작하기','사진 찍고 인증하기','오늘의 카드 보기'][st];go.dataset.act=['v2route','v2nav','v2cam','card'][st];
+ rd.style.display=st>=3?'none':'';rd.dataset.v2='';   // 다시 하기 = 미션을 지우고 조합 화면으로(기존 다시 조합 동작)
+ const rl=[...rd.childNodes].find(n=>n.nodeType===3);if(rl)rl.textContent=st===0?'미션 다시 조합하기':'다시 하기';
  v2Card();}
 function v2Go(st,pop){const m=S.mission;if(!m||!m.v2)return;m.st=st;hsRenderV2(pop);if(typeof applyMission==='function')applyMission();}
 /* 인증 사진이 들어오면 완료 : 모든 칸을 채운 것으로 두고 오늘의 카드(완료 카드)를 엶 */
@@ -3744,6 +3745,8 @@ $('#hsheet .hs-panel').addEventListener('click',e=>{const m=S.mission;if(!m||!m.
  if(g&&/^v2/.test(g.dataset.act)){e.stopPropagation();buzz(10);const a=g.dataset.act;
   if(a==='v2route'){hsClose();if(m.st<1)m.st=1;setTimeout(()=>{seView();v2Card();},280);}
   else if(a==='v2arrive'){v2Go(2,1);}
+  // 길안내(AR·나침반) : 도착하면 지도 탭의 도착 화면 대신 시트로 돌아와 '도착' 단계로
+  else if(a==='v2nav'){hsClose();NAV.v2=true;setTimeout(openNav,280);}
   else if(a==='v2cam'){hsClose();SV.mk=m.keys.find(x=>x!=='Place'&&x!=='Time'&&x!=='Way')||m.keys[0];setTimeout(()=>openCam('mission'),250);}}
  else if(r&&r.dataset.v2==='route'){e.stopPropagation();buzz(8);hsClose();setTimeout(seView,280);}},true);
 /* 길 보기 : 조합 때 받은 오늘의 카드를 뒷면(실제 걷는 길 · 추천 이유)으로 다시 띄움 */
