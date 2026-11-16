@@ -12,7 +12,8 @@
   const WC=[370,781],WW=178;
   // 캔버스 흐림(filter) 지원 : 값만 되돌려 주고 실제로는 안 흐리는 브라우저(사파리 일부)가 있어 그려 보고 판단
   let FOK=null;const FILT=()=>{if(FOK!==null)return FOK;try{const c=document.createElement('canvas');c.width=c.height=20;const x=c.getContext('2d');x.filter='blur(3px)';x.fillStyle='#000';x.fillRect(9,9,2,2);FOK=x.getImageData(4,10,1,1).data[3]>0;}catch(e){FOK=false;}return FOK;};
-  function mount(cv,o){const W=o.W||1440,H=o.H||2560,R_=o.res||.75;cv.width=Math.round(W*R_);cv.height=Math.round(H*R_);const g=cv.getContext('2d');
+  // o.bq : 흐림 계산 해상도(기본 .5, 가벼운 모드는 .25)
+  function mount(cv,o){const W=o.W||1440,H=o.H||2560,R_=o.res||.75,BQ=o.bq||.5;cv.width=Math.round(W*R_);cv.height=Math.round(H*R_);const g=cv.getContext('2d');
     const wing=new Path2D(WING),base=document.createElement('canvas');base.width=cv.width;base.height=cv.height;const bg_=base.getContext('2d');
     const FQ=.5,fxc=document.createElement('canvas');fxc.width=Math.round(cv.width*FQ);fxc.height=Math.round(cv.height*FQ);   // 빛 원·흐름은 부드러워서 반 해상도로(사파리 프레임 부담 줄임)
    const fx=fxc.getContext('2d');
@@ -39,10 +40,10 @@
       const BL=document.createElement('canvas');BL.width=base.width;BL.height=base.height;const bl=BL.getContext('2d');bl.setTransform(R_,0,0,R_,0,0);bl.fillStyle=mk(bl);bl.fill(band);
       // 흐림은 브라우저 필터에 맡기지 않고 직접 계산(가우시안에 가까운 상자 흐림 3번, 반 해상도, 미리 곱한 알파) — 사파리는 캔버스 filter가 없거나 불완전해서
       // 작게 줄였다 키우는 대체 방식이 쓰였는데, 그게 가장자리를 계단처럼 깨지게 했음. 어느 브라우저든 같은 결과
-      const blurG=function*(px,out){const w=Math.ceil(base.width/2),h=Math.ceil(base.height/2),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});
+      const blurG=function*(px,out){const w=Math.ceil(base.width*BQ),h=Math.ceil(base.height*BQ),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});
         x.drawImage(BL,0,0,w,h);const im=x.getImageData(0,0,w,h),d=im.data,n=w*h,A=[new Float32Array(n),new Float32Array(n),new Float32Array(n),new Float32Array(n)],tmp=new Float32Array(Math.max(w,h));
         for(let i=0;i<n;i++){const a=d[i*4+3]/255;A[3][i]=a;A[0][i]=d[i*4]*a;A[1][i]=d[i*4+1]*a;A[2][i]=d[i*4+2]*a;}yield;
-        const r=Math.max(1,Math.round(px*R_/2/1.73));   // 상자 3번 ≈ 시그마 px
+        const r=Math.max(1,Math.round(px*R_*BQ/1.73));   // 상자 3번 ≈ 시그마 px
         const pass=(ch,len,cnt,stride,step)=>{for(let l=0;l<cnt;l++){const o=l*stride;let acc=0;for(let k=-r;k<=r;k++)acc+=ch[o+Math.min(len-1,Math.max(0,k))*step];
           for(let k=0;k<len;k++){tmp[k]=acc/(2*r+1);acc+=ch[o+Math.min(len-1,k+r+1)*step]-ch[o+Math.max(0,k-r)*step];}for(let k=0;k<len;k++)ch[o+k*step]=tmp[k];}};
         for(const ch of A)for(let t=0;t<3;t++){pass(ch,w,h,w,1);yield;pass(ch,h,w,1,w);yield;}
@@ -80,6 +81,6 @@
       g.globalAlpha=1;S.raf=requestAnimationFrame(frame);}
     // set : 멈춘 상태에서 새로 하면(시뮬레이터가 새 장소로 열 때) 이전 길을 지우고 처음부터, 도는 중이면(폰에서 방향이 바뀔 때) 새 길이 될 때까지 이전 길 유지
     return {set(o_){if(!S.on){S.ready=0;bg_.setTransform(1,0,0,1,0,0);bg_.clearRect(0,0,base.width,base.height);}Object.assign(S,o_);build();return S;},start(){if(S.on)return;S.on=true;S.t0=performance.now();S.raf=requestAnimationFrame(frame);},stop(){S.on=false;cancelAnimationFrame(S.raf);},
-      end:()=>S.end,behind:()=>S.behind,state:S};}
+      end:()=>S.end,behind:()=>S.behind,ready:()=>!!S.ready,state:S};}
   window.ARNAV={mount};
 })();
