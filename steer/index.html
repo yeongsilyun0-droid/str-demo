@@ -169,7 +169,8 @@
   .view:not(.on),.view:not(.on) *{pointer-events:none!important}   /* 숨은 화면의 버튼이 터치를 가로채지 않게 */
 
   /* ───── B안 : 질문 3스텝 조타 + 리빌 ───── */
-  #vSteer .meta{gap:16px;top:604px}
+  #vSteer .meta{gap:16px;top:604px;z-index:40}   /* 조타키 구슬 영역(#wheel)이 칩을 덮어 눌러도 단계로 안 갔음(2026-11-17) */
+  #vSteer.intro .meta{pointer-events:none}
   #vSteer .ans{height:84px;padding:0 30px;border:0;border-radius:42px;background:#F2F5F7;font-size:34px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:12px;transition:background .3s,color .3s,transform .15s}
   #vSteer .ans i{font-style:normal;font-weight:500;color:rgba(10,10,10,.45)}
   #vSteer .ans .qi{width:38px;height:38px;flex:none;margin-right:-2px;color:rgba(10,10,10,.45)}
