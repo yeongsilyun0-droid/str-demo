@@ -1681,6 +1681,12 @@ function runRead(){readT.splice(0).forEach(clearTimeout);OS.t.splice(0).forEach(
   OG.load([IMG_DM(dmG),nbs[0].img,nbs[1].img]).then(()=>$('#vRead').classList.remove('noGL')).catch(err=>{console.warn('[oGL] 대체 구 사용:',err.message);OG.ok=false;$('#vRead').classList.add('noGL');}).then(start);}
 const RC={get i(){return OS.i;},n:5};
 function rcGo(i){oGo(i);}
+// 나의 기운 자동 넘김 (2026-11-17) : 안 만져도 장면마다 읽을 시간이 지나면 다음으로, 마지막(용신)에선 '시작하기'까지. 만지면 시간을 다시 셈. &auto=0이면 끔
+//   장면별 시간(장면이 시작된 때부터) : ① 일간 7초(로딩 구 포함) · ② 글자(자동으로 ③) · ③ 오행 5.5초 · ④ 시소 6초 · ⑤ 용신 8.5초
+const RDA_=new URLSearchParams(location.search).get('auto')==='0'?null:[7000,0,5500,6000,8500],RDA={t:0};
+function rdAuto(){clearTimeout(RDA.t);if(!RDA_||view!=='read')return;const i=OS.i,ms=RDA_[i];if(!ms)return;RDA.t=setTimeout(()=>{if(view!=='read'||OS.i!==i||OS.loading)return;if(i<OS.n-1)oGo(i+1);else $('#oCta').click();},ms);}
+{const g_=oGo;oGo=function(i,first){const b=OS.i;g_(i,first);if(OS.i!==b||first)rdAuto();};}
+$('#vRead').addEventListener('pointerdown',()=>{if(RDA.t)rdAuto();});
 function oGo(i,first){i=Math.max(0,Math.min(OS.n-1,i));if(i===OS.i)return;if(OS.loading&&!first)return;const prev=OS.i;OS.i=i;const fwd=i>prev,seq=i===4&&prev===3;const {dm,gs,els,ys}=OS;
   if(i<4)els.forEach(s=>{s.ghost=s.meta.sh<.005;s.el.classList.toggle('ghost',s.ghost);s.gryT=0;s.el.classList.remove('gry');});
   OS.t.splice(0).forEach(clearTimeout);(OS.pend||[]).slice().forEach(f=>f());const v=$('#vRead');v.dataset.s=seq?3:i;camTo(seq?3:i,first?0:i===2?1200:1500);if(i!==1)OS.ringT=0;$('#oGrad').classList.toggle('on',i===4&&!seq);if(i<4)stkTo(0);
