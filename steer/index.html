@@ -1946,7 +1946,7 @@ const CX=206, CY=447, R_ORB=150; let STEP=60, N=6;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const NS='http://www.w3.org/2000/svg',mk=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
 const POSES={front:8,angled:28,flat:62};
-let pose='angled',maxTilt=18,PERSP=650,TH=0,dof=.3,HOLD=300;
+let pose='angled',maxTilt=18,PERSP=650,TH=0,dof=.3,HOLD=LITE?150:300;
 const D={c:{rx:28,ry:0,rz:0,open:0},t:{rx:28,ry:0,rz:0,open:0},v:{rx:0,ry:0,rz:0,open:0},everOpened:false,active:false};
 let pop=[];
 const rad=d=>d*Math.PI/180, mod=(n,m)=>((n%m)+m)%m;
@@ -1977,7 +1977,25 @@ const area=pts=>pts.reduce((a,p,k)=>{const q=pts[(k+1)%pts.length];return a+p[0]
 if(Math.sign(area(HUB))!==Math.sign(area(ARM)))HUB.reverse();
 const U=1.07, OUT=13;
 let L={},blurEl,gOp,gFoc,gInk,shadowP;
-function buildHelm(){const defs=$('#hdefs'),body=$('#hbody'),sh=$('#hshadow');defs.innerHTML='';body.innerHTML='';sh.innerHTML='';
+// 가벼운 모드(스탠바이미) 조타키 : 본체(흰 테두리 + 검정)와 그림자를 캔버스에 한 번만 그리고, 돌리기·기울기·크기는 CSS 변환으로만.
+//   변환은 project()와 같은 순서(Z회전 → Y → X → 원근 HPS → 가로·세로 늘림)라 모양이 같음. 흐림 그림자는 캔버스 shadowBlur로 미리 구워 둠(CSS filter 안 씀)
+let HL=null;
+function buildHelmLite(){const svg=$('#helm');svg.id='helmSvg';svg.style.display='none';
+ const w=document.createElement('div');w.id='helm';w.className='abs';svg.parentNode.insertBefore(w,svg);
+ const mkc=(B,res)=>{const c=document.createElement('canvas');c.width=c.height=Math.round(B*res);c.style.cssText=`position:absolute;left:0;top:0;width:${B}px;height:${B}px;transform-origin:50% 50%;will-change:transform;pointer-events:none`;w.appendChild(c);return c;};
+ const path=(g,k)=>{g.beginPath();HELM.forEach(([x,y],i)=>i?g.lineTo(x*k,y*k):g.moveTo(x*k,y*k));g.closePath();};
+ // 스티커 실루엣(테두리 포함)을 따로 그려 두고 → 그 그림자만 찍음(채우기+선을 따로 찍으면 그림자가 두 번 겹쳐 가운데가 진해짐)
+ const BS=400,QS=1.5,sil=document.createElement('canvas');sil.width=sil.height=BS*QS;{const g=sil.getContext('2d');g.setTransform(QS,0,0,QS,BS/2*QS,BS/2*QS);g.lineJoin='round';path(g,U*1.02);g.fillStyle=g.strokeStyle='#000';g.lineWidth=OUT*2;g.fill();g.stroke();}
+ const cs=mkc(BS,QS),gs=cs.getContext('2d');gs.shadowColor='rgba(10,30,50,.15)';gs.shadowBlur=30*QS;gs.shadowOffsetX=5000;gs.drawImage(sil,-5000,0);
+ // 본체는 화면에 실제로 보이는 크기에 맞춰 그림(너무 크게 그려 두면 줄여 찍을 때 가장자리가 거칠어짐). 화면 크기가 바뀌면 다시
+ const BB=280,cb=mkc(BB,1);
+ const body=()=>{const q=Math.max(1.5,Math.min(3.2,($('#dz').getBoundingClientRect().width/412||2.2)*1.12));if(HL&&HL.q===q)return;cb.width=cb.height=Math.round(BB*q);const gb=cb.getContext('2d');gb.setTransform(q,0,0,q,BB/2*q,BB/2*q);gb.lineJoin='round';
+  path(gb,U);gb.fillStyle=gb.strokeStyle='#fff';gb.lineWidth=OUT*2;gb.fill();gb.stroke();path(gb,U);gb.fillStyle='#101011';gb.fill();if(HL)HL.q=q;};
+ HL={s:cs,b:cb,BS,BB,q:0,body,dirty:true};addEventListener('resize',()=>{HL.dirty=true;});}
+function renderHelmLite(){if(HL.dirty){HL.dirty=false;HL.body();}const op=D.c.open,s=1-op*.32,KX=HSX+.1*op,KY=HSY-.1*op,{rx,ry}=D.c,rz=mod(D.c.rz,360),h=HL;
+ h.b.style.transform=`translate(${CX-h.BB/2}px,${CY-h.BB/2}px) scale(${KX.toFixed(4)},${KY.toFixed(4)}) perspective(${HPS}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${s.toFixed(4)})`;
+ h.s.style.transform=`translate(${CX-h.BS/2}px,${(CY-h.BS/2+7+Math.abs(rx)*.1).toFixed(1)}px) scale(${(KX*s).toFixed(4)},${(KY*s*Math.cos(rad(rx))).toFixed(4)}) rotate(${rz.toFixed(2)}deg)`;}
+function buildHelm(){if(LITE){buildHelmLite();return;}const defs=$('#hdefs'),body=$('#hbody'),sh=$('#hshadow');defs.innerHTML='';body.innerHTML='';sh.innerHTML='';
  const big={filterUnits:'userSpaceOnUse',x:-120,y:-120,width:652,height:1131};
  const fb=mk('filter',{id:'hb',...big});blurEl=mk('feGaussianBlur',{stdDeviation:0});fb.appendChild(blurEl);
  const fs=mk('filter',{id:'hs',...big});fs.appendChild(mk('feGaussianBlur',{stdDeviation:7}));
@@ -1995,7 +2013,7 @@ function buildHelm(){const defs=$('#hdefs'),body=$('#hbody'),sh=$('#hshadow');de
   const top=mk('path',{fill:'#fff',stroke:'#fff','stroke-linejoin':'round'});parent.appendChild(top);arr.push({el:top,z:0,o:1});
   const ink=mk('path',{fill:'url(#gink)'});parent.appendChild(ink);arr.push({el:ink,z:.5,o:0});};
  make(gS,L.B);L.S=L.B;}
-function renderHelm(){const sc=U*(1-D.c.open*.32),op=D.c.open,KX=HSX+.1*op,KY=HSY-.1*op;   // 꾹 눌러 작아지면 가로 늘림·세로 누름을 더 세게// 펼치면 조타키를 줄여 구슬·이름표와 겹치지 않게
+function renderHelm(){if(HL){renderHelmLite();return;}const sc=U*(1-D.c.open*.32),op=D.c.open,KX=HSX+.1*op,KY=HSY-.1*op;   // 꾹 눌러 작아지면 가로 늘림·세로 누름을 더 세게// 펼치면 조타키를 줄여 구슬·이름표와 겹치지 않게
  const sub=(pts,z,a)=>{const c=Math.cos(a),s=Math.sin(a);return 'M'+pts.map(([x,y])=>{const p=project((x*c-y*s)*sc,(x*s+y*c)*sc,z,false,HPS);return (CX+(p.x-CX)*KX).toFixed(1)+' '+(CY+(p.y-CY)*KY).toFixed(1);}).join('L')+'Z';};
  const dFor=z=>sub(HELM,z,0);
  const k0=project(0,0,0).k;
@@ -2025,19 +2043,19 @@ function renderOrbs(){const n=focusIdx(D.c.rz);
   let a=mod(90+i*STEP+D.c.rz-90+180,360)-180;const prox=Math.max(0,1-Math.abs(a)/STEP);const e=prox*prox*(3-2*prox);if(i===n)D.fe=e;
   const la=rad(90+i*STEP);const R=R_ORB*(.3+.7*p);const pt=project(Math.cos(la)*R,Math.sin(la)*R,26*p);
   const size=(56+12*e)*pt.k*(.5+.5*p);const depth=Math.max(-1,Math.min(1,pt.z/110));
-  if(LITE){if(!el._fx){el._fx=1;el.style.width=el.style.height='96px';}el.style.transform=`translate(${(pt.x-48).toFixed(1)}px,${(pt.y-48-200).toFixed(1)}px) scale(${(size/96).toFixed(4)})`;el.style.setProperty('--is',(96/size).toFixed(4));}   // 96 고정 + 줄이기 : will-change 레이어는 처음 크기로 그려져 키우면 흐려짐
+  if(LITE){if(!el._fx){el._fx=1;el.style.width=el.style.height='96px';el.style.setProperty('--is','1.55');}el.style.transform=`translate(${(pt.x-48).toFixed(1)}px,${(pt.y-48-200).toFixed(1)}px) scale(${(size/96).toFixed(4)})`;}   // 96 고정 + 줄이기 : will-change 레이어는 처음 크기로 그려져 키우면 흐려짐
   else{el.style.width=el.style.height=size+'px';el.style.transform=`translate(${(pt.x-size/2).toFixed(1)}px,${(pt.y-size/2-200).toFixed(1)}px)`;}
-  el.style.opacity=(Math.min(1,p*1.4)*(.72+.28*(depth+1)/2)).toFixed(3);el.style.zIndex=Math.round(500+pt.z);
-  el.style.filter=depth<-.3?`blur(${Math.min(2.2,(-depth-.3)*2.2).toFixed(2)}px)`:'none';
+  el.style.opacity=(Math.min(1,p*1.4)*(.72+.28*(depth+1)/2)).toFixed(LITE?2:3);{const z=LITE?500+Math.round(pt.z/12)*12:Math.round(500+pt.z);if(el._z!==z){el._z=z;el.style.zIndex=z;}}
+  if(!LITE)el.style.filter=depth<-.3?`blur(${Math.min(2.2,(-depth-.3)*2.2).toFixed(2)}px)`:'none';
   el.classList.toggle('hot',opened&&i===n);el.classList.toggle('on',ST.ans[ST.step]===it.k);
   el.classList.toggle('dis',isDis(it));
   // 모든 구슬 : 선택 자리로 굴러 들어오며 글자가 가장자리에서 앞면으로 돌아옴(자리에선 0°, 옆 구슬 자리에서도 0°로 돌아가 이어짐)
-  {const f=Math.max(-1,Math.min(1,a/STEP)),yaw=-rad(a)*1.8*(120/STEP)*(1-Math.abs(f));const t=it.o.gl?sphTex(it.o.gl):icTex('ic:'+it.k,it.o.ic);
+  {const f=Math.max(-1,Math.min(1,a/STEP)),yaw=LITE?0:-rad(a)*1.8*(120/STEP)*(1-Math.abs(f));const t=it.o.gl?sphTex(it.o.gl):icTex('ic:'+it.k,it.o.ic);
    drawSph(el.querySelector('.sph'),it.o.gl||it.k,t,yaw,opened&&i===n?'#ffffff':'#0a0a0a');}});
  const pp=project(0,R_ORB+62,8*D.c.open,true),cl=1-D.c.open;const sc=pp.k*(.9+.15*D.c.open)*(1-.34*D.c.open)*(1-.15*cl);// 닫혀 있을 땐 안내 말풍선 위에 얹힘(피그마 2636:15131)
  $('#ptr').style.transform=`translate(${(pp.x-12).toFixed(1)}px,${(pp.y-11-66*cl).toFixed(1)}px) scale(${sc.toFixed(3)})`;
  const tg=TAG.el,tgt=TAG.on?1:0;TAG.g+=(tgt-TAG.g)*(TAG.on?.2:.32);if(Math.abs(tgt-TAG.g)<.004)TAG.g=tgt;const g=TAG.g,ge=g*g*(3-2*g);
- tg.style.opacity=Math.max(0,Math.min(1,(g-.12)/.3)).toFixed(3);tg.style.setProperty('--al',(D.fe||0).toFixed(3));tg.style.setProperty('--ap',Math.max(0,Math.min(1,(g-.45)/.55)).toFixed(3));
+ tg.style.opacity=Math.max(0,Math.min(1,(g-.12)/.3)).toFixed(3);{const al=(D.fe||0).toFixed(LITE?1:3),ap=Math.max(0,Math.min(1,(g-.45)/.55)).toFixed(LITE?1:3);if(tg._al!==al){tg._al=al;tg.style.setProperty('--al',al);}if(tg._ap!==ap){tg._ap=ap;tg.style.setProperty('--ap',ap);}}
  tg.style.transform=`translate(${(pp.x-TAG.w/2).toFixed(1)}px,${(pp.y+7.5*sc).toFixed(1)}px) scale(${(pp.k*(.42+.58*ge)).toFixed(3)},${(pp.k*(.62+.38*ge)).toFixed(3)})`;}
 const TAG={el:$('#ftag'),w:0,k:null,g:0,on:false};
 function tagShow(on){TAG.on=on;if(on)setTag(focusKey(),false);}
@@ -2046,11 +2064,13 @@ function setTag(k,anim){const el=TAG.el,tx=el.querySelector('.tx');TAG.k=k;const
  if(anim&&!reduce){tx.classList.remove('tswap');void tx.offsetWidth;tx.classList.add('tswap');}}
 
 let last=performance.now(),t0=last,lastFocus=-1;
-function loop(now){const dt=Math.min(.033,(now-last)/1000);last=now;
+function loop(now){const rdt=Math.min(.12,(now-last)/1000),dt=Math.min(.033,rdt);last=now;
  if(view==='steer'){
   if(!holding&&!opened&&!reduce){const w=(now-t0)/1000;D.t.ry=Math.sin(w*.6)*5;D.t.rx=POSES[pose]+Math.sin(w*.45)*3;D.t.rz+=dt*4;}
-  for(const key of ['rx','ry','rz','open']){const k=key==='open'?220:150,d=key==='open'?22:17;const acc=k*(D.t[key]-D.c[key])-d*D.v[key];D.v[key]+=acc*dt;D.c[key]+=D.v[key]*dt;}
-  pop.forEach(p=>{const acc=200*(p.t-p.c)-17*p.v;p.v+=acc*dt;p.c+=p.v*dt;});
+  for(let n=Math.max(1,Math.round(rdt/.0167)),h=rdt/n,q=0;q<n;q++){
+   for(const key of ['rx','ry','rz','open']){const k=key==='open'?220:150,d=key==='open'?22:17;const acc=k*(D.t[key]-D.c[key])-d*D.v[key];D.v[key]+=acc*h;D.c[key]+=D.v[key]*h;}
+   pop.forEach(p=>{const acc=200*(p.t-p.c)-17*p.v;p.v+=acc*h;p.c+=p.v*h;});}
+  if(LITE&&holding&&opened){D.c.rz+=(D.t.rz-D.c.rz)*.7;D.v.rz=0;}
   renderHelm();renderOrbs();
   const f=focusIdx(D.c.rz);if(opened&&f!==lastFocus){lastFocus=f;buzz(6);focusPill();}}
  requestAnimationFrame(loop);}
