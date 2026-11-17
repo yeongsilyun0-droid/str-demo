@@ -2036,10 +2036,11 @@ let orbEls=[];
 function buildOrbs(){wheel.innerHTML='';const q=curQ();ITEMS=q.opts.map(o=>({k:o.k,o}));N=ITEMS.length;STEP=360/N;
  pop=ITEMS.map((_,i)=>({c:0,v:0,t:0}));if(opened)pop.forEach((q,i)=>setTimeout(()=>{if(opened)q.t=1;},i*45));
  orbEls=ITEMS.map(it=>{const d=document.createElement('div');d.className='orb';
-  d.innerHTML=`<div class="ball"></div><canvas class="sph" width="${SPH_S}" height="${SPH_S}"></canvas><div class="ic"></div><div class="ring"></div><div class="tg">${it.o.lb}${it.o.sub?`<span class="s">${it.o.sub}</span>`:""}</div><div class="chk"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#0A0A0A"/></svg></div>`;wheel.appendChild(d);return d;});}
+  d.innerHTML=`<div class="ball"></div><canvas class="sph" width="${SPH_S}" height="${SPH_S}"></canvas><div class="ic"></div><div class="ring"></div><div class="tg">${it.o.lb}${it.o.sub?`<span class="s">${it.o.sub}</span>`:""}</div><div class="chk"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#0A0A0A"/></svg></div>`;wheel.appendChild(d);return d;});
+ Q.forEach(q_=>q_.opts.forEach(o=>{o.gl?sphTex(o.gl):icTex('ic:'+o.k,o.ic);}));}   // 모든 질문의 구슬 무늬 미리 준비
 const isDis=it=>ST.step===0&&ST.lim&&ST.lim.tone==='흐린 날'&&it.k==='180';
 function renderOrbs(){const n=focusIdx(D.c.rz);
- ITEMS.forEach((it,i)=>{const p=pop[i].c;const el=orbEls[i];if(p<.01){el.style.opacity=0;return;}
+ ITEMS.forEach((it,i)=>{const p=pop[i].c;const el=orbEls[i];if(p<.01){if(LITE){if(!el._pre){const t=it.o.gl?sphTex(it.o.gl):icTex('ic:'+it.k,it.o.ic);if(t){el._pre=1;el._fx=1;el.style.width=el.style.height='96px';el.style.setProperty('--is','1.55');el.style.transform=`translate(${CX-48}px,${CY-48-200}px) scale(.4)`;drawSph(el.querySelector('.sph'),it.o.gl||it.k,t,0,'#0a0a0a');}}el.style.opacity=.001;}else el.style.opacity=0;return;}   // 가벼운 모드 : 조타키 뒤에 거의 투명하게 미리 그려 둠 → 펼칠 때 바로 나옴
   let a=mod(90+i*STEP+D.c.rz-90+180,360)-180;const prox=Math.max(0,1-Math.abs(a)/STEP);const e=prox*prox*(3-2*prox);if(i===n)D.fe=e;
   const la=rad(90+i*STEP);const R=R_ORB*(.3+.7*p);const pt=project(Math.cos(la)*R,Math.sin(la)*R,26*p);
   const size=(56+12*e)*pt.k*(.5+.5*p);const depth=Math.max(-1,Math.min(1,pt.z/110));
@@ -2068,21 +2069,22 @@ function loop(now){const rdt=Math.min(.12,(now-last)/1000),dt=Math.min(.033,rdt)
  if(view==='steer'){
   if(!holding&&!opened&&!reduce){const w=(now-t0)/1000;D.t.ry=Math.sin(w*.6)*5;D.t.rx=POSES[pose]+Math.sin(w*.45)*3;D.t.rz+=dt*4;}
   for(let n=Math.max(1,Math.round(rdt/.0167)),h=rdt/n,q=0;q<n;q++){
-   for(const key of ['rx','ry','rz','open']){const k=key==='open'?220:150,d=key==='open'?22:17;const acc=k*(D.t[key]-D.c[key])-d*D.v[key];D.v[key]+=acc*h;D.c[key]+=D.v[key]*h;}
-   pop.forEach(p=>{const acc=200*(p.t-p.c)-17*p.v;p.v+=acc*h;p.c+=p.v*h;});}
+   for(const key of ['rx','ry','rz','open']){const k=key==='open'?(LITE?460:220):150,d=key==='open'?(LITE?36:22):17;const acc=k*(D.t[key]-D.c[key])-d*D.v[key];D.v[key]+=acc*h;D.c[key]+=D.v[key]*h;}
+   pop.forEach(p=>{const acc=(LITE?560:200)*(p.t-p.c)-(LITE?40:17)*p.v;p.v+=acc*h;p.c+=p.v*h;});}
   if(LITE&&holding&&opened){D.c.rz+=(D.t.rz-D.c.rz)*.7;D.v.rz=0;}
   renderHelm();renderOrbs();
   const f=focusIdx(D.c.rz);if(opened&&f!==lastFocus){lastFocus=f;buzz(6);focusPill();}}
  requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 
+let downT=0,dragAmt=0;
 let holding=false,opened=false,holdTimer=null,pid=null,lastAng=0,startP=null,closeTimer=null;
 function local(e){const r=$('#dz').getBoundingClientRect(),s=r.width/412;return {x:(e.clientX-r.left)/s,y:(e.clientY-r.top)/s};}
 const angAt=p=>Math.atan2(p.y-CY,p.x-CX)*180/Math.PI;
 function tiltFrom(p){const dx=Math.max(-1,Math.min(1,(p.x-CX)/170)),dy=Math.max(-1,Math.min(1,(p.y-CY)/170));D.t.ry=dx*maxTilt;D.t.rx=POSES[pose]+6-dy*maxTilt*.8;}
 function openDial(p){if(opened)return;if(ST.intro)introEnd();clearTimeout(closeTimer);opened=true;tagShow(true);D.everOpened=true;D.t.open=1;wheel.classList.add('drag');$('#holdring').classList.remove('go');buzz(12);
  if(p)tiltFrom(p);D.t.rz=Math.round(D.t.rz/STEP)*STEP;
- const f=focusIdx(D.t.rz);pop.forEach((q,i)=>{const dist=Math.min(mod(i-f,N),mod(f-i,N));setTimeout(()=>{if(opened)q.t=1;},dist*45);});lastFocus=-1;}
+ const f=focusIdx(D.t.rz);pop.forEach((q,i)=>{const dist=Math.min(mod(i-f,N),mod(f-i,N));if(LITE){q.t=1;if(q.c<.35){q.c=.35;q.v=5;}}else setTimeout(()=>{if(opened)q.t=1;},dist*45);});lastFocus=-1;}   // 가벼운 모드 : 차례 없이 한꺼번에, 첫 프레임부터 보이게
 function closeDial(){if(!opened&&!pop.some(q=>q.t))return coachDefault();opened=false;tagShow(false);D.t.open=0;D.t.ry=0;D.t.rx=POSES[pose];wheel.classList.remove('drag');pop.forEach(q=>q.t=0);coachDefault();}
 function snapAndChoose(){tagShow(false);const f=focusIdx(D.t.rz);D.t.rz=Math.round(D.t.rz/STEP)*STEP;D.v.rz*=.3;choose(ITEMS[f].k);clearTimeout(closeTimer);closeTimer=setTimeout(closeDial,800);}
 function choose(k){const it=ITEMS.find(x=>x.k===k);
@@ -2095,12 +2097,13 @@ function gotoStep(i){if(ST.intro){ST.intro=false;clearTimeout(ST.introT);}ST.ste
 function nudgeGo(){const g=$('#stGo');g.animate([{scale:1},{scale:1.16},{scale:.96},{scale:1}],{duration:520,easing:'cubic-bezier(.3,.7,.4,1)'});toastMsg('아래&nbsp;<b>Steer</b>를 눌러 주세요');buzz(18);}
 wheel.addEventListener('pointerdown',e=>{if(view==='steer'&&ST.step>2&&!ST.intro&&ST.ans.every(v=>v!=null)){nudgeGo();return;}if(view!=='steer'||ST.step>2)return;wheel.setPointerCapture(e.pointerId);pid=e.pointerId;holding=true;const p=local(e);startP=p;lastAng=angAt(p);
  const hr=$('#holdring');hr.style.setProperty('--hold',HOLD+'ms');hr.classList.remove('go');void hr.offsetWidth;hr.classList.add('go');
- clearTimeout(holdTimer);holdTimer=setTimeout(()=>{if(holding)openDial(startP);},HOLD);});
+ downT=performance.now();dragAmt=0;clearTimeout(holdTimer);
+ if(LITE){clearTimeout(closeTimer);openDial(startP);}else holdTimer=setTimeout(()=>{if(holding)openDial(startP);},HOLD);});
 wheel.addEventListener('pointermove',e=>{if(!holding||e.pointerId!==pid)return;const p=local(e);
  if(!opened){if(Math.hypot(p.x-startP.x,p.y-startP.y)>14){clearTimeout(holdTimer);openDial(p);}else return;}
- tiltFrom(p);const a=angAt(p);let d=a-lastAng;if(d>180)d-=360;if(d<-180)d+=360;lastAng=a;D.t.rz+=d;});
+ tiltFrom(p);const a=angAt(p);let d=a-lastAng;if(d>180)d-=360;if(d<-180)d+=360;lastAng=a;D.t.rz+=d;dragAmt+=Math.abs(d);});
 function release(e){if(!holding||e.pointerId!==pid)return;holding=false;clearTimeout(holdTimer);$('#holdring').classList.remove('go');
- if(opened)snapAndChoose();else toastMsg('조타키를 눌러 주세요');}
+ if(opened){if(LITE&&performance.now()-downT<220&&dragAmt<4){D.t.ry=0;toastMsg('누른 채로 돌려서 골라 보세요');clearTimeout(closeTimer);closeTimer=setTimeout(()=>{if(opened&&!holding)closeDial();},4000);}else snapAndChoose();}else toastMsg('조타키를 눌러 주세요');}
 wheel.addEventListener('pointerup',release);wheel.addEventListener('pointercancel',release);
 function stepRot(n){if(view!=='steer'||ST.step>2)return;if(!opened)openDial(null);D.t.rz=Math.round(D.t.rz/STEP)*STEP-n*STEP;clearTimeout(closeTimer);closeTimer=setTimeout(()=>{if(opened&&!holding)closeDial();},3000);}
 let wheelLock=0;wheel.addEventListener('wheel',e=>{e.preventDefault();const now=performance.now();if(now-wheelLock<130)return;wheelLock=now;stepRot(Math.sign(e.deltaY||e.deltaX));},{passive:false});
