@@ -40,6 +40,8 @@
   /* 상단 바 */
   .top{position:absolute;left:80px;right:80px;top:72px;height:96px;display:flex;align-items:center;justify-content:flex-start}
   .stepLbl{margin-left:auto;margin-right:28px}
+  .top .home{display:none}
+  #vRoute.tk .top .home{display:flex}
   .top .home{width:120px;height:120px;margin-right:-36px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;border-radius:60px;color:#0A0A0A;cursor:pointer}
   .top img{height:72px}
   .top .stepLbl{font-size:36px;font-weight:500;color:var(--muted);letter-spacing:-.01em}
@@ -1686,7 +1688,7 @@ const RC={get i(){return OS.i;},n:5};
 function rcGo(i){oGo(i);}
 // 나의 기운 자동 넘김 (2026-11-17) : 안 만져도 장면마다 읽을 시간이 지나면 다음으로, 마지막(용신)에선 '시작하기'까지. 만지면 시간을 다시 셈. &auto=0이면 끔
 //   장면별 시간(장면이 시작된 때부터) : ① 일간 7초(로딩 구 포함) · ② 글자(자동으로 ③) · ③ 오행 5.5초 · ④ 시소 6초 · ⑤ 용신 8.5초
-const RDA_=new URLSearchParams(location.search).get('auto')==='0'?null:[7000,0,5500,6000,8500],RDA={t:0};
+const RDA_=new URLSearchParams(location.search).get('auto')==='0'?null:[6000,0,4500,5000,6500],RDA={t:0};
 function rdAuto(){clearTimeout(RDA.t);if(!RDA_||view!=='read')return;const i=OS.i,ms=RDA_[i];if(!ms)return;RDA.t=setTimeout(()=>{if(view!=='read'||OS.i!==i||OS.loading)return;if(i<OS.n-1)oGo(i+1);else $('#oCta').click();},ms);}
 {const g_=oGo;oGo=function(i,first){const b=OS.i;g_(i,first);if(OS.i!==b||first)rdAuto();};}
 $('#vRead').addEventListener('pointerdown',()=>{if(RDA.t)rdAuto();});
@@ -2065,7 +2067,7 @@ function choose(k){const it=ITEMS.find(x=>x.k===k);
  clearTimeout(ST.nextT);ST.nextT=setTimeout(()=>{const nx=ST.ans.findIndex((v,i)=>v==null);gotoStep(nx<0?3:nx);},900);}
 function gotoStep(i){if(ST.intro){ST.intro=false;clearTimeout(ST.introT);}ST.step=i;closeDial();if(i<3){setTimeout(()=>{if(view!=='steer'||ST.step!==i)return;buildOrbs();D.t.rz=0;D.c.rz=0;renderSteer(true);if(holding)openDial(null);},380);}else renderSteer(true);}
 // 다 고른 뒤 조타키를 누르면(관람객이 습관처럼 가운데를 누름) 아래 Steer 버튼이 통 튀며 알려 줌
-function nudgeGo(){const g=$('#stGo');g.animate([{scale:1},{scale:1.16},{scale:.96},{scale:1}],{duration:520,easing:'cubic-bezier(.3,.7,.4,1)'});toastMsg('아래&nbsp;<b>Steer</b>를 꾹 눌러 주세요');buzz(18);}
+function nudgeGo(){const g=$('#stGo');g.animate([{scale:1},{scale:1.16},{scale:.96},{scale:1}],{duration:520,easing:'cubic-bezier(.3,.7,.4,1)'});toastMsg('아래&nbsp;<b>Steer</b>를 눌러 주세요');buzz(18);}
 wheel.addEventListener('pointerdown',e=>{if(view==='steer'&&ST.step>2&&!ST.intro&&ST.ans.every(v=>v!=null)){nudgeGo();return;}if(view!=='steer'||ST.step>2)return;wheel.setPointerCapture(e.pointerId);pid=e.pointerId;holding=true;const p=local(e);startP=p;lastAng=angAt(p);
  const hr=$('#holdring');hr.style.setProperty('--hold',HOLD+'ms');hr.classList.remove('go');void hr.offsetWidth;hr.classList.add('go');
  clearTimeout(holdTimer);holdTimer=setTimeout(()=>{if(holding)openDial(startP);},HOLD);});
@@ -2073,7 +2075,7 @@ wheel.addEventListener('pointermove',e=>{if(!holding||e.pointerId!==pid)return;c
  if(!opened){if(Math.hypot(p.x-startP.x,p.y-startP.y)>14){clearTimeout(holdTimer);openDial(p);}else return;}
  tiltFrom(p);const a=angAt(p);let d=a-lastAng;if(d>180)d-=360;if(d<-180)d+=360;lastAng=a;D.t.rz+=d;});
 function release(e){if(!holding||e.pointerId!==pid)return;holding=false;clearTimeout(holdTimer);$('#holdring').classList.remove('go');
- if(opened)snapAndChoose();else toastMsg('조타키를 꾹 눌러 주세요');}
+ if(opened)snapAndChoose();else toastMsg('조타키를 눌러 주세요');}
 wheel.addEventListener('pointerup',release);wheel.addEventListener('pointercancel',release);
 function stepRot(n){if(view!=='steer'||ST.step>2)return;if(!opened)openDial(null);D.t.rz=Math.round(D.t.rz/STEP)*STEP-n*STEP;clearTimeout(closeTimer);closeTimer=setTimeout(()=>{if(opened&&!holding)closeDial();},3000);}
 let wheelLock=0;wheel.addEventListener('wheel',e=>{e.preventDefault();const now=performance.now();if(now-wheelLock<130)return;wheelLock=now;stepRot(Math.sign(e.deltaY||e.deltaX));},{passive:false});
@@ -2116,11 +2118,11 @@ function renderSteer(anim=true){const r=S.saju;const done=ST.ans.every(v=>v!=nul
  renderMeta();
  if(ST.intro){cap.innerHTML='오늘의 항로';txt.innerHTML=`<span class="g">세 가지만 고르면</span><br>${ELX[r.yongsin.element].ko}의 기운이 있는 곳을 찾아요`;}
  else if(!done){const q=curQ();cap.innerHTML=`질문 ${ST.step+1} / 3`+(ST.step===0&&ST.lim.tone==='흐린 날'?' · 오늘은 흐린 날이라 1시간까지':'');txt.innerHTML=q.q;}
- else{cap.innerHTML='<i></i>준비됐어요';txt.innerHTML='<span class="g">세 가지를 다 골랐어요</span><br>아래 Steer를 꾹 눌러 출발해요';}
+ else{cap.innerHTML='<i></i>준비됐어요';txt.innerHTML='<span class="g">세 가지를 다 골랐어요</span><br>아래 Steer를 눌러 출발해요';}
  $('#vSteer').classList.toggle('done',done);
  txt.style.setProperty('--fs','84px');
  if(anim){[txt,cap].forEach(e=>{e.classList.remove('qin');void e.offsetWidth;e.classList.add('qin');});}
- const go=$('#stGo');go.classList.toggle('off',!done);go.classList.toggle('ready',done);if(done&&S.saju&&S.saju.roles){const R_=S.saju.roles;setTimeout(()=>{GLM.prep(R_.용신&&R_.용신.element);GLM.prep(R_.희신&&R_.희신.element);},600);}$('#stHint').textContent=done?'꾹 누르고 있다가 놓으면 출발해요':(D.everOpened?curQ().hint:'세 가지 질문에 답해 주세요');
+ const go=$('#stGo');go.classList.toggle('off',!done);go.classList.toggle('ready',done);if(done&&S.saju&&S.saju.roles){const R_=S.saju.roles;setTimeout(()=>{GLM.prep(R_.용신&&R_.용신.element);GLM.prep(R_.희신&&R_.희신.element);},600);}$('#stHint').textContent=done?'Steer를 누르면 출발해요':(D.everOpened?curQ().hint:'세 가지 질문에 답해 주세요');
  if(ST.intro||done)$('#stCoach').classList.add('hide');else coachDefault();}
 $('#stMeta').addEventListener('click',e=>{const b=e.target.closest('.ans');if(!b||view!=='steer')return;clearTimeout(ST.nextT);gotoStep(+b.dataset.s);});
 $('#stBack').addEventListener('click',()=>{clearTimeout(ST.nextT);if(ST.step>0)gotoStep(Math.min(ST.step,3)-1);else{OS.back=true;go('read');}});
@@ -2155,7 +2157,7 @@ function holdStart(){if(!(ST.ans&&ST.ans.every(v=>v!=null))){goBtn.animate([{tra
  holdT0=performance.now();goBtn.classList.add('press');$('#stHint').textContent='계속 누르고 있어요…';
  const st=()=>{const f=Math.min(1,(performance.now()-holdT0)/800);circ.style.strokeDashoffset=CIRC*(1-f);neck(f);if(f>=1){$('#stHint').textContent='놓으면 출발!';hold='full';return;}hold=requestAnimationFrame(st);};hold=requestAnimationFrame(st);}
 function holdEnd(){if(hold==null)return;const full=hold==='full';if(!full)cancelAnimationFrame(hold);hold=null;goBtn.classList.remove('press');circ.style.strokeDashoffset=CIRC;
- if(full){go('route');setTimeout(()=>neck(0),600);return;}
+ if(full||(ST.ans&&ST.ans.every(v=>v!=null))){go('route');setTimeout(()=>neck(0),600);return;}   // 2026-11-17 : 탭만 해도 출발(꾹 누르면 링이 차는 연출은 그대로)
  {const f0=Math.min(1,(performance.now()-holdT0)/800),tt=performance.now();const rw=now=>{const t=Math.min(1,(now-tt)/220);if(hold==null)neck(f0*(1-t));if(t<1)requestAnimationFrame(rw);};requestAnimationFrame(rw);}if(ST.ans&&ST.ans.every(v=>v!=null))$('#stHint').textContent='조금 더 길게 눌러주세요';}
 goBtn.addEventListener('pointerdown',e=>{goBtn.setPointerCapture(e.pointerId);holdStart();});goBtn.addEventListener('pointerup',holdEnd);goBtn.addEventListener('pointercancel',holdEnd);
 
@@ -2488,7 +2490,7 @@ const RS_DARK=(()=>{const u=new URLSearchParams(location.search),t=u.get('theme'
 const RS={on:false,raf:0,p:0,tg:0,drag:null,wAcc:0,wLock:0,fin:null,done:false};
 function rsStop(){{const b_=$('#rsc');if(b_)b_.classList.remove('fx');const r_=$('#rscRg');if(r_)r_.getContext('2d').clearRect(0,0,1440,2560);}RS.on=false;cancelAnimationFrame(RS.raf);const c=$('#rsc');if(c){c.classList.remove('on');c.style.opacity='';}const v=$('#vRoute');if(v)v.classList.remove('dk');}
 // 지도 단계 자동 넘김 시간(ms) : 첫 단계(지도가 펼쳐지는 시간 포함) · 가운데 단계 · 마지막 구슬. 주소 &auto=0 이면 끔
-const RS_AUTO=new URLSearchParams(location.search).get('auto')==='0'?null:[3100,2200,2300];
+const RS_AUTO=new URLSearchParams(location.search).get('auto')==='0'?null:[2000,1400,1400];
 function rsGo(d){if(!RS.on)return;const t=Math.max(0,Math.min(RS.mx||6,Math.round(RS.tg)+d));if(RT_MODE==='paper'&&t!==RS.tg)rsTw(t);else RS.tg=t;}
 // 종이 겹 : 단계 사이를 정해진 시간 동안 쭉(이징) 이동
 function rsTw(t,d){RS.drag=null;RS.tw={a:RS.p,b:t,t0:performance.now(),d:d||Math.max(420,880*Math.min(1,Math.abs(t-RS.p)))};RS.tg=t;}
@@ -3178,7 +3180,7 @@ const PLACE_PH={'로스터리 카페':'cafe','카페':'cafe','책방':'book','�
  '과일 가게':'fruit','국밥집':'gukbap','낙지·쭈꾸미집':'nakji','냉면집':'naengmyeon','떡볶이집':'tteokbokki','떡집':'tteok','마라탕집':'mala','빙수집':'bingsu','샐러드 가게':'salad',
  '짬뽕집':'jjamppong','호떡집':'hotteok','간식 가게':'hotteok','횟집':'sashimi','한옥':'hanok','한옥 스테이':'hanok','서예원':'calli','셀프 사진관':'booth','화방':'artsup','공연장':'concert','소극장':'concert','영화관':'cinema','산·숲길':'forest'};
 // ── 창문 나침반 AR : 화면 뒤쪽이 보는 방위(AR_HEAD, 설치 후 맞춤 · 주소 &head=)와 장소 방위의 차이로 길을 휨. 뒤 카메라 = 이름에 back·rear·usb·external이 든 장치(주소 &arcam=이름 일부), 없으면 예시 사진
-const AR_ON=new URLSearchParams(location.search).get('ar')!=='0',AR_HEAD=+(new URLSearchParams(location.search).get('head')||180),AR_HOLD=5500;
+const AR_ON=new URLSearchParams(location.search).get('ar')!=='0',AR_HEAD=+(new URLSearchParams(location.search).get('head')||180),AR_HOLD=3800;
 const AR_COL={metal:'#97A5FF'};   // AR 길 색 : 금은 OT(#BFCCFF)가 너무 옅어 바닥 위에서 회색처럼 보여 채도를 조금 올림
 const ARW=(()=>{let A=null,st=null,T=[];const D8=['북','북동','동','남동','남','남서','서','북서'];
   // 뒤 카메라 : ① 주소 &arcam= 이름 일부 ② 아이패드·폰은 facingMode 'environment'(후면, 앞 카메라 권한을 먼저 묻지 않음) ③ 이름에 back·rear·후면·usb·external이 든 장치(스탠바이미 USB 카메라). 다 안 되면 예시 사진
