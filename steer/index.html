@@ -2824,14 +2824,16 @@ function scrollRun(REC,HM,onFin){
     // 실제 지도 (큰 길만, 벡터) : OSM 큰 길 선(steer-roads.js)을 출발점 기준 미터 좌표로 그려 종이에 인쇄. 반경(이대 2km·동네 2.4km) 안에만, 가장자리 흐리게.
     //    들어올 때 현위치에서 바깥으로 원이 퍼지듯 나타남(mrv)
     {const mpm=.2*PP.Z*cs,Ox=SX(FX),Oy=SY(FY);
-      if(!MAPC){MAPC=document.createElement('canvas');MAPC.width=1440;MAPC.height=2560;}const m=MAPC.getContext('2d');m.globalCompositeOperation='source-over';m.fillStyle='#fff';m.fillRect(0,0,1440,2560);
+      if(!MAPC){MAPC=document.createElement('canvas');MAPC.width=1440;MAPC.height=2560;}const m=MAPC.getContext('2d');
+      const MK=Math.round(Math.log(cs)/Math.log(1.12))+'|'+(mrv<1?now:1)+'|'+Math.round(Ox/6)+','+Math.round(Oy/6);   // 큰길 캐시 키 : 배율 12% 단계 · 등장 중 · 원점 자리
+      if(MAPC._k!==MK){MAPC._k=MK;MAPC._cs=cs;MAPC._ox=Ox;MAPC._oy=Oy;m.setTransform(1,0,0,1,0,0);m.globalCompositeOperation='source-over';m.clearRect(0,0,1440,2560);m.fillStyle='#fff';m.fillRect(0,0,1440,2560);
       m.lineCap='round';m.lineJoin='round';m.strokeStyle='#CDCDD2';const wk=Math.pow(cs,.45);
       for(const [cl_,w] of [[2,3.2],[1,4.6],[0,6.4]]){m.lineWidth=w*wk;m.beginPath();for(const r_ of PP.roads){if(r_.c!==cl_)continue;const P_=r_.p;m.moveTo(Ox+P_[0]*mpm,Oy-P_[1]*mpm);for(let k=2;k<P_.length;k+=2)m.lineTo(Ox+P_[k]*mpm,Oy-P_[k+1]*mpm);}m.stroke();}
       const RM=(HM?2400:2000)*mpm*(.04+.96*mrv),gr=m.createRadialGradient(Ox,Oy,RM*.74,Ox,Oy,RM*1.04);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,1)');
-      m.globalCompositeOperation='destination-out';m.fillStyle=gr;m.fillRect(0,0,1440,2560);m.globalCompositeOperation='source-over';}
+      m.globalCompositeOperation='destination-out';m.fillStyle=gr;m.fillRect(0,0,1440,2560);m.globalCompositeOperation='source-over';}}
     // 종이 (지도가 인쇄된 채로)
     const x=PSC.x;x.globalCompositeOperation='source-over';x.clearRect(0,0,1440,2560);x.fillStyle=PP.PAPER;x.fillRect(0,0,1440,2560);
-    if(MAPC){x.globalCompositeOperation=PP.PAPER==='#FFFFFF'?'source-over':'multiply';x.globalAlpha=.8*(1-zF*.5);x.drawImage(MAPC,0,0);x.globalAlpha=1;x.globalCompositeOperation='source-over';}
+    if(MAPC){x.globalCompositeOperation=PP.PAPER==='#FFFFFF'?'source-over':'multiply';x.globalAlpha=.8*(1-zF*.5);const r_=cs/MAPC._cs,Ox_=SX(FX),Oy_=SY(FY);x.save();x.translate(Ox_,Oy_);x.scale(r_,r_);x.drawImage(MAPC,-MAPC._ox,-MAPC._oy);x.restore();x.globalAlpha=1;x.globalCompositeOperation='source-over';}
     x.globalCompositeOperation='destination-out';x.fillStyle='#000';x.beginPath();
     S.forEach(v=>{let r=(v.c.d.best?Math.max(HR*cs,hb):HR*cs)*v.o;if(qi<1)r*=ez(cl(qi*1.8-v.c.dn*.8));if(r<=.3||OUT(v.w,r))return;EL(x,v.w,r,1);});
     x.fill();x.globalCompositeOperation='source-over';g.globalAlpha=PP.A;g.drawImage(PSC.cv,0,0,1440,2560);g.globalAlpha=1;
@@ -3580,10 +3582,10 @@ function tkFinish(){const sec=$('#vRoute'),t=$('#tkt');if(sec.classList.contains
   clearTimeout(idleT);idleT=setTimeout(()=>go('idle'),45000);
   if(!P.endpoint){mapOnly();return;}
   if(!spin)show('','카드를 보내는 중이에요','잠깐만 기다려 주세요.');
-  tkRender(t).then(img=>upPhoto(img,map)).then(u=>{if(ok())show(u,'AR로 길안내 받기','‘AR로 길 보기’를 누르면 내 폰 카메라 위로<br>추천받은 장소로 가는 길이 떠요.',true,'카드도 함께 저장돼요 · 잠시 뒤 처음 화면으로 돌아가요');})
+  new Promise(r=>setTimeout(r,380)).then(()=>tkRender(t)).then(img=>upPhoto(img,map))   // 버튼 모션이 끝난 뒤 그려서 모션이 안 끊기게.then(u=>{if(ok())show(u,'AR로 길안내 받기','‘AR로 길 보기’를 누르면 내 폰 카메라 위로<br>추천받은 장소로 가는 길이 떠요.',true,'카드도 함께 저장돼요 · 잠시 뒤 처음 화면으로 돌아가요');})
     .catch(e=>{console.warn('[photo] 업로드 실패:',e);if(ok())mapOnly('카드는 보내지 못했어요. ');});}
 // 폰으로 가져가는 카드 그림 (1080×1920, 9:16) : 화면의 헤더 + 카드 앞면(장소 사진 · 흰 글리프 · 흰 영역 · 문구 · 알약 · 미션) + Steer 문구
-async function tkRender(t){const I=t._i,W=1080,H=1920,k=W/1440,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+async function tkRender(t){const I=t._i,W=LITE?810:1080,H=W*16/9,k=W/1440,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
   const ld=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});
   const F=(w,z,f)=>`${w} ${z}px ${f||'"Pretendard Variable",Pretendard,"Noto Sans KR",sans-serif'}`;
   try{await document.fonts.load('500 95px "Megascope"');}catch(e){}
@@ -3615,7 +3617,7 @@ async function tkRender(t){const I=t._i,W=1080,H=1920,k=W/1440,cv=document.creat
   g.restore();
   g.textAlign='center';g.textBaseline='alphabetic';g.fillStyle='rgba(10,10,10,.4)';g.font=F(400,44,'"Megascope",monospace');g.fillText('Steer',720,1930);
   g.font=F(500,30);g.fillText('바람은 고를 수 없지만, 키는 잡을 수 있다',720,1990);
-  t._rcv=cv;return cv.toDataURL('image/jpeg',.88);}
+  t._rcv=cv;return new Promise(r=>cv.toBlob(b=>{if(!b)return r(cv.toDataURL('image/jpeg',.88));const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b);},'image/jpeg',.88));}   // toBlob은 인코딩이 비동기라 화면이 안 멈춤
 // ── 우리 동네 고르기 (구 → 동)
 const HP={gu:null};
 function hpRender(){const H=window.STEER_HOME;if(!H)return;const g=$('#hpG');
