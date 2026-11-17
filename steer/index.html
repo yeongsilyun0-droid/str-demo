@@ -40,7 +40,7 @@
   /* 상단 바 */
   .top{position:absolute;left:80px;right:80px;top:72px;height:96px;display:flex;align-items:center;justify-content:flex-start}
   .stepLbl{margin-left:auto;margin-right:28px}
-  .top .home{width:120px;height:120px;margin-right:-36px;border:0;background:none;padding:0;align-items:center;justify-content:center;border-radius:60px;color:#0A0A0A;cursor:pointer;display:none}
+  .top .home{width:140px;height:140px;margin-right:-40px;border:0;background:none;padding:0;align-items:center;justify-content:center;border-radius:60px;color:#0A0A0A;cursor:pointer;display:none}
   #vRoute.tk .top .home{display:flex}   /* 마지막 카드 화면에만 */
   .top img{height:72px}
   .top .stepLbl{font-size:36px;font-weight:500;color:var(--muted);letter-spacing:-.01em}
@@ -1121,8 +1121,9 @@
   html.lite #oStk .ms{display:none}
   html.lite .orb .tg{transform:translateX(-50%) scale(var(--is,1));transform-origin:50% 0}
   html.lite #hshadow{display:none}
-  #vInput:not(.on){transform:translateY(56px);transition:opacity .55s,transform .7s cubic-bezier(.2,.7,.2,1)}
-  body.peek #vInput:not(.on){opacity:1;transform:none;pointer-events:none!important;background:#FFF;z-index:30}
+  body.peek #vInput:not(.on){opacity:1;pointer-events:none!important;background:#FFF}
+  body.peek #vIdle.on{opacity:0}
+  #vIdle,#vInput{transition:opacity 1.1s ease-in-out}
   body.peek #vInput:not(.on) *{pointer-events:none!important}
   html.lite,html.lite body{touch-action:none;overscroll-behavior:none;overflow:hidden}   /* 크로미움 108+는 overscroll-behavior를 html에 줘야 뷰포트에 적용됨(가로 스와이프 뒤로 가기·당겨서 새로고침 막기) */
   html.lite .sp{overflow:visible}   /* 구마다 둥근 마스크 레이어가 생기던 것 — 안엔 글자뿐이라 안 잘라도 됨 */   /* 흐림이 꺼지면 그림자가 딱딱한 회색 조타키로 보여서 숨김 */
@@ -1154,7 +1155,7 @@
 
   <!-- 1 입력 -->
   <section class="view" id="vInput">
-    <div class="top"><button class="back" id="inBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl" id="inStep">1 / 3 · 태어난 날</span><button class="home" aria-label="처음으로"><svg width="48" height="48" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
+    <div class="top"><button class="back" id="inBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl" id="inStep">1 / 3 · 태어난 날</span><button class="home" aria-label="처음으로"><svg width="66" height="66" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
     <h1 class="h1" data-step="date">언제 태어났나요?</h1>
     <p class="lead" data-step="date">사주를 읽기 위해 태어난 날이 필요해요.</p>
     <h1 class="h1" data-step="time">몇 시에 태어났나요?</h1>
@@ -1180,7 +1181,7 @@
   <section class="view" id="vRead" data-s="0">
     <div id="oBg"><div class="b"></div><div class="b"></div></div><div id="oGrain"></div>
     
-    <div class="top"><button class="back" id="rBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl">2 / 3 · 나의 기운</span><button class="home" aria-label="처음으로"><svg width="48" height="48" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
+    <div class="top"><button class="back" id="rBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl">2 / 3 · 나의 기운</span><button class="home" aria-label="처음으로"><svg width="66" height="66" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
     <div class="who" id="rWho"></div>
     <div class="prog" id="rProg"></div>
     <div id="oTx"></div>
@@ -1197,7 +1198,7 @@
   <section class="view" id="vSteer">
     <div class="ysG" id="stYs"></div><svg id="stSheet" width="1440" height="2560" viewBox="0 0 1440 2560" aria-hidden="true">
       <rect x="0" y="-200" width="1440" height="2085" rx="116" fill="#fff"/><circle cx="720" cy="2121.5" r="140.5" fill="#fff"/></svg><svg id="stNeck" viewBox="560 1860 320 150" aria-hidden="true"><path id="neckP" fill="#fff"/></svg><div id="stCover"></div>
-    <div class="top"><button class="back" id="stBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl">3 / 3 · 오늘의 조합</span><button class="home" aria-label="처음으로"><svg width="48" height="48" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
+    <div class="top"><button class="back" id="stBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl">3 / 3 · 오늘의 조합</span><button class="home" aria-label="처음으로"><svg width="66" height="66" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
     <div class="live"><div class="cap" id="stCap"></div><p class="txt" id="stTxt"></p></div>
     <div class="meta" id="stMeta"></div>
     <div id="dz">
@@ -1214,7 +1215,7 @@
 
   <!-- 3b 오늘의 항로 -->
   <section class="view" id="vRoute">
-    <div class="top"><button class="back" id="rtBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl">3 / 3 · 오늘의 항로</span><button class="home" aria-label="처음으로"><svg width="48" height="48" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
+    <div class="top"><button class="back" id="rtBack" aria-label="뒤로"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="stepLbl">3 / 3 · 오늘의 항로</span><button class="home" aria-label="처음으로"><svg width="66" height="66" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M40 216V115.5a8 8 0 0 1 2.6-5.9l80-72.7a8 8 0 0 1 10.8 0l80 72.7a8 8 0 0 1 2.6 5.9V216"/><path d="M152 216v-56a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v56"/><path d="M24 216h208"/></svg></button></div>
     <div class="rtCap" id="rtCap"><i></i><span id="rtCapT">Steer가 항로를 찾는 중</span></div>
     <h2 class="rtBig" id="rtBig"></h2>
     <div class="rtSrc" id="rtSrc"></div>
@@ -3574,9 +3575,9 @@ function tkLabel2(t){const I=t._i,dm=S.saju.dayMaster,st=STEM[dm.gan]||{n:''},ko
 $('#tkSave').addEventListener('click',()=>{if(!$('#vRoute').classList.contains('tkd')&&$('#tkt').classList.contains('live'))tkFinish();});
 $('#tkSkip').addEventListener('click',()=>{if(!tkOpen())return;const t=$('#tkt');t._front&&t._front();tkLabel2(t);t.classList.add('v2on');tkFinish();});
 $('#tkAgain').addEventListener('click',()=>go('idle'));
-// 대기 화면 엿보기 (2026-11-17) : 표지에서 안 만지면 9초마다 생년월일 화면이 2.6초 슥 올라왔다 내려감. &peek=0이면 끔
+// 대기 화면 엿보기 (2026-11-17) : 표지 6초 → 표지가 스르륵 사라지며 생년월일 화면이 비쳐 보임(크로스 디졸브 1.1초, 3.2초) → 다시 표지. &peek=0이면 끔
 (()=>{if(new URLSearchParams(location.search).get('peek')==='0')return;let idleT0=0,last=0;setInterval(()=>{const on=document.querySelector('#vIdle.on');const now=performance.now();if(!on){idleT0=0;if(document.body.classList.contains('peek'))document.body.classList.remove('peek');return;}
-  if(!idleT0){idleT0=now;last=now;return;}if(document.body.classList.contains('peek'))return;if(now-last>9000){last=now;document.body.classList.add('peek');setTimeout(()=>{document.body.classList.remove('peek');last=performance.now();},2600);}},500);})();
+  if(!idleT0){idleT0=now;last=now;return;}if(document.body.classList.contains('peek'))return;if(now-last>6000){last=now;document.body.classList.add('peek');setTimeout(()=>{document.body.classList.remove('peek');last=performance.now()+1100;},3200);}},500);})();
 $$('.top .home').forEach(b=>b.addEventListener('click',()=>go('idle')));   // 홈 아이콘 → 처음 화면(2026-11-17)
 function qrInto(el,u){el.innerHTML='';if(!u){el.textContent='···';return;}try{new QRCode(el,{text:u,width:260,height:260,correctLevel:QRCode.CorrectLevel.L});}catch(e){el.textContent='QR 생성 실패';}}
 // 폰 AR(사진 서버 /p/:id 'AR로 길 보기')용 : 카드 앞면만 잘라 낸 JPEG(tkRender 그림에서 카드 자리 233,680 974×1153 × 0.75) + 장소·출발점·용신 색
