@@ -1295,7 +1295,7 @@ if(LITE)document.documentElement.classList.add('lite');
   let gpu='';try{const g=document.createElement('canvas').getContext('webgl'),e=g&&g.getExtension('WEBGL_debug_renderer_info');gpu=g?(e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):g.getParameter(g.RENDERER)):'WebGL 없음';}catch(_){}
   const add=()=>document.body.appendChild(d);document.body?add():addEventListener('DOMContentLoaded',add);
   let n=0,last=performance.now(),t0=last,worst=0;const tick=now=>{n++;worst=Math.max(worst,now-last);last=now;
-    if(now-t0>=1000){const v=document.querySelector('.view.on');d.textContent=`${Math.round(n*1000/(now-t0))} fps  느린 프레임 ${Math.round(worst)}ms\n${v?v.id:'-'}  ${LITE?'가벼운 모드':'기본 모드'}  사진서버 ${(window.STEER_PHOTO||{}).token?'설정됨':'없음'}  dpr ${devicePixelRatio}  ${innerWidth}×${innerHeight}\n${String(gpu).slice(0,46)}`;n=0;t0=now;worst=0;}
+    if(now-t0>=1000){const v=document.querySelector('.view.on');d.textContent=`${Math.round(n*1000/(now-t0))} fps  느린 프레임 ${Math.round(worst)}ms\n${v?v.id:'-'}  ${LITE?'가벼운 모드':'기본 모드'}  크로미움 ${(navigator.userAgent.match(/Chrome\/(\d+)/)||[])[1]||'?'}${/web0s|webos/i.test(navigator.userAgent)?' webOS':''}  사진서버 ${(window.STEER_PHOTO||{}).token?'설정됨':'없음'}  dpr ${devicePixelRatio}  ${innerWidth}×${innerHeight}\n${String(gpu).slice(0,46)}`;n=0;t0=now;worst=0;}
     requestAnimationFrame(tick);};requestAnimationFrame(tick);})();
 const EL_KO={wood:'목',fire:'화',earth:'토',metal:'금',water:'수'}, EL_HJ={wood:'木',fire:'火',earth:'土',metal:'金',water:'水'};
 const ITEM_EN={color:'Color',taste:'Taste',direction:'Way',time:'Time',space:'Place',action:'Action'};
