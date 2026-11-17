@@ -1913,7 +1913,7 @@ const WITHK={'과일 가게':'solo family','냉면집':'solo family friend','샐
  'see.도자기 공방':'solo lover','do.도자기 공방':'lover friend family','현악기 가게':'solo','노래방':'friend family','합주실':'friend','악기 가게':'solo','레코드숍':'solo lover'};
 const withOk=(p,w)=>{const k=kindOf(p);if(!k)return true;const v=WITHK[p.act+'.'+k[3]]||WITHK[k[3]];return !v||v.split(' ').includes(w);};
 // 네이버 지도에 없거나 추천하기 애매한 곳 — 여기에 이름을 추가하면 모든 추천에서 빠져요
-const BLOCK=['정림민화커넥션','앤드뉴 갤러리','김알파카자수공방','김대중도서관'];   // 김대중도서관 : 정치 인물 이름이라 뺌(2026-11-17)
+const BLOCK=['정림민화커넥션','앤드뉴 갤러리','김알파카자수공방','김대중도서관','부에노커피로스팅Co']   // 부에노 : 로스팅을 안 해서 뺌(2026-11-17);   // 김대중도서관 : 정치 인물 이름이라 뺌(2026-11-17)
 const EXCL=new RegExp('투워치|미광당|키즈|^캔들$|'+BLOCK.map(n=>n.replace(/\s/g,'\\s*')).join('|'));
 const kindOf=p=>(p.kk?KIND.find(k=>k[5]===p.kk):null)||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&!k[5]&&k[2].test(p.name))||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&k[5]==='flower'&&p.act==='see')||null;
 const typeKo=p=>{const k=kindOf(p);return k?k[3]:(TYPE_KO[p.type]||p.type.replace(/ 소매업| 전문|\/.*$/,''));};
