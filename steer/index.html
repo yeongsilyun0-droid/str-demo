@@ -1122,7 +1122,7 @@
   html.lite .orb .tg{transform:translateX(-50%) scale(var(--is,1));transform-origin:50% 0}
   html.lite #hshadow{display:none}
   #vInput:not(.on){transform:translateY(56px);transition:opacity .55s,transform .7s cubic-bezier(.2,.7,.2,1)}
-  body.peek #vInput:not(.on){opacity:1;transform:none;pointer-events:none!important}
+  body.peek #vInput:not(.on){opacity:1;transform:none;pointer-events:none!important;background:#FFF;z-index:30}
   body.peek #vInput:not(.on) *{pointer-events:none!important}
   html.lite,html.lite body{touch-action:none;overscroll-behavior:none;overflow:hidden}   /* 크로미움 108+는 overscroll-behavior를 html에 줘야 뷰포트에 적용됨(가로 스와이프 뒤로 가기·당겨서 새로고침 막기) */
   html.lite .sp{overflow:visible}   /* 구마다 둥근 마스크 레이어가 생기던 것 — 안엔 글자뿐이라 안 잘라도 됨 */   /* 흐림이 꺼지면 그림자가 딱딱한 회색 조타키로 보여서 숨김 */
