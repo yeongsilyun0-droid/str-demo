@@ -3592,11 +3592,10 @@ function tkFinish(){const sec=$('#vRoute'),t=$('#tkt');if(sec.classList.contains
   clearTimeout(idleT);idleT=setTimeout(()=>go('idle'),45000);
   if(!P.endpoint){mapOnly();return;}
   if(!spin)show('','카드를 보내는 중이에요','잠깐만 기다려 주세요.');
-  const wd=setTimeout(()=>{if(ok()&&!$('#tkQ').classList.contains('on')){console.warn('[photo] 15초 안에 안 끝나 지도 QR로');S.photoTk++;mapOnly('카드는 보내지 못했어요. ');}},15000);   // 안전장치 : 어떤 이유로든 멈추면 지도 QR
-  new Promise(r=>setTimeout(r,380)).then(()=>tkRender(t)).then(img=>upPhoto(img,map)).finally(()=>clearTimeout(wd))   // 버튼 모션이 끝난 뒤 그려서 모션이 안 끊기게.then(u=>{if(ok())show(u,'AR로 길안내 받기','‘AR로 길 보기’를 누르면 내 폰 카메라 위로<br>추천받은 장소로 가는 길이 떠요.',true,'카드도 함께 저장돼요 · 잠시 뒤 처음 화면으로 돌아가요');})
+  tkRender(t).then(img=>upPhoto(img,map)).then(u=>{if(ok())show(u,'AR로 길안내 받기','‘AR로 길 보기’를 누르면 내 폰 카메라 위로<br>추천받은 장소로 가는 길이 떠요.',true,'카드도 함께 저장돼요 · 잠시 뒤 처음 화면으로 돌아가요');})
     .catch(e=>{console.warn('[photo] 업로드 실패:',e);if(ok())mapOnly('카드는 보내지 못했어요. ');});}
 // 폰으로 가져가는 카드 그림 (1080×1920, 9:16) : 화면의 헤더 + 카드 앞면(장소 사진 · 흰 글리프 · 흰 영역 · 문구 · 알약 · 미션) + Steer 문구
-async function tkRender(t){const I=t._i,W=LITE?810:1080,H=W*16/9,k=W/1440,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+async function tkRender(t){const I=t._i,W=1080,H=1920,k=W/1440,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
   const ld=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});
   const F=(w,z,f)=>`${w} ${z}px ${f||'"Pretendard Variable",Pretendard,"Noto Sans KR",sans-serif'}`;
   try{await document.fonts.load('500 95px "Megascope"');}catch(e){}
