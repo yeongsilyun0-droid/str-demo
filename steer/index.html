@@ -40,9 +40,8 @@
   /* 상단 바 */
   .top{position:absolute;left:80px;right:80px;top:72px;height:96px;display:flex;align-items:center;justify-content:flex-start}
   .stepLbl{margin-left:auto;margin-right:28px}
-  .top .home{display:none}
-  #vRoute.tk .top .home{display:flex}
-  .top .home{width:120px;height:120px;margin-right:-36px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;border-radius:60px;color:#0A0A0A;cursor:pointer}
+  .top .home{width:120px;height:120px;margin-right:-36px;border:0;background:none;padding:0;align-items:center;justify-content:center;border-radius:60px;color:#0A0A0A;cursor:pointer;display:none}
+  #vRoute.tk .top .home{display:flex}   /* 마지막 카드 화면에만 */
   .top img{height:72px}
   .top .stepLbl{font-size:36px;font-weight:500;color:var(--muted);letter-spacing:-.01em}
   .back{width:120px;height:120px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;border-radius:60px}
@@ -1122,6 +1121,9 @@
   html.lite #oStk .ms{display:none}
   html.lite .orb .tg{transform:translateX(-50%) scale(var(--is,1));transform-origin:50% 0}
   html.lite #hshadow{display:none}
+  #vInput:not(.on){transform:translateY(56px);transition:opacity .55s,transform .7s cubic-bezier(.2,.7,.2,1)}
+  body.peek #vInput:not(.on){opacity:1;transform:none;pointer-events:none!important}
+  body.peek #vInput:not(.on) *{pointer-events:none!important}
   html.lite,html.lite body{touch-action:none;overscroll-behavior:none;overflow:hidden}   /* 크로미움 108+는 overscroll-behavior를 html에 줘야 뷰포트에 적용됨(가로 스와이프 뒤로 가기·당겨서 새로고침 막기) */
   html.lite .sp{overflow:visible}   /* 구마다 둥근 마스크 레이어가 생기던 것 — 안엔 글자뿐이라 안 잘라도 됨 */   /* 흐림이 꺼지면 그림자가 딱딱한 회색 조타키로 보여서 숨김 */
   html.lite #arw.cd .vl{background:rgba(255,255,255,.62)}
@@ -2959,7 +2961,7 @@ function dialRun(REC,HM,onDone){dialStop();const dl=$('#dial'),sv=$('#dlSv'),CX=
   const st=$('#dlSt');st.className='dlSt';{const tx=l=>l.map(p=>p[0]).join('');st.style.fontSize=Math.min(fitPx(tx(L1),64,1220,44),fitPx(tx(L2),64,1220,44))+'px';}st.innerHTML=`<div class="ey">오늘의 항로</div><p>${line(L1,0)}</p><p>${line(L2,1)}</p>`;requestAnimationFrame(()=>requestAnimationFrame(()=>{const e_=st.querySelector('.ey');if(e_)e_.classList.add('in');}));
   // 첫 줄 .45초 → (1.05초 동안 슈루룩) → 한 번 쉼 → 둘째 줄. 글리프·링은 처음부터 함께 들어옴
   const ls=[...st.querySelectorAll('p')],LT=[.45,.45+nC[0]*CS+.55];   // 첫 줄 다 생기고 한 번 쉰 뒤 둘째 줄
-  const ring=$('#dlRingSv'),rg=$('#dlEnSv'),TG=.15,TL=8;let T0=0,exiting=false,glyOn=false;
+  const ring=$('#dlRingSv'),rg=$('#dlEnSv'),TG=.15,TL=5.5;   // 로딩 길이 8→5.5초(2026-11-17, 문장은 3.5초 안에 다 나옴)let T0=0,exiting=false,glyOn=false;
   const exit=()=>{if(exiting)return;exiting=true;DL.x=true;const f=DL.done;DL.done=null;dl.classList.add('out');$('#vRoute').classList.remove('dlg');if(f)f();requestAnimationFrame(()=>dl.classList.add('gone'));
     setTimeout(()=>{if(!DL.on)return;DL.on=false;cancelAnimationFrame(DL.raf);GLM.stop();dl.className='dial';},1150);};
   DL.skip=()=>{if(!DL.on||exiting)return;if((performance.now()-T0)/1000>.6)exit();};
@@ -3572,6 +3574,9 @@ function tkLabel2(t){const I=t._i,dm=S.saju.dayMaster,st=STEM[dm.gan]||{n:''},ko
 $('#tkSave').addEventListener('click',()=>{if(!$('#vRoute').classList.contains('tkd')&&$('#tkt').classList.contains('live'))tkFinish();});
 $('#tkSkip').addEventListener('click',()=>{if(!tkOpen())return;const t=$('#tkt');t._front&&t._front();tkLabel2(t);t.classList.add('v2on');tkFinish();});
 $('#tkAgain').addEventListener('click',()=>go('idle'));
+// 대기 화면 엿보기 (2026-11-17) : 표지에서 안 만지면 9초마다 생년월일 화면이 2.6초 슥 올라왔다 내려감. &peek=0이면 끔
+(()=>{if(new URLSearchParams(location.search).get('peek')==='0')return;let idleT0=0,last=0;setInterval(()=>{const on=document.querySelector('#vIdle.on');const now=performance.now();if(!on){idleT0=0;if(document.body.classList.contains('peek'))document.body.classList.remove('peek');return;}
+  if(!idleT0){idleT0=now;last=now;return;}if(document.body.classList.contains('peek'))return;if(now-last>9000){last=now;document.body.classList.add('peek');setTimeout(()=>{document.body.classList.remove('peek');last=performance.now();},2600);}},500);})();
 $$('.top .home').forEach(b=>b.addEventListener('click',()=>go('idle')));   // 홈 아이콘 → 처음 화면(2026-11-17)
 function qrInto(el,u){el.innerHTML='';if(!u){el.textContent='···';return;}try{new QRCode(el,{text:u,width:260,height:260,correctLevel:QRCode.CorrectLevel.L});}catch(e){el.textContent='QR 생성 실패';}}
 // 폰 AR(사진 서버 /p/:id 'AR로 길 보기')용 : 카드 앞면만 잘라 낸 JPEG(tkRender 그림에서 카드 자리 233,680 974×1153 × 0.75) + 장소·출발점·용신 색
