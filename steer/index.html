@@ -1938,7 +1938,7 @@ const WITHK={'과일 가게':'solo family','냉면집':'solo family friend','샐
 const withOk=(p,w)=>{const k=kindOf(p);if(!k)return true;const v=WITHK[p.act+'.'+k[3]]||WITHK[k[3]];return !v||v.split(' ').includes(w);};
 // 네이버 지도에 없거나 추천하기 애매한 곳 — 여기에 이름을 추가하면 모든 추천에서 빠져요
 const BLOCK=['김대중도서관','비니네샐러드','정혼','진심냉면','짱구네','밭에가자야채청과','진함흥면옥','부에노커피로스팅Co','앤트러사이트커피로스터','강산로스터스','노아스로스팅연희','로열티하우스','도원떡방','낙원떡방아간','신참떡볶이대흥역점','불굴의떡볶이신촌청년주택점','나무섬','고래고래회해산물포차','소푸리전주콩나물국밥','라초아플라워','Flowerantique','김찬미도자기','색동한옥스테이','수미한옥스테이','블루버드한옥','갤러리포유','세명미술원표구화랑','홍주화방','몽오재-몽무전각서예연구원','마카나우쿨렐레','일렉바이올린샵','한국우쿨렐레','가야금스튜디오손끝','케이2노래연습장','럭키노래연습장','드럼합주실','나훔미디어','투워치','샤인뮤직넷','잉여기타','프리버드뮤직주','누림엘뮤직','자마레코드','향음악사','에볼루션뮤직','방레코드','소호책방','파고다서점신촌','라이브러리아힘AHim','도무스링구아북스','소나기그림책방','티앤티키즈파크북클럽','사르르그림책방','캔들비즈','바나나하루키베이킹클래스','정림민화커넥션','김알파카자수공방','루아쥬얼리','샤인쥬얼리','쥬얼리스튜디오최하나','e-쥬얼리','다빈신석스포렉스점','포토시그니처','홍대셀프사진관데이트코스씨유얼아이즈','맛난세상','앤드뉴 갤러리','상쾌한빨래방 이대럭키점'];   // 2026-11-17 네이버 지도 검수(sim/verify_report.csv)에서 안 나온 곳 전부 + 김대중도서관(정치 인물) + 부에노(로스팅 안 함). 김대중도서관 : 정치 인물 이름이라 뺌
-const EXCL=new RegExp('투워치|미광당|키즈|^캔들$|'+BLOCK.map(n=>n.replace(/\s/g,'\\s*')).join('|'));
+const EXCL=new RegExp('투워치|미광당|키즈|^캔들$|밀키트|밀킷|채선당.*(샐러드|도시락)|'+BLOCK.map(n=>n.replace(/\s/g,'\\s*')).join('|'));
 const kindOf=p=>(p.kk?KIND.find(k=>k[5]===p.kk):null)||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&!k[5]&&k[2].test(p.name))||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&k[5]==='flower'&&p.act==='see')||null;
 const typeKo=p=>{const k=kindOf(p);return k?k[3]:(TYPE_KO[p.type]||p.type.replace(/ 소매업| 전문|\/.*$/,''));};
 let ITEMS=[];
@@ -2201,7 +2201,7 @@ const nmClean=n=>{let s=String(n).replace(/\([^)]*\)/g,'').trim();if(s.includes(
   const m=s.match(/^(.*?[가-힣][가-힣0-9·\s]*?)[A-Za-z]{4,}.*$/);if(m&&m[1].trim().length>=2)s=m[1].trim();
   const k=s.indexOf('셀프사진관');if(k>0&&s.length>k+5)s=s.slice(0,k+5);return s||String(n);};
 function homePlaces(){if(HOMEP)return HOMEP;const H=window.STEER_HOME;if(!H)return [];
-  HOMEP=H.P.map(q=>({act:H.acts[q[0]],element:H.els[q[1]],name:nmClean(q[2]),lat:q[3]/1e5,lng:q[4]/1e5,type:H.types[q[5]],gu:H.gu[q[6]],source:'상가정보'}));return HOMEP;}
+  HOMEP=H.P.map(q=>({act:H.acts[q[0]],element:H.els[q[1]],name:nmClean(q[2]),lat:q[3]/1e5,lng:q[4]/1e5,type:H.types[q[5]],gu:H.gu[q[6]],source:'상가정보'})).filter(p=>!EXCL.test(p.name));return HOMEP;}
 const SRC_FULL={'상가정보':'소상공인 상가정보','문화공간':'서울시 문화공간','공원현황':'서울시 주요 공원','백년가게':'백년가게','지형(대략 좌표)':'지형 데이터'};
 const SRC_LIST=['소상공인 상가정보','서울시 문화공간','서울시 주요 공원','백년가게'];
 // 장소 이름은 가리지 않고 그대로 보여 줌 (가리던 버전 백업 index-v109-이름모자이크.html). 긴 이름은 글자 크기를 줄여 한 줄에 맞춤
