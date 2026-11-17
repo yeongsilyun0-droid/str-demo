@@ -4039,8 +4039,9 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
      c._sb=c.animate([{translate:'0 0',easing:'ease-in-out'},{translate:'0 -12px',easing:'ease-in-out'},{translate:'0 0'}],{duration:5200,iterations:Infinity,delay:400});};
    const stop=()=>{const c=t.querySelector('.c3');if(!c)return;[c._sw,c._sb].forEach(a=>a&&a.cancel());c._sw=c._sb=null;c.style.willChange='';};
    const enter=()=>{const c=t.querySelector('.c3'),FC=t.querySelector('.fc'),BK=t.querySelector('.bk');if(!c)return;const tok={};t._ent=tok;stop();
-     c.style.transition='none';c.style.willChange='transform';if(FC)FC.style.visibility='';if(BK)BK.style.visibility='';
-     const a=c.animate([{translate:'0 2200px',rotate:'0.1 1 -0.18 -540deg',scale:'.62',opacity:0},{opacity:1,offset:.1},{translate:'0 0',rotate:'0.1 1 -0.18 0deg',scale:'1',opacity:1}],{duration:1250,easing:'cubic-bezier(.16,.84,.3,1)'});
+     c.style.transition='none';c.style.willChange='transform';if(FC)FC.style.visibility='';if(BK)BK.style.visibility='hidden';
+     // 폰에서 깜빡이던 것 : 540° 돌면 카드가 세 번 옆면(선)이 되고 앞면 사진·검은 뒷면이 번갈아 보였음 → 뒤집지 않고 비스듬히 기운 채 올라와 바로 섬
+     const a=c.animate([{translate:'0 1500px',rotate:'0.25 1 -0.12 -34deg',scale:'.72',opacity:0},{opacity:1,offset:.16},{translate:'0 -28px',rotate:'0.25 1 -0.12 5deg',scale:'1.02',opacity:1,offset:.72},{translate:'0 0',rotate:'0.25 1 -0.12 0deg',scale:'1',opacity:1}],{duration:1150,easing:'cubic-bezier(.2,.8,.3,1)'});
      a.onfinish=()=>{if(t._ent!==tok)return;if(BK)BK.style.visibility='hidden';requestAnimationFrame(()=>{c.style.transition='';});sway(tok);};};
    new MutationObserver(()=>{const on=t.classList.contains('in');if(on&&!seen){seen=true;enter();}else if(!on&&seen){seen=false;t._ent=null;stop();}}).observe(t,{attributes:true,attributeFilter:['class']});
    t._swayStop=stop;t._swayGo=()=>{if(t._ent&&!t.querySelector('.c3')._sw)sway(t._ent);};}

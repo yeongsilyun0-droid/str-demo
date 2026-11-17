@@ -4007,7 +4007,7 @@ function finishDock(anim){const c=$('#cMission'),hh=$('#hHelm');
    '오늘의 항해 시작하기' → 결과(rec)를 받아 홈 '오늘의 항해' 카드와 미션 시트(장소 · 하기 · 시간 칸)로 */
 var SE={f:null,ready:false,src:'',on:false,pending:null};   // var : fit()이 먼저 부를 수 있음
 const seLS=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
-const SE_V='20261117f';   // 조합 화면 사본을 고치면 올릴 것(폰 캐시에 남은 옛 사본 방지)
+const SE_V='20261117g';   // 조합 화면 사본을 고치면 올릴 것(폰 캐시에 남은 옛 사본 방지)
 function seSrc(){const b=seLS('steer.birth');return 'steer/index.html?embed=steer&ar=0&v='+SE_V+(b?'&'+b:'');}
 function seCfg(){if(!SE||!SE.f||!SE.f.contentWindow)return;const scr=$('#screen');try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'cfg',W:parseFloat(scr.style.width)||412,H:parseFloat(scr.style.height)||891},'*');}catch(e){}}
 function seLoad(){const src=seSrc();SE.f=SE.f||$('#stEmb');if(SE.src===src)return;SE.ready=false;SE.src=src;SE.f.src=src;}
