@@ -4007,7 +4007,7 @@ function finishDock(anim){const c=$('#cMission'),hh=$('#hHelm');
    '오늘의 항해 시작하기' → 결과(rec)를 받아 홈 '오늘의 항해' 카드와 미션 시트(장소 · 하기 · 시간 칸)로 */
 var SE={f:null,ready:false,src:'',on:false,pending:null};   // var : fit()이 먼저 부를 수 있음
 const seLS=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
-const SE_V='20261117e';   // 조합 화면 사본을 고치면 올릴 것(폰 캐시에 남은 옛 사본 방지)
+const SE_V='20261117f';   // 조합 화면 사본을 고치면 올릴 것(폰 캐시에 남은 옛 사본 방지)
 function seSrc(){const b=seLS('steer.birth');return 'steer/index.html?embed=steer&ar=0&v='+SE_V+(b?'&'+b:'');}
 function seCfg(){if(!SE||!SE.f||!SE.f.contentWindow)return;const scr=$('#screen');try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'cfg',W:parseFloat(scr.style.width)||412,H:parseFloat(scr.style.height)||891},'*');}catch(e){}}
 function seLoad(){const src=seSrc();SE.f=SE.f||$('#stEmb');if(SE.src===src)return;SE.ready=false;SE.src=src;SE.f.src=src;}
@@ -4017,12 +4017,13 @@ function seOpen(){if(SE.on)return;seLoad();SE.on=true;scrEl.classList.add('stemb
   requestAnimationFrame(()=>{SE.f.classList.add('on');try{SE.f.focus();}catch(e){}});};
  if(SE.ready)run();else SE.pending=run;}
 function sePrime(){if(!SE.ready||SE.on||!SE.f)return;seCfg();try{SE.f.contentWindow.postMessage({type:'steer-combo-cmd',action:'prime'},'*');}catch(e){}}
-function seClose(){SE.on=false;SE.pending=null;SE.primed=false;if(SE.f){SE.f.classList.remove('on','under');try{SE.f.blur();}catch(e){}}scrEl.classList.remove('stemb');}
+function seClose(){SE.on=false;SE.pending=null;SE.primed=false;clearTimeout(SE.finT);SE.finT=null;if(SE.f){SE.f.classList.remove('on','under');try{SE.f.blur();}catch(e){}}scrEl.classList.remove('stemb');}
 addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='steer-combo'||!SE.f||e.source!==SE.f.contentWindow)return;
  if(m.action==='ready'){SE.ready=true;seCfg();if(SE.pending){const p=SE.pending;SE.pending=null;p();}else if(S.home&&!HM.committing)sePrime();}
  else if(m.action==='primed'){if(S.home&&!HM.committing){SE.primed=true;SE.f.classList.add('under');}}
- else if(m.action==='helmshown'){const fin=()=>{$('#helm').style.opacity='0';SE.f.classList.remove('under');SE.f.classList.add('on');try{SE.f.focus();}catch(e){}};
-  const left=HM.fly?Math.max(0,HM.fly.t0+HM_FD+40-performance.now()):0;left?setTimeout(fin,left):fin();}
+ else if(m.action==='helmshown'){if(S.home&&!HM.committing)return;   // 넘어가는 도중 홈으로 되돌아갔으면(전시 루프 중단 등) 무시
+  const fin=()=>{SE.finT=null;if(S.home&&!HM.committing)return;$('#helm').style.opacity='0';SE.f.classList.remove('under');SE.f.classList.add('on');try{SE.f.focus();}catch(e){}};
+  const left=HM.fly?Math.max(0,HM.fly.t0+HM_FD+40-performance.now()):0;clearTimeout(SE.finT);left?(SE.finT=setTimeout(fin,left)):fin();}
  else if(m.action==='back'){seClose();reset();}
  else if(m.action==='start'&&m.rec)dockV2(m.rec);
  else if(m.action==='docked'&&SE.dk){const f=SE.dk;SE.dk=null;f();}
@@ -4283,7 +4284,12 @@ window.__dbg={hmOpen,hmClose,HM,seOpen,seClose,dockV2,SE,hsMark,v2Go,hsRender,st
   location.reload();}
  function start(){if(EX.on)return;EX.on=true;hint.classList.add('on');loop().catch(e=>{if(e!==STOP)console.warn('[expo]',e);});}
  function clean(){try{srClose();}catch(e){}try{closeNav();}catch(e){}try{hsClose();}catch(e){}try{closeMap();}catch(e){}try{closeFeed();}catch(e){}try{closeInsight();}catch(e){}
-  try{seClose();}catch(e){}try{hmClose();}catch(e){}S.mission=null;try{applyMission();}catch(e){}tabTo(0);try{reset();}catch(e){}}
+  // 카드가 홈 카드로 들어가는 중(dockV2)에 끊겼으면 그 뒷정리(docked 대기 → grow → seClose)가 나중에 홈 아래 대기 화면을 지우지 않게 바로 끝냄
+  SE.dk=null;home.classList.remove('reveal');try{$('#cMission').classList.remove('grow');$('#hHelm').classList.remove('pop');}catch(e){}
+  try{seClose();}catch(e){}try{hmClose();}catch(e){}
+  // 조합 iframe이 조합 화면이 아닌 상태(카드·항로 등)에서 끊겼으면 통째로 다시 불러 깨끗하게(다시 불러지면 ready → 홈 아래 대기)
+  try{const w=fw();if(w&&w.eval("typeof view==='undefined'||view!=='steer'")){SE.ready=false;SE.primed=false;w.location.reload();}}catch(e){}
+  S.mission=null;try{applyMission();}catch(e){}tabTo(0);try{reset();}catch(e){}}
  function stop(){if(!EX.on)return;EX.on=false;EX.t.splice(0).forEach(clearTimeout);hint.classList.remove('on');clean();}
  // 사람 손 : 루프 중 첫 터치는 루프만 멈추고(그 터치로 버튼이 눌리지 않게) 깨끗한 홈에서 시작
  const human=e=>{if(!e.isTrusted)return;EX.last=performance.now();if(EX.on){e.preventDefault();e.stopPropagation();stop();}};
