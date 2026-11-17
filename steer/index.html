@@ -1569,12 +1569,13 @@ void main(){vec2 sp=vec2(vP.x-720.,vP.y-1250.+uCam.w);float den=uCam.x*uCam.z+sp
     const ims=await Promise.all(srcs.map(u=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('img '+u));i.src=u;})));
     OG.tile={};ims.forEach((im,k)=>{OG.tile[srcs[k]]=k;x.drawImage(im,(k%3)*T,Math.floor(k/3)*T,T,T);});OG.upload();OG.ready=true;},
   // 렌더 부하가 크면 해상도를 한 단계씩 내림
-  tune(raw){if(!OG.ok||raw>.2||raw<=0)return;OG.slow=OG.slow*.95+raw*.05;if(++OG.n>60&&OG.slow>.027){const k=OG.Qs.indexOf(OG.Q);if(k<OG.Qs.length-1){OG.Q=OG.Qs[k+1];OG.size();}OG.n=0;}},
-  draw(vis,t){if(!OG.ok)return;const gl=OG.gl,{A,B,C,R,S:SS}=OG;if(!OG.ready){gl.disable(gl.SCISSOR_TEST);gl.clearColor(1,1,1,1);gl.clear(gl.COLOR_BUFFER_BIT);return;}let n=0,x0=1e5,x1=-1e5,y0=1e5,y1=-1e5;
+  tune(raw){if(!OG.ok||raw>.2||raw<=0)return;OG.slow=OG.slow*.95+raw*.05;if(++OG.n>(LITE?24:60)&&OG.slow>(LITE?.024:.027)){const k=OG.Qs.indexOf(OG.Q);if(k<OG.Qs.length-1){OG.Q=OG.Qs[k+1];OG.size();}OG.n=0;}},
+  draw(vis,t){if(!OG.ok)return;const gl=OG.gl,{A,B,C,R,S:SS}=OG;if(!OG.ready){gl.disable(gl.SCISSOR_TEST);gl.clearColor(1,1,1,1);gl.clear(gl.COLOR_BUFFER_BIT);return;}let n=0,kk_='',x0=1e5,x1=-1e5,y0=1e5,y1=-1e5;
     for(const v of vis){if(n>=14)break;const s=v.s,c=s.cur,r=c.d/2,j=n*4;
       const c0=s.rgbD||(s.ghost?OG_GHOST:s.rgb),gv=s.gryV||0,col=gv>.001?c0.map((v,i)=>v+(OG_GRY[i]-v)*gv):c0;
-      A[j]=v.x;A[j+1]=v.y;A[j+2]=r;A[j+3]=c.o;B[j]=v.an;B[j+1]=s.grp||0;B[j+2]=s.st;B[j+3]=s.gl*(s.tgt?Math.min(1,Math.hypot(v.x-s.tgt.x,v.y-s.tgt.y)/160):1);C[j]=s.tx;C[j+1]=s.ty;C[j+2]=s.img?(OG.tile[s.img]||0)+Math.min(1,c.p||0)*.9:-1;C[j+3]=Math.log2(1+(c.b||0)*.4);R[j]=col[0];R[j+1]=col[1];R[j+2]=col[2];R[j+3]=Math.sin(t*.13+s.ph)*.09+(s.spin||0);SS[j]=s.whV||0;SS[j+1]=(s.softV||0)*2;SS[j+2]=s.kind==="gl"?(OS.airV||0):0;SS[j+3]=s.loadG&&OS.dial?1:0;
+      A[j]=v.x;A[j+1]=v.y;A[j+2]=r;A[j+3]=c.o;B[j]=v.an;B[j+1]=s.grp||0;B[j+2]=s.st;B[j+3]=s.gl*(s.tgt?Math.min(1,Math.hypot(v.x-s.tgt.x,v.y-s.tgt.y)/160):1);C[j]=s.tx;C[j+1]=s.ty;C[j+2]=s.img?(OG.tile[s.img]||0)+Math.min(1,c.p||0)*.9:-1;C[j+3]=Math.log2(1+(c.b||0)*.4);R[j]=col[0];R[j+1]=col[1];R[j+2]=col[2];kk_+=col[0]+','+col[1]+','+col[2]+','+(s.spin||0)+';';R[j+3]=Math.sin(t*.13+s.ph)*.09+(s.spin||0);SS[j]=s.whV||0;SS[j+1]=(s.softV||0)*2;SS[j+2]=s.kind==="gl"?(OS.airV||0):0;SS[j+3]=s.loadG&&OS.dial?1:0;
       const m=r*(1+s.st)+s.gl*150+110;for(const [ax,ay] of [[v.x-m,v.y-m],[v.x+m,v.y-m],[v.x-m,v.y+m],[v.x+m,v.y+m]]){const f=camFw(ax,ay);x0=Math.min(x0,f.x);x1=Math.max(x1,f.x);y0=Math.min(y0,f.y);y1=Math.max(y1,f.y);}n++;}
+    if(LITE){const k_=kk_+A.join()+B.join()+C.join()+SS.join()+n+'|'+OG.Q+'|'+CM.c+','+CM.s+','+CM.D+','+CM.dy;if(k_===OG._k){if(++OG._i%3)return;}else OG._i=0;OG._k=k_;}   // GL 호출 전에 돌아가면 캔버스엔 지난 그림이 그대로 남음
     gl.uniform4f(OG.u.uCam,CM.c,CM.s,CM.D,CM.dy);gl.disable(gl.SCISSOR_TEST);gl.clearColor(1,1,1,1);gl.clear(gl.COLOR_BUFFER_BIT);if(!n)return;
     x0-=8;x1+=8;y0-=8;y1+=8;const Q=OG.Q;gl.enable(gl.SCISSOR_TEST);gl.scissor(Math.max(0,x0*Q)|0,Math.max(0,(2560-y1)*Q)|0,Math.ceil((x1-x0)*Q),Math.ceil((y1-y0)*Q));
     gl.uniform4fv(OG.u.uA,A);gl.uniform4fv(OG.u.uB,B);gl.uniform4fv(OG.u.uC,C);gl.uniform4fv(OG.u.uR,R);gl.uniform4fv(OG.u.uS,SS);gl.uniform1i(OG.u.uN,n);gl.uniform1f(OG.u.uT,t%1000);gl.drawArrays(gl.TRIANGLES,0,3);}};
@@ -2800,6 +2801,9 @@ function scrollRun(REC,HM,onFin){
     const OUT=(w,r)=>w.x<-r||w.x>1440+r||w.y<-r||w.y>2560+r;
     // 셀 상태 : 열림 o(0~1), 닫힌 뒤 지난 단계 수 g
     const st=c=>{const L=c.d.best?LSx:c.d.L;const w=c.dn*.35;const o=1-ez(cl((p-L)*1.6-w));return {o,g:Math.max(0,p-L-.6)};};
+    // 정지 프레임 캐시 : 단계(p)·카메라·등장 애니메이션이 그대로면 종이·지도·구멍은 지난 프레임을 그대로 두고 위 레이어(점선 원·현위치)만 다시 그림. 유리 굴절(GLX)은 매 프레임 휘니 제외
+    const KEY_=p.toFixed(3)+'|'+cs.toFixed(4)+'|'+cx.toFixed(1)+'|'+cy.toFixed(1)+'|'+(qi<1||mrv<1?now:1),fresh=!!GLX||PP._k!==KEY_;PP._k=KEY_;
+    if(fresh){
     g.setTransform(RQ_,0,0,RQ_,0,0);g.globalAlpha=1;g.fillStyle=PP.BASE;g.fillRect(0,0,1440,2560);
     // 바닥 색 (열린 곳만)
     const S=cells.map(c=>({c,...st(c),w:WP(SX(c.X),SY(c.Y))}));
@@ -2814,7 +2818,7 @@ function scrollRun(REC,HM,onFin){
       m.globalCompositeOperation='destination-out';m.fillStyle=gr;m.fillRect(0,0,1440,2560);m.globalCompositeOperation='source-over';}
     // 종이 (지도가 인쇄된 채로)
     const x=PSC.x;x.globalCompositeOperation='source-over';x.clearRect(0,0,1440,2560);x.fillStyle=PP.PAPER;x.fillRect(0,0,1440,2560);
-    if(MAPC){x.globalCompositeOperation='multiply';x.globalAlpha=.8*(1-zF*.5);x.drawImage(MAPC,0,0);x.globalAlpha=1;x.globalCompositeOperation='source-over';}
+    if(MAPC){x.globalCompositeOperation=PP.PAPER==='#FFFFFF'?'source-over':'multiply';x.globalAlpha=.8*(1-zF*.5);x.drawImage(MAPC,0,0);x.globalAlpha=1;x.globalCompositeOperation='source-over';}
     x.globalCompositeOperation='destination-out';x.fillStyle='#000';x.beginPath();
     S.forEach(v=>{let r=(v.c.d.best?Math.max(HR*cs,hb):HR*cs)*v.o;if(qi<1)r*=ez(cl(qi*1.8-v.c.dn*.8));if(r<=.3||OUT(v.w,r))return;EL(x,v.w,r,1);});
     x.fill();x.globalCompositeOperation='source-over';g.globalAlpha=PP.A;g.drawImage(PSC.cv,0,0,1440,2560);g.globalAlpha=1;
@@ -2824,13 +2828,14 @@ function scrollRun(REC,HM,onFin){
     {const v=S.find(v_=>v_.c.d.best);if(v&&v.o>0){let r=Math.max(HR*cs,hb)*v.o;if(qi<1)r*=ez(cl(qi*1.8-v.c.dn*.8));if(r>.3&&!OUT(v.w,r)){g.globalAlpha=1;g.fillStyle=v.c.col;EL(g,v.w,r);}}}
     // 카드 앞면 그림 : 마지막 장면(그곳이 가운데, 글자 그리기 전)을 화면 크기 그대로 한 번 저장
     if(zF>.985&&!RS.snap){const c_=document.createElement('canvas');c_.width=1440;c_.height=2560;c_.getContext('2d').drawImage(cv,0,0,1440,2560);RS.snap=c_;}
+    }   // fresh 끝
     // 표지의 돌아가는 점선 원 두 개 : 출발점을 중심으로. 바깥 140초·안쪽 100초에 한 바퀴(반대 방향) + 핀치할 때 조금 더 돌아감. 줌을 살짝만 따라 커짐
     {const g=PRG;g.clearRect(0,0,1440,2560);const k=Math.pow(cs,.3),O=[SX(FX),SY(FY)],tt=now/1000;   // 유리 위 따로 그려서 굴절 안 받음
       [[1060,'#D9D9D9',1,140,1],[770,'#808080',.4,100,-1]].forEach(([R0,c,al,T,dir])=>{const R=R0*k,n=Math.round(2*Math.PI*R0/109),a0=dir*(tt/T*Math.PI*2+p*.35);
         g.globalAlpha=al;g.fillStyle=c;for(let i=0;i<n;i++){const a=a0+i/n*Math.PI*2,X=O[0]+Math.cos(a)*R,Y=O[1]+Math.sin(a)*R;if(X<-10||X>1450||Y<-10||Y>2570)continue;g.beginPath();g.arc(X,Y,7,0,Math.PI*2);g.fill();}});
       g.globalAlpha=1;}
     // 잉크 : 2호선·역(유리 따라 휨), 출발점
-    const MZ=PP.Z;if(STN.length){g.globalAlpha=0;g.strokeStyle=INK+'1)';g.lineWidth=3;g.lineJoin='round';g.beginPath();STN.forEach((s_,i)=>{const X=SX(FX+s_.q[0]*MZ),Y=SY(FY+s_.q[1]*MZ);if(!i){const w=WP(X,Y);g.moveTo(w.x,w.y);return;}const p0=STN[i-1],X0=SX(FX+p0.q[0]*MZ),Y0=SY(FY+p0.q[1]*MZ);for(let j=1;j<=24;j++){const w=WP(lp(X0,X,j/24),lp(Y0,Y,j/24));g.lineTo(w.x,w.y);}});g.stroke();
+    const MZ=PP.Z;if(fresh&&STN.length){g.globalAlpha=0;g.strokeStyle=INK+'1)';g.lineWidth=3;g.lineJoin='round';g.beginPath();STN.forEach((s_,i)=>{const X=SX(FX+s_.q[0]*MZ),Y=SY(FY+s_.q[1]*MZ);if(!i){const w=WP(X,Y);g.moveTo(w.x,w.y);return;}const p0=STN[i-1],X0=SX(FX+p0.q[0]*MZ),Y0=SY(FY+p0.q[1]*MZ);for(let j=1;j<=24;j++){const w=WP(lp(X0,X,j/24),lp(Y0,Y,j/24));g.lineTo(w.x,w.y);}});g.stroke();
       g.globalAlpha=.55*(1-zF);g.fillStyle=INK+'1)';g.textAlign='center';g.font=F(600,26);STN.forEach(s_=>{const w=WP(SX(FX+s_.q[0]*MZ),SY(FY+s_.q[1]*MZ)+44);g.fillText(s_.n+'역',w.x,w.y);});}
     // 현위치 (지도 앱처럼) : 파란 점 + 흰 테두리 + 연한 파란 범위 원, 바깥으로 퍼지는 물결. 유리 위 레이어라 휘지 않음
     {const q=PRG,O=[SX(FX),SY(FY)],pin=ez(cl((now-qT0)/520)),a=(1-zF)*pin,ph_=(now/1000%2)/2,BL='47,107,255';if(a>.01){q.save();q.globalAlpha=a;q.translate(O[0],O[1]);q.scale(.6+.4*pin,.6+.4*pin);q.translate(-O[0],-O[1]);
@@ -2839,7 +2844,7 @@ function scrollRun(REC,HM,onFin){
       q.fillStyle='rgba(0,0,0,.10)';q.beginPath();q.arc(O[0],O[1]+2,20,0,Math.PI*2);q.fill();
       q.fillStyle='#fff';q.beginPath();q.arc(O[0],O[1],19,0,Math.PI*2);q.fill();q.fillStyle=`rgb(${BL})`;q.beginPath();q.arc(O[0],O[1],12.5,0,Math.PI*2);q.fill();q.restore();}}
     // 마지막 : 그곳 + 이름
-    if(zF>0&&B&&P){const X=SX(B.X),Y=SY(B.Y);g.globalAlpha=zF;g.fillStyle='#0A0A0A';g.font=F(400,120,'"Ganji"');g.textAlign='center';g.textBaseline='middle';g.fillText(E.h,X,Y+4);g.textBaseline='alphabetic';
+    if(fresh&&zF>0&&B&&P){const X=SX(B.X),Y=SY(B.Y);g.globalAlpha=zF;g.fillStyle='#0A0A0A';g.font=F(400,120,'"Ganji"');g.textAlign='center';g.textBaseline='middle';g.fillText(E.h,X,Y+4);g.textBaseline='alphabetic';
       g.fillStyle=INK+'1)';g.font=F(700,38);g.fillText(`${P.name}`,X,Y+hb+64);}
     g.globalAlpha=1;if(GLX){const fr=p-Math.floor(p);GLX.draw(cv,Math.pow(Math.sin(Math.PI*fr),.8));box.classList.add('fx');}};   // 단계 사이(움직이는 동안)에만 유리가 세게 휨, 멈추면 아주 약하게
   const draw=p=>{(RT_MODE==='paper'?drawP:RT_MODE==='rings'?drawC:RT_MODE==='cells'?drawB:RT_MODE==='plan'?drawD:RT_MODE==='star'?drawO:RT_MODE==='dust'?drawQ:drawA)(p);sec.classList.toggle('dk',DK&&p<5.5);
