@@ -3889,7 +3889,7 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
   function undock(){document.body.classList.remove('emDock');const c=document.querySelector('#tkt .c3');if(c){c.getAnimations().forEach(a=>a.cancel());c.style.transition='';}}
   addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='steer-combo-cmd')return;
     if(m.action==='dock'){dock(m);return;}
-    if(m.action==='prime'||m.action==='enter')undock();
+    if(m.action==='prime'||m.action==='enter'){undock();shakeAbort();holdAbort();}   // 전시 루프가 흔들기·Steer 꾹 도중에 끊겨도(사람 손) 이어서 돌지 않게
     if(m.action==='cfg'){CFG.W=+m.W||412;CFG.H=+m.H||0;fit();}
     else if(m.action==='view')viewCard();
     else if(m.action==='shake')shakeRandom();
@@ -3898,7 +3898,7 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
       vMode=false;V.classList.remove('on');B.classList.remove('on');noRise=true;
       {$$('.view').forEach(v=>{v.style.transition='none';v.classList.remove('on');});requestAnimationFrame(()=>requestAnimationFrame(()=>$$('.view').forEach(v=>v.style.transition='')));_go('steer');}
       clearTimeout(ST.introT);document.body.classList.add('embPrime');PRIMED=true;post({action:'primed'});}
-    else if(m.action==='helmshow'){
+    else if(m.action==='helmshow'){if(PRIMED)return;   // 넘어가다 끊겨 다시 대기 상태가 됐으면 늦게 온 helmshow는 무시(대기 화면이 드러나면 글자 없이 조타키만 보임)
       // 홈 조타키가 가운데 왔을 때 : 같은 자세로 이쪽 조타키를 보이고 알림
       D.c.rx=(m.rx!=null?+m.rx:D.t.rx);D.c.ry=+m.ry||0;D.t.ry=0;D.c.rz=+m.rz||0;D.t.rz=0;D.v.rz=0;
       if(m.rise)helmRise(m.rise);
@@ -3980,21 +3980,23 @@ body.embedS .tkt.stay .fc .sg{position:absolute;left:-40px;top:90px;width:1054px
     const fh=t.querySelector('.fh');if(fh)new MutationObserver(()=>{if(fh.textContent.includes('가는 길과 이곳을'))fh.textContent=fh.textContent.replace('가는 길과 이곳을','이 미션을');}).observe(fh,{childList:true,characterData:true,subtree:true});
     if(t._i){t._i.ty='집';t._i.pl=[REC.M.lb,REC.T.lb,'집에서'];}}
   // 흔들면 무작위 조합 : 질문마다 구슬이 펼쳐지고 조타키가 촤라라락 2바퀴 넘게 돌다 멈춘 자리의 구슬이 뿅 골라짐. 웹앱(맨 위 문서)이 흔들림을 감지해 'shake'로 알려 줌. 작업용으로 S 키도
-  let shCool=0,SHK=false;
+  let shCool=0,SHK=false,shGen=0;
+  function shakeAbort(){shGen++;SHK=false;}
+  function holdAbort(){if(hold==null)return;if(hold!=='full')cancelAnimationFrame(hold);hold=null;goBtn.classList.remove('press');circ.style.strokeDashoffset=CIRC;try{neck(0);}catch(e){}}
   function shakeRandom(){if(view!=='steer'||holding||PRIMED||SHK||B.classList.contains('on'))return;const now=performance.now();if(now<shCool)return;
-    if(ST.intro)introEnd();clearTimeout(ST.nextT);SHK=true;
+    if(ST.intro)introEnd();clearTimeout(ST.nextT);SHK=true;const g=++shGen;
     const pick=Q.map((q,i)=>{const ok=q.opts.filter(o=>!(MODE==='go'&&i===0&&ST.lim&&ST.lim.tone==='흐린 날'&&o.k==='180'));return ok[Math.floor(Math.random()*ok.length)].k;});
     ST.ans=Q.map(()=>null);renderMeta();buzz([18,40,18,40,26]);
     const EO=u=>1-Math.pow(1-u,4);let i=0;
-    const next=()=>{if(view!=='steer'){SHK=false;return;}
+    const next=()=>{if(g!==shGen)return;if(view!=='steer'){SHK=false;return;}
       if(i>=Q.length){SHK=false;shCool=performance.now()+800;gotoStep(3);setTimeout(()=>toastMsg('흔들어서 골랐어요 · 또 흔들면 다시 골라요'),60);return;}
       ST.step=i;if(opened)closeDial();buildOrbs();renderSteer(true);openDial(null);
       const idx=Math.max(0,ITEMS.findIndex(it=>it.k===pick[i])),from=D.t.rz,base=-idx*STEP,to=base+360*Math.ceil((from+760-base)/360),T=900,t0=performance.now()+160;
-      const spin=n=>{if(view!=='steer'){SHK=false;return;}const u=Math.max(0,Math.min(1,(n-t0)/T));D.t.rz=from+(to-from)*EO(u);if(u<1){requestAnimationFrame(spin);return;}
-        setTimeout(()=>{if(view!=='steer'){SHK=false;return;}ST.ans[i]=pick[i];const el=orbEls[idx];if(el){el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
+      const spin=n=>{if(g!==shGen)return;if(view!=='steer'){SHK=false;return;}const u=Math.max(0,Math.min(1,(n-t0)/T));D.t.rz=from+(to-from)*EO(u);if(u<1){requestAnimationFrame(spin);return;}
+        setTimeout(()=>{if(g!==shGen)return;if(view!=='steer'){SHK=false;return;}ST.ans[i]=pick[i];const el=orbEls[idx];if(el){el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
             el.animate([{scale:'1'},{scale:'1.35'},{scale:'1'}],{duration:380,easing:'cubic-bezier(.3,1.6,.5,1)'});}
           buzz(18);renderMeta();const b=$$('#stMeta .ans')[i];if(b)b.animate([{transform:'scale(.7)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'});
-          coach(`<b>${ITEMS[idx].o.lb}</b>&nbsp;골랐어요`);setTimeout(()=>{closeDial();i++;setTimeout(next,320);},460);},90);};
+          coach(`<b>${ITEMS[idx].o.lb}</b>&nbsp;골랐어요`);setTimeout(()=>{if(g!==shGen)return;closeDial();i++;setTimeout(next,320);},460);},90);};
       requestAnimationFrame(spin);};
     next();}
   // 폰 렉 줄이기 : 구슬 글자(구 표면 데칼)는 yaw가 바뀔 때마다 240×240 픽셀을 JS로 다시 그림 → 흔들어 돌 땐 정면 고정, 손으로 돌릴 땐 0.1rad(약 6°) 단위로만
