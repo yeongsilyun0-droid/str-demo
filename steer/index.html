@@ -1117,7 +1117,7 @@
   html.lite #oStk .ms{display:none}
   html.lite .orb .tg{transform:translateX(-50%) scale(var(--is,1));transform-origin:50% 0}
   html.lite #hshadow{display:none}
-  html.lite body{touch-action:none;overscroll-behavior:none}
+  html.lite,html.lite body{touch-action:none;overscroll-behavior:none;overflow:hidden}   /* 크로미움 108+는 overscroll-behavior를 html에 줘야 뷰포트에 적용됨(가로 스와이프 뒤로 가기·당겨서 새로고침 막기) */
   html.lite .sp{overflow:visible}   /* 구마다 둥근 마스크 레이어가 생기던 것 — 안엔 글자뿐이라 안 잘라도 됨 */   /* 흐림이 꺼지면 그림자가 딱딱한 회색 조타키로 보여서 숨김 */
   html.lite #arw.cd .vl{background:rgba(255,255,255,.62)}
   html.lite #vRoute .tkQ{background:rgba(255,255,255,.82)}
@@ -1297,14 +1297,14 @@ const LITE=(()=>{const q=new URLSearchParams(location.search).get('lite');if(q==
 const LQ={og:.5,dial:.8,route:.6,ar:.5};   // dial : 로딩 글리프는 가는 검정 획이라 낮추면 바로 거칠어 보여서 제 해상도
 if(LITE){document.documentElement.classList.add('lite');addEventListener('touchmove',e=>{if(e.cancelable)e.preventDefault();},{passive:false});}
 // ?fs=1 : 첫 터치에 전체 화면 요청(브라우저 주소창 숨기기 실험용)
-if((()=>{const q=new URLSearchParams(location.search).get('fs');return q==='1'||(LITE&&q!=='0');})())addEventListener('pointerdown',()=>{try{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen,r=f&&f.call(d);if(r&&r.catch)r.catch(()=>{});}catch(_){}},{once:true});
+if((()=>{const q=new URLSearchParams(location.search).get('fs');return q==='1'||(LITE&&q!=='0');})())addEventListener('pointerdown',()=>{try{if(document.fullscreenElement||document.webkitFullscreenElement)return;const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen,r=f&&f.call(d);if(r&&r.catch)r.catch(()=>{});}catch(_){}});
 // ── FPS 표시 : ?perf=1 → 왼쪽 위에 초당 프레임·가장 느린 프레임·지금 화면
 (()=>{if(new URLSearchParams(location.search).get('perf')!=='1')return;const d=document.createElement('div');
   d.style.cssText='position:fixed;left:8px;top:8px;z-index:99999;font:600 22px/1.35 ui-monospace,Menlo,monospace;color:#fff;background:rgba(0,0,0,.72);padding:8px 12px;border-radius:10px;pointer-events:none;white-space:pre';
   let gpu='';try{const g=document.createElement('canvas').getContext('webgl'),e=g&&g.getExtension('WEBGL_debug_renderer_info');gpu=g?(e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):g.getParameter(g.RENDERER)):'WebGL 없음';}catch(_){}
   const add=()=>document.body.appendChild(d);document.body?add():addEventListener('DOMContentLoaded',add);
   let n=0,last=performance.now(),t0=last,worst=0;const tick=now=>{n++;worst=Math.max(worst,now-last);last=now;
-    if(now-t0>=1000){const v=document.querySelector('.view.on');d.textContent=`${Math.round(n*1000/(now-t0))} fps  느린 프레임 ${Math.round(worst)}ms\n${v?v.id:'-'}  ${LITE?'가벼운 모드':'기본 모드'}  크로미움 ${(navigator.userAgent.match(/Chrome\/(\d+)/)||[])[1]||'?'}${/web0s|webos/i.test(navigator.userAgent)?' webOS':''}  사진서버 ${(window.STEER_PHOTO||{}).token?'설정됨':'없음'}  dpr ${devicePixelRatio}  ${innerWidth}×${innerHeight}\n${String(gpu).slice(0,46)}`;n=0;t0=now;worst=0;}
+    if(now-t0>=1000){const v=document.querySelector('.view.on');d.textContent=`${Math.round(n*1000/(now-t0))} fps  느린 프레임 ${Math.round(worst)}ms\n${v?v.id:'-'}  ${LITE?'가벼운 모드':'기본 모드'}  전체화면 ${(document.fullscreenElement||document.webkitFullscreenElement)?'O':'X'}  크로미움 ${(navigator.userAgent.match(/Chrome\/(\d+)/)||[])[1]||'?'}${/web0s|webos/i.test(navigator.userAgent)?' webOS':''}  사진서버 ${(window.STEER_PHOTO||{}).token?'설정됨':'없음'}  dpr ${devicePixelRatio}  ${innerWidth}×${innerHeight}\n${String(gpu).slice(0,46)}`;n=0;t0=now;worst=0;}
     requestAnimationFrame(tick);};requestAnimationFrame(tick);})();
 const EL_KO={wood:'목',fire:'화',earth:'토',metal:'금',water:'수'}, EL_HJ={wood:'木',fire:'火',earth:'土',metal:'金',water:'水'};
 const ITEM_EN={color:'Color',taste:'Taste',direction:'Way',time:'Time',space:'Place',action:'Action'};
