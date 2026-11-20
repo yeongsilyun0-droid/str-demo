@@ -2233,7 +2233,9 @@ function recommend(r,A,home){const M=Q[0].opts.find(o=>o.k===A[0]),T=Q[1].opts.f
   const seeWood=()=>[...P2.filter(p=>p.act==='see'&&p.element==='wood'&&!EXCL.test(p.name)).map(p=>({...p,kk:'flower'})),
                        ...P2.filter(p=>p.act==='do'&&p.element==='wood'&&!EXCL.test(p.name)).map(p=>({...p,act:'see',kk:'book'})),
                        ...(home?[]:SP).filter(p=>/공원|숲|자락길|산$/.test(p.type+p.name)&&!EXCL.test(p.name)).map(p=>({...p,act:'see',element:'wood',kk:'park'}))];
-  const cell=el=>act==='walk'?walkPool(el):act==='hear'?hearPool(el):(act==='see'&&el==='wood')?seeWood():P2.filter(p=>p.act===act&&p.element===el&&!EXCL.test(p.name));
+  // 동네 모드 듣기 : 동네 데이터의 수 장소(목욕탕·횟집·화방…)는 앉아서 들을 곳(SIT_OK)이 하나도 없어 늘 희신 금으로 넘어갔음 → 비면 그 오행 장소 아무 곳이나(미션이 '○○ 가는 길에 소리 듣기'라 어디든 됨)
+  const hearCell=el=>{const a=hearPool(el);return a.length||!home?a:P2.filter(p=>p.element===el&&p.act!=='hear'&&!EXCL.test(p.name));};
+  const cell=el=>act==='walk'?walkPool(el):act==='hear'?hearCell(el):(act==='see'&&el==='wood')?seeWood():P2.filter(p=>p.act===act&&p.element===el&&!EXCL.test(p.name));
   const all=(act==='walk'?SP:P2).filter(p=>!home||p.distance<=2400);   // ① 전체 후보 (지도에 찍는 범위)
   let el=Y,mine=cell(Y),alt=false;                    // ② 용신 × 하기
   if(!mine.length&&H){el=H;mine=cell(H);alt=true;}
