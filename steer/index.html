@@ -2235,14 +2235,16 @@ function recommend(r,A,home){const M=Q[0].opts.find(o=>o.k===A[0]),T=Q[1].opts.f
                        ...(home?[]:SP).filter(p=>/공원|숲|자락길|산$/.test(p.type+p.name)&&!EXCL.test(p.name)).map(p=>({...p,act:'see',element:'wood',kk:'park'}))];
   // 동네 모드 듣기 : 동네 데이터의 수 장소(목욕탕·횟집·화방…)는 앉아서 들을 곳(SIT_OK)이 하나도 없어 늘 희신 금으로 넘어갔음 → 비면 그 오행 장소 아무 곳이나(미션이 '○○ 가는 길에 소리 듣기'라 어디든 됨)
   const hearCell=el=>{const a=hearPool(el);return a.length||!home?a:P2.filter(p=>p.element===el&&p.act!=='hear'&&!EXCL.test(p.name));};
-  const cell=el=>act==='walk'?walkPool(el):act==='hear'?hearCell(el):(act==='see'&&el==='wood')?seeWood():P2.filter(p=>p.act===act&&p.element===el&&!EXCL.test(p.name));
+  // 동네 모드 걷기 : 그 방위(토는 500m 안)에 머물 곳이 없으면 같은 방위의 아무 장소(조금 멀어도) → 희신으로 안 넘어가게
+  const walkCell=el=>{const a=walkPool(el);return a.length||!home?a:P2.filter(p=>!EXCL.test(p.name)&&(el==='earth'?p.distance<=900:inSector(p,el))).map(p=>({...p,act:'walk',with:'solo'}));};
+  const cell=el=>act==='walk'?walkCell(el):act==='hear'?hearCell(el):(act==='see'&&el==='wood')?seeWood():P2.filter(p=>p.act===act&&p.element===el&&!EXCL.test(p.name));
   const all=(act==='walk'?SP:P2).filter(p=>!home||p.distance<=2400);   // ① 전체 후보 (지도에 찍는 범위)
   let el=Y,mine=cell(Y),alt=false;                    // ② 용신 × 하기
   if(!mine.length&&H){el=H;mine=cell(H);alt=true;}
   let inR=mine.filter(p=>p.distance<=M.r),far=false;  // ③ 시간 반경
   if(!inR.length){far=true;inR=[...mine].sort((a,b)=>a.distance-b.distance).slice(0,3);
-    // 3km보다 멀면 희신 칸에서 더 가까운 곳이 있는지 확인
-    if(H&&!alt&&inR.length&&inR[0].distance>3000){const hm=cell(H);const hin=hm.filter(p=>p.distance<=M.r);
+    // 3km보다 멀면 희신 칸에서 더 가까운 곳이 있는지 확인 (이대 모드만. 동네 모드는 멀어도 무조건 용신, 2026-11-20 영실 결정)
+    if(H&&!alt&&!home&&inR.length&&inR[0].distance>3000){const hm=cell(H);const hin=hm.filter(p=>p.distance<=M.r);
       const hc=hin.length?hin:[...hm].sort((a,b)=>a.distance-b.distance).slice(0,3);
       if(hc.length&&hc[0].distance<inR[0].distance){el=H;mine=hm;alt=true;inR=hc;far=!hin.length;}}}
   let fin=inR.filter(p=>withOk(p,W.k)),withUsed=true;  // ④ 누구와 (후보가 없어지면 무시)
