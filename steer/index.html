@@ -312,6 +312,8 @@
   .tkt .fc .cp b{font-family:"Ganji";font-weight:400;font-size:34px}
   .tkt .fc .nm{position:absolute;left:63px;right:63px;top:700px;margin:0;font-size:80px;font-weight:700;line-height:1.3;color:#fff;letter-spacing:-.015em;word-break:keep-all}
   .tkt .fc .ms{position:absolute;left:63px;right:63px;top:818px;margin:0;font-size:42px;font-weight:600;line-height:1.45;color:rgba(255,255,255,.92);letter-spacing:-.015em;word-break:keep-all}
+  .tkt .fc .tx.ms2 .nm{top:638px}
+  .tkt .fc .tx.ms2 .ms{top:756px}   /* 미션이 두 줄이면 이름·미션을 위로(칩 934와 안 겹치게) */
   .tkt .fc .cs{position:absolute;left:63px;right:40px;top:934px;display:flex;gap:16px;flex-wrap:nowrap}
   .tkt .fc .cs span{display:flex;align-items:center;gap:12px;height:66px;padding:0 26px 0 18px;border-radius:33px;background:var(--pc27);border:2.6px solid var(--pc53);font-size:31px;font-weight:500;color:#fff;white-space:nowrap}
   /* 용신 스티커 : 사진 위 오른쪽, 시계 방향 9° (피그마 393,283 · 폭 524) */
@@ -1944,6 +1946,7 @@ const withOk=(p,w)=>{const k=kindOf(p);if(!k)return true;const v=WITHK[p.act+'.'
 const BLOCK=['김대중도서관','비니네샐러드','정혼','진심냉면','짱구네','밭에가자야채청과','진함흥면옥','부에노커피로스팅Co','앤트러사이트커피로스터','강산로스터스','노아스로스팅연희','로열티하우스','도원떡방','낙원떡방아간','신참떡볶이대흥역점','불굴의떡볶이신촌청년주택점','나무섬','고래고래회해산물포차','소푸리전주콩나물국밥','라초아플라워','Flowerantique','김찬미도자기','색동한옥스테이','수미한옥스테이','블루버드한옥','갤러리포유','세명미술원표구화랑','홍주화방','몽오재-몽무전각서예연구원','마카나우쿨렐레','일렉바이올린샵','한국우쿨렐레','가야금스튜디오손끝','케이2노래연습장','럭키노래연습장','드럼합주실','나훔미디어','투워치','샤인뮤직넷','잉여기타','프리버드뮤직주','누림엘뮤직','자마레코드','향음악사','에볼루션뮤직','방레코드','소호책방','파고다서점신촌','라이브러리아힘AHim','도무스링구아북스','소나기그림책방','티앤티키즈파크북클럽','사르르그림책방','캔들비즈','바나나하루키베이킹클래스','정림민화커넥션','김알파카자수공방','루아쥬얼리','샤인쥬얼리','쥬얼리스튜디오최하나','e-쥬얼리','다빈신석스포렉스점','포토시그니처','홍대셀프사진관데이트코스씨유얼아이즈','맛난세상','앤드뉴 갤러리','상쾌한빨래방 이대럭키점','소녀방앗간','뮤즈라이브','리디안뮤직','더힐링','오징어세상'];   // 2026-11-17 네이버 지도 검수(sim/verify_report.csv)에서 안 나온 곳 전부 + 김대중도서관(정치 인물) + 부에노(로스팅 안 함). 2026-11-20 네이버 분류 검수로 종류가 다른 곳(소녀방앗간=한식 밥집, 뮤즈라이브=소프트웨어 회사, 리디안뮤직=공연장, 더힐링=발관리, 오징어세상=한식)도 뺌. 김대중도서관 : 정치 인물 이름이라 뺌
 const EXCL=new RegExp('투워치|미광당|키즈|^캔들$|밀키트|밀킷|무인|채선당.*(샐러드|도시락)|'+BLOCK.map(n=>n.replace(/\s/g,'\\s*')).join('|'));
 const kindOf=p=>(p.kk?KIND.find(k=>k[5]===p.kk):null)||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&!k[5]&&k[2].test(p.name))||KIND.find(k=>k[0]===p.act&&k[1]===p.element&&k[5]==='flower'&&p.act==='see')||null;
+const msLines=s=>{const c=msLines.c||(msLines.c=document.createElement('canvas').getContext('2d'));c.font='600 42px "Pretendard Variable",Pretendard,"Noto Sans KR",sans-serif';return c.measureText(s).width>848?2:1;};
 const typeKo=p=>{const k=kindOf(p);return k?k[3]:(TYPE_KO[p.type]||p.type.replace(/ 소매업| 전문|\/.*$/,''));};
 let ITEMS=[];
 const CX=206, CY=447, R_ORB=150; let STEP=60, N=6;
@@ -3322,7 +3325,7 @@ function ticket(REC,HM,P,why,WR){const t=$('#tkt'),sec=$('#vRoute'),E=ELX[REC.el
   t.innerHTML=`<div class="bg"></div><canvas class="ppc" width="1440" height="2560"></canvas>
     <div class="hd"><div class="ey"><img src="assets/steer/helm-mark-black.svg" alt=""><span>Course Set !</span></div><h2>오늘의 카드가 만들어졌어요</h2><p>세 칸을 모두 채웠어요 · ${dt.getMonth()+1}월 ${dt.getDate()}일 ${WD}요일</p></div>
     <div class="c3"><div class="fc f3 f3o${PH_?' wph':''}"><canvas class="art3" width="${CW}" height="${CH}"></canvas>${PH_?`<img class="ph" src="assets/places/${PH_}.webp" alt="">`:''}<div class="sh"></div><div class="ys" style="left:${ox-HR}px;top:${oy-HR}px">${E.h}</div><div class="ho"></div><div class="gl"></div>
-      <img class="stk" src="assets/saju/sticker-${REC.el}.svg" alt=""><div class="tx"><span class="cp"><b>${E.h}</b>${REC.alt?'희신':'용신'}</span>
+      <img class="stk" src="assets/saju/sticker-${REC.el}.svg" alt=""><div class="tx${msLines(`“${REC.mission}”`)>1?' ms2':''}"><span class="cp"><b>${E.h}</b>${REC.alt?'희신':'용신'}</span>
         <h2 class="nm">${name}</h2><p class="ms">“${REC.mission}”</p>
         <div class="cs"><span>${qic(0)}${REC.M.lb}</span><span>${qic(1)}${REC.T.lb}</span><span>${qic(2)}${REC.W.lb}</span></div>
         <p class="mt">${why} · ${ds}</p></div>
@@ -3661,8 +3664,8 @@ async function tkRender(t){const I=t._i,W=1080,H=1920,k=W/1440,cv=document.creat
   g.textAlign='left';g.textBaseline='middle';const RL=I.role||'용신';
   g.font=F(400,34,'"Ganji"');const cw1=g.measureText(I.h).width;g.font=F(700,31);const cw2=g.measureText(RL).width;
   g.fillStyle=OT[I.el];rr(63,62,30+cw1+10+cw2+30,68,34);g.fill();g.fillStyle='#0A0A0A';g.font=F(400,34,'"Ganji"');g.fillText(I.h,93,97);g.font=F(700,31);g.fillText(RL,93+cw1+10,97);
-  g.fillStyle='#fff';g.textBaseline='top';g.font=F(700,I.nf||80);g.fillText(I.name,63,700+(I.nf||80)*.15);
-  g.fillStyle='rgba(255,255,255,.92)';g.font=F(500,42);wrap(`“${I.ms}”`,848).slice(0,2).forEach((l,i)=>g.fillText(l,63,818+9+i*61));
+  g.fillStyle='#fff';g.textBaseline='top';g.font=F(700,I.nf||80);const f0_=g.font;g.font=F(500,42);const MSL=wrap(`“${I.ms}”`,848).slice(0,2),UP=MSL.length>1?62:0;g.font=f0_;g.fillText(I.name,63,700-UP+(I.nf||80)*.15);
+  g.fillStyle='rgba(255,255,255,.92)';g.font=F(500,42);MSL.forEach((l,i)=>g.fillText(l,63,818-UP+9+i*61));
   {let x=63;const ic=[0,1,2].map(i=>{const m=(QIC[Q[i].key]||'').match(/d='([^']+)'/);return m?new Path2D(m[1]):null;});g.font=F(500,31);g.textBaseline='middle';
     const pc=ELX[I.el].c.replace('#',''),pv=[0,2,4].map(i=>parseInt(pc.slice(i,i+2),16));
     I.pl.forEach((lb,i)=>{const w=18+36+12+g.measureText(lb).width+26;g.fillStyle=`rgba(${pv},.27)`;rr(x,934,w,66,33);g.fill();g.strokeStyle=`rgba(${pv},.53)`;g.lineWidth=2.6;g.stroke();
