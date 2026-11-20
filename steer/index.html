@@ -1920,6 +1920,9 @@ const KIND=[
  ['hear','fire',/./,'노래방','신나는 노래 한 곡 부르기'],
  ['hear','earth',/./,'합주실','묵직한 드럼 쳐 보기'],
  ['hear','metal',/./,'악기 가게','단단한 기타 울림 듣기'],
+ ['hear','water',/피자/,'LP 피자집','잔잔한 음반 한 곡 들으며 피자 먹기'],
+ ['hear','water',/하우스오브바이닐/,'LP 카페','잔잔한 LP 한 곡 끝까지 듣기'],
+ ['hear','water',/그루브|바이닐/,'LP 바','잔잔한 LP 한 곡 끝까지 듣기'],
  ['hear','water',/./,'레코드숍','잔잔한 LP 한 장 듣기'],
  ['do','wood',/./,'책방','책 한 권 골라 첫 장 읽기'],
  ['do','fire',/베이킹|쿠킹/,'베이킹 클래스','따끈한 빵 구워 보기'],
@@ -2235,7 +2238,9 @@ function recommend(r,A,home){const M=Q[0].opts.find(o=>o.k===A[0]),T=Q[1].opts.f
                        ...P2.filter(p=>p.act==='do'&&p.element==='wood'&&!EXCL.test(p.name)).map(p=>({...p,act:'see',kk:'book'})),
                        ...(home?[]:SP).filter(p=>/공원|숲|자락길|산$/.test(p.type+p.name)&&!EXCL.test(p.name)).map(p=>({...p,act:'see',element:'wood',kk:'park'}))];
   // 동네 모드 듣기 : 동네 데이터의 수 장소(목욕탕·횟집·화방…)는 앉아서 들을 곳(SIT_OK)이 하나도 없어 늘 희신 금으로 넘어갔음 → 비면 그 오행 장소 아무 곳이나(미션이 '○○ 가는 길에 소리 듣기'라 어디든 됨)
-  const hearCell=el=>{const a=hearPool(el);return a.length||!home?a:P2.filter(p=>p.element===el&&p.act!=='hear'&&!EXCL.test(p.name));};
+  const soundPool=el=>[...P2.filter(p=>p.act==='hear'&&p.element===el&&!EXCL.test(p.name)),
+                        ...(el==='wood'?SP.filter(p=>/공원|숲|자락길|산$/.test(p.type+p.name)&&!/사우나|찜질|한방/.test(p.type+p.name)&&!EXCL.test(p.name)).map(p=>({...p,act:'hear-sp',element:'wood',with:'solo',nat:1,type:p.type.replace(/^백년가게 · /,'')})):[])];
+  const hearCell=el=>{if(!home){const s=soundPool(el);if(s.length)return s;}const a=hearPool(el);return a.length||!home?a:P2.filter(p=>p.element===el&&p.act!=='hear'&&!EXCL.test(p.name));};   // 2026-11-20 : 듣기는 소리 나는 곳으로(영실 결정)
   // 동네 모드 걷기 : 그 방위(토는 500m 안)에 머물 곳이 없으면 같은 방위의 아무 장소(조금 멀어도) → 희신으로 안 넘어가게
   const walkCell=el=>{const a=walkPool(el);return a.length||!home?a:P2.filter(p=>!EXCL.test(p.name)&&(el==='earth'?p.distance<=900:inSector(p,el))).map(p=>({...p,act:'walk',with:'solo'}));};
   const cell=el=>act==='walk'?walkCell(el):act==='hear'?hearCell(el):(act==='see'&&el==='wood')?seeWood():P2.filter(p=>p.act===act&&p.element===el&&!EXCL.test(p.name));
@@ -2260,7 +2265,7 @@ function recommend(r,A,home){const M=Q[0].opts.find(o=>o.k===A[0]),T=Q[1].opts.f
   const det=DET[act][el],tk=best?typeKo(best):'';
   const K=best&&kindOf(best);const here=home?'집':'정문';
   // 미션 라이팅 규칙 : [누구와] + [장소] + 용신 단서 하나 + 행동 하나. '근처'는 쓰지 않음(거리는 카드에), 본문 25자·누구와 포함 28자 안쪽
-  const body=!best?'':act==='hear'?`${tk} 가는 길에 ${SONG[el]} 듣기`:act==='walk'?(el==='earth'?`${here}에서 ${tk}까지 한 바퀴 걷기`:`${det}으로 걸어 ${tk} 다녀오기`):`${tk}에서 ${K?(Array.isArray(K[4])?K[4][hsh(seed+'m')%K[4].length]:K[4]):det+' 하나 찾아보기'}`;
+  const body=!best?'':act==='hear'?(best.act==='hear'&&K?`${tk}에서 ${Array.isArray(K[4])?K[4][hsh(seed+'m')%K[4].length]:K[4]}`:best.nat?`${tk}에서 바람에 잎 스치는 소리 듣기`:`${tk} 가는 길에 ${SONG[el]} 듣기`):act==='walk'?(el==='earth'?`${here}에서 ${tk}까지 한 바퀴 걷기`:`${det}으로 걸어 ${tk} 다녀오기`):`${tk}에서 ${K?(Array.isArray(K[4])?K[4][hsh(seed+'m')%K[4].length]:K[4]):det+' 하나 찾아보기'}`;
   const mission=body?(W.pre||'')+body:'';
   return {M,T,W,act,Y,H,el,alt,far,withUsed,all,mine,inR,fin,ranked,best,det,mission,wEl:el,home};}
 // ── 항로 : 레이어 체 (조건마다 판 한 장, 후보 점이 위에서 아래로 걸러져 내려옴 → 마지막 판이 눕혀지며 지도로)
