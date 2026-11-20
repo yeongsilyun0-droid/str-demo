@@ -2234,7 +2234,12 @@ function recommend(r,A,home){const M=Q[0].opts.find(o=>o.k===A[0]),T=Q[1].opts.f
   const bearing=p=>{const dx=(p.lng-ORIGIN.lng)*Math.cos(ORIGIN.lat*Math.PI/180),dy=p.lat-ORIGIN.lat;return (Math.atan2(dx,dy)*180/Math.PI+360)%360;};
   const inSector=(p,el)=>{if(el==='earth')return p.distance<=500;const d=Math.abs(((bearing(p)-DIRDEG[el])+540)%360-180);return d<=45;};
   const WALK_OK=/공원|숲|길|도서관|박물관|미술관|갤러리|문화|광장|시장|서점|책방|헌책|한옥|산|정원|전시|공연|극장|영화|아트/;
-  const walkPool=el=>SP.filter(p=>!EXCL.test(p.name)&&inSector(p,el)&&(home||WALK_OK.test(p.type+p.name))).map(p=>({...p,act:'walk',with:'solo',type:p.type.replace(/^백년가게 · /,'')}));
+  // 걷기 (2026-11-20 영실 결정) : 용신 방위로 걸어 '용신 오행의 장소'까지. 방위만 맞는 아무 곳은 의미가 없어서 장소 오행도 맞춤. 토(가운데)는 출발점 900m 안
+  const sectorW=(p,el,w)=>{const d=Math.abs(((bearing(p)-DIRDEG[el])+540)%360-180);return d<=w;};
+  const inWalk=(p,el,w)=>p.element===el&&(el==='earth'?p.distance<=(w>45?2400:900):sectorW(p,el,w||45));
+  const walkPool=el=>{const seen=new Set(),out=[];
+    const src=[...SP.map(p=>({...p,act:'walk',with:'solo',type:p.type.replace(/^백년가게 · /,'')})),...P2.filter(p=>p.act!=='hear')];
+    for(const w of [45,90,180]){for(const p of src){if(EXCL.test(p.name)||!inWalk(p,el,w)||seen.has(p.name))continue;seen.add(p.name);out.push(p);}if(out.length)break;}return out;};   // 그 방위(±45°)에 없으면 ±90°까지 넓힘
   const hearPool=el=>[...P2.filter(p=>p.element===el&&p.act!=='hear'&&SIT_OK.test(typeKo(p))&&!EXCL.test(p.name)),
                          ...(home?[]:SP).filter(p=>!EXCL.test(p.name)&&p.element===el&&SIT_OK.test(p.type+p.name)).map(p=>({...p,act:'hear-sp',with:'solo',type:p.type.replace(/^백년가게 · /,'')}))];
   const seeWood=()=>[...P2.filter(p=>p.act==='see'&&p.element==='wood'&&!EXCL.test(p.name)).map(p=>({...p,kk:'flower'})),
@@ -2245,7 +2250,7 @@ function recommend(r,A,home){const M=Q[0].opts.find(o=>o.k===A[0]),T=Q[1].opts.f
                         ...(el==='wood'?SP.filter(p=>/공원|숲|자락길|산$/.test(p.type+p.name)&&!/사우나|찜질|한방/.test(p.type+p.name)&&!EXCL.test(p.name)).map(p=>({...p,act:'hear-sp',element:'wood',with:'solo',nat:1,type:p.type.replace(/^백년가게 · /,'')})):[])];
   const hearCell=el=>{if(!home){const s=soundPool(el);if(s.length)return s;}const a=hearPool(el);return a.length||!home?a:P2.filter(p=>p.element===el&&p.act!=='hear'&&!EXCL.test(p.name));};   // 2026-11-20 : 듣기는 소리 나는 곳으로(영실 결정)
   // 동네 모드 걷기 : 그 방위(토는 500m 안)에 머물 곳이 없으면 같은 방위의 아무 장소(조금 멀어도) → 희신으로 안 넘어가게
-  const walkCell=el=>{const a=walkPool(el);return a.length||!home?a:P2.filter(p=>!EXCL.test(p.name)&&(el==='earth'?p.distance<=900:inSector(p,el))).map(p=>({...p,act:'walk',with:'solo'}));};
+  const walkCell=el=>walkPool(el);
   const cell=el=>act==='walk'?walkCell(el):act==='hear'?hearCell(el):(act==='see'&&el==='wood')?seeWood():P2.filter(p=>p.act===act&&p.element===el&&!EXCL.test(p.name));
   const all=(act==='walk'?SP:P2).filter(p=>!home||p.distance<=2400);   // ① 전체 후보 (지도에 찍는 범위)
   let el=Y,mine=cell(Y),alt=false;                    // ② 용신 × 하기
