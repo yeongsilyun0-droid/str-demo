@@ -3216,7 +3216,8 @@ const PLACE_PH={'로스터리 카페':'cafe','카페':'cafe','책방':'book','�
  '꽃집':'flower','꽃 작업실':'flower','공원':'park','넓은 공원':'park','체육공원':'park','숲길':'forest','동네 산':'forest','목욕탕':'bath','산속 사우나':'bath','수영장':'pool',
  '도자기 공방':'pottery','민화 공방':'minhwa','반지 공방':'ring','은 장신구 가게':'ring','베이킹 클래스':'baking','빵집':'baking','자수 공방':'embroidery','향초 공방':'candle',
  '과일 가게':'fruit','국밥집':'gukbap','낙지·쭈꾸미집':'nakji','냉면집':'naengmyeon','떡볶이집':'tteokbokki','떡집':'tteok','마라탕집':'mala','빙수집':'bingsu','샐러드 가게':'salad',
- '짬뽕집':'jjamppong','호떡집':'hotteok','간식 가게':'hotteok','횟집':'sashimi','한옥':'hanok','한옥 스테이':'hanok','서예원':'calli','셀프 사진관':'booth','화방':'artsup','공연장':'concert','소극장':'concert','영화관':'cinema','산·숲길':'forest'};
+ '짬뽕집':'jjamppong','호떡집':'hotteok','간식 가게':'hotteok','횟집':'sashimi','한옥':'hanok','한옥 스테이':'hanok','서예원':'calli','셀프 사진관':'booth','화방':'artsup','공연장':'concert','소극장':'concert','영화관':'cinema','산·숲길':'forest',
+ '레코드숍':'record','LP 카페':'lp','LP 바':'lp','LP 피자집':'lp','악기 가게':'guitar','현악기 가게':'violin','노래방':'karaoke','합주실':'drum'};   // 소리 장소 6장(2026-11-20)
 // ── 창문 나침반 AR : 화면 뒤쪽이 보는 방위(AR_HEAD, 설치 후 맞춤 · 주소 &head=)와 장소 방위의 차이로 길을 휨. 뒤 카메라 = 이름에 back·rear·usb·external이 든 장치(주소 &arcam=이름 일부), 없으면 예시 사진
 const AR_ON=new URLSearchParams(location.search).get('ar')!=='0',AR_HEAD=+(new URLSearchParams(location.search).get('head')||180),AR_HOLD=3800;
 const AR_COL={metal:'#97A5FF'};   // AR 길 색 : 금은 OT(#BFCCFF)가 너무 옅어 바닥 위에서 회색처럼 보여 채도를 조금 올림
